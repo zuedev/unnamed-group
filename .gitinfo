@@ -1,0 +1,13 @@
+{
+  "$schema": "https://git.zue.dev/gitinfo/plain/gitinfo.schema.json",
+  "root": "https://git.zue.dev/unnamed-group/",
+  "gitmail": "patches@unnamed.group",
+  "description": "Non-profit gaming community builders",
+  "maintainers": [
+    [
+      "Alex (@zuedev)",
+      "zuedev@gmail.com"
+    ]
+  ],
+  "license": "Unlicense"
+}
