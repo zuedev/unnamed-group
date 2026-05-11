@@ -1,6 +1,6 @@
 # Unnamed Group
 
-> Non-profit gaming community builders
+> Non-profit open-source gaming communities built by gamers, for gamers.
 
 ## Abstract
 
