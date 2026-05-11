@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Unnamed Arma Group | "Seriously Fun" Arma 3 Community</title>
+    <meta
+      name="description"
+      content="Join Unnamed Arma Group – a welcoming, tactical Arma 3 community focused on teamwork, fun, and unforgettable operations. Find your place and experience Arma like never before!"
+    />
+    <meta name="theme-color" content="black" />
+    <link rel="icon" href="/yeet21.png" />
+
+    <!-- Open Graph Meta Tags -->
+    <meta
+      property="og:title"
+      content="Unnamed Arma Group | 'Seriously Fun' Arma 3 Community"
+    />
+    <meta
+      property="og:description"
+      content="Join Unnamed Arma Group – a welcoming, tactical Arma 3 community focused on teamwork, fun, and unforgettable operations. Find your place and experience Arma like never before!"
+    />
+    <meta property="og:image" content="https://uagpmc.com/diversity.webp" />
+    <meta property="og:url" content="https://uagpmc.com/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Unnamed Arma Group" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="Unnamed Arma Group | 'Seriously Fun' Arma 3 Community"
+    />
+    <meta
+      name="twitter:description"
+      content="Join Unnamed Arma Group – a welcoming, tactical Arma 3 community focused on teamwork, fun, and unforgettable operations. Find your place and experience Arma like never before!"
+    />
+    <meta name="twitter:image" content="https://uagpmc.com/diversity.webp" />
+
+    <style>
+      @import url("https://use.typekit.net/oqu5sxm.css");
+
+      /* dark defaults */
+      html {
+        background: black;
+        color: white;
+      }
+
+      /* default font */
+      html {
+        font-family: "purista-web", sans-serif;
+      }
+
+      /* fill screen by default */
+      html {
+        min-height: 100vh;
+      }
+
+      /* remove default margin and padding from body */
+      body {
+        margin: 0;
+        padding: 0;
+      }
+
+      /* hide scrollbar but keep functionality */
+      ::-webkit-scrollbar {
+        display: none;
+      }
+
+      /* header styles */
+      header {
+        height: 100px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 20px;
+        position: fixed;
+        width: calc(100% - 40px); /* account for padding */
+        color: black;
+      }
+
+      header h1 {
+        font-size: 2rem;
+        margin: 0;
+      }
+
+      header a {
+        background: black;
+        border: 2px solid black;
+        color: white;
+        text-decoration: none;
+        padding: 10px;
+        font-weight: bold;
+        text-align: center;
+        display: fixed;
+      }
+
+      header a:hover {
+        filter: brightness(0.9);
+      }
+
+      /* on scroll */
+      header.scrolled {
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        backdrop-filter: blur(10px);
+      }
+
+      /* collapse header on mobile */
+      @media (max-width: 600px) {
+        header {
+          flex-direction: column;
+          padding-top: 20px;
+        }
+      }
+
+      /* main styles */
+      main {
+        height: 100vh;
+        background: black url("diversity.webp") center/cover no-repeat;
+      }
+
+      .mainTitle {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 4rem;
+        text-align: center;
+        margin: 0;
+        white-space: nowrap;
+      }
+
+      @media (max-width: 600px) {
+        .mainTitle {
+          white-space: normal; /* allow wrapping on small screens */
+          font-size: 2.5rem; /* smaller font size for mobile */
+        }
+      }
+
+      .mainTitle span {
+        opacity: 0; /* initially hidden for typewriter effect */
+      }
+
+      .mainBottom {
+        position: absolute;
+        padding: 10px;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        background: white;
+        color: black;
+      }
+
+      /* article#orbats */
+      article#orbats {
+        padding: 100px 20px;
+        background: white;
+        color: black;
+      }
+
+      article#orbats > h2 {
+        margin: 0;
+        font-size: 4rem;
+      }
+
+      .orbatGrid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+      }
+
+      .orbatCard {
+        background: #f0f0f0;
+        border: 1px solid #ccc;
+      }
+
+      .orbatHero {
+        width: 100%;
+      }
+
+      .orbatDetails {
+        margin: 0;
+        font-size: 1.5rem;
+        padding: 10px;
+        display: grid;
+        grid-template-rows: auto 1fr;
+        gap: 10px;
+      }
+
+      .orbatTitle {
+        margin: 0;
+      }
+
+      .orbatDescription {
+        margin: 0;
+        font-size: 1rem;
+      }
+
+      /* article#joining */
+      article#joining {
+        padding: 100px 20px;
+        background: black;
+        color: white;
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr;
+        gap: 40px;
+      }
+
+      article#joining h2 {
+        margin: 0;
+        font-size: 4rem;
+        text-align: center;
+      }
+
+      article#joining h2 span {
+        background: yellow;
+        color: black;
+        padding: 0 10px;
+      }
+
+      article#joining p {
+        margin: 0;
+        font-size: 1.5rem;
+        text-align: center;
+      }
+
+      .joiningStepsGrid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+        color: black;
+        margin: 0 auto;
+      }
+
+      .step {
+        background: #f0f0f0;
+        border: 1px solid #ccc;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .stepTitle {
+        font-size: 1.5rem;
+        margin: 0;
+        font-weight: bold;
+      }
+
+      .stepDescription {
+        font-size: 1rem;
+        text-align: center;
+        margin-top: 10px;
+      }
+
+      .joiningRequirements {
+        margin: 0 auto;
+      }
+
+      .joiningRequirements h3 {
+        margin: 0;
+        font-size: 2rem;
+      }
+
+      .requirementsGrid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(300px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+      }
+
+      @media (max-width: 900px) {
+        .requirementsGrid {
+          grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        }
+      }
+
+      .requirement {
+        background: #222;
+        border: 1px solid #ccc;
+        padding: 20px;
+      }
+
+      .requirementTitle {
+        font-size: 1.5rem;
+        margin: 0;
+        font-weight: bold;
+      }
+
+      .requirementDescription {
+        font-size: 1rem;
+        margin-top: 10px;
+      }
+
+      /* footer styles */
+      footer {
+        background: #222;
+        color: white;
+        text-align: center;
+        padding: 20px;
+        font-size: 0.8rem;
+      }
+
+      footer a {
+        color: cyan;
+        text-decoration: none;
+      }
+
+      footer a:hover {
+        text-decoration: underline;
+      }
+
+      /* uppercase utility */
+      .uppercase {
+        text-transform: uppercase;
+      }
+
+      /* hide text selection */
+      ::selection {
+        background: transparent;
+      }
+
+      /* don't show text selection cursor */
+      * {
+        user-select: none;
+      }
+
+      /* hide image drag without disabling click */
+      img {
+        -webkit-user-drag: none;
+        user-drag: none;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div style="display: flex; align-items: center; gap: 10px">
+        <img src="./yeet21.png" height="50px" />
+        <h1 class="uppercase">Unnamed Arma Group</h1>
+      </div>
+      <div style="display: flex; gap: 10px">
+        <a
+          class="uppercase"
+          href="/discord"
+          target="_blank"
+          style="background: #5865f2"
+        >
+          Join the Discord
+        </a>
+        <a
+          class="uppercase"
+          href="https://secure.uagpmc.com"
+          style="background: yellow; color: black"
+        >
+          Contractor Portal
+        </a>
+      </div>
+    </header>
+
+    <main>
+      <h2 class="mainTitle uppercase">Enjoy Arma 3 again</h2>
+      <div class="mainBottom uppercase">Keep Scrolling ↘</div>
+    </main>
+
+    <article id="orbats">
+      <h2 class="uppercase">Find your place</h2>
+      <div class="orbatGrid">
+        <div class="orbatCard">
+          <img class="orbatHero" src="orbat-images/wolfpack.jpg" />
+          <div class="orbatDetails">
+            <h3 class="orbatTitle">Wolfpack</h3>
+            <p class="orbatDescription">
+              Motorized infantry (medium packs with fast-attack ground vehicles)
+            </p>
+          </div>
+        </div>
+        <div class="orbatCard">
+          <img class="orbatHero" src="orbat-images/talon.jpg" />
+          <div class="orbatDetails">
+            <h3 class="orbatTitle">Talon</h3>
+            <p class="orbatDescription">
+              Airborne cavalry (light-to-medium packs deployed via air units)
+            </p>
+          </div>
+        </div>
+        <div class="orbatCard">
+          <img class="orbatHero" src="orbat-images/sabre.jpg" />
+          <div class="orbatDetails">
+            <h3 class="orbatTitle">Sabre</h3>
+            <p class="orbatDescription">
+              Heavy infantry (heavy packs and advanced infantry-deployed weapons
+              systems)
+            </p>
+          </div>
+        </div>
+        <div class="orbatCard">
+          <img class="orbatHero" src="orbat-images/anvil.jpg" />
+          <div class="orbatDetails">
+            <h3 class="orbatTitle">Anvil</h3>
+            <p class="orbatDescription">
+              Defensive-fighting specialists (static emplacements, trench
+              warfare, etc)
+            </p>
+          </div>
+        </div>
+        <div class="orbatCard">
+          <img class="orbatHero" src="orbat-images/breaker.jpg" />
+          <div class="orbatDetails">
+            <h3 class="orbatTitle">Breaker</h3>
+            <p class="orbatDescription">
+              Siege-assault mechanised infantry. Explosive-laden packs deployed
+              by highly-armoured "battle buses."
+            </p>
+          </div>
+        </div>
+        <div class="orbatCard">
+          <img class="orbatHero" src="orbat-images/armadillo.jpg" />
+          <div class="orbatDetails">
+            <h3 class="orbatTitle">Armadillo</h3>
+            <p class="orbatDescription">
+              Armoured corps. Main battle tanks and other heavy-chassis ground
+              assets.
+            </p>
+          </div>
+        </div>
+        <div class="orbatCard">
+          <img class="orbatHero" src="/orbat-images/pathfinder.jpg" />
+          <div class="orbatDetails">
+            <h3 class="orbatTitle">Pathfinder</h3>
+            <p class="orbatDescription">
+              Reconnaissance specialists. The eyes and ears of the unit armed
+              with high-calibre long-range rifles.
+            </p>
+          </div>
+        </div>
+        <div class="orbatCard">
+          <img class="orbatHero" src="orbat-images/spectre.jpg" />
+          <div class="orbatDetails">
+            <h3 class="orbatTitle">Spectre</h3>
+            <p class="orbatDescription">
+              SpecOps & clandestine specialists. Infiltrators trained with
+              operating behind enemy lines.
+            </p>
+          </div>
+        </div>
+        <div class="orbatCard">
+          <img class="orbatHero" src="/orbat-images/hammer.jpg" />
+          <div class="orbatDetails">
+            <h3 class="orbatTitle">Hammer</h3>
+            <p class="orbatDescription">
+              Artillery division. Mortars, howitzers, missile platforms, and
+              even nuclear weapons.
+            </p>
+          </div>
+        </div>
+        <div class="orbatCard">
+          <img class="orbatHero" src="/orbat-images/angel.jpg" />
+          <div class="orbatDetails">
+            <h3 class="orbatTitle">Angel</h3>
+            <p class="orbatDescription">
+              Air transport team. Utilizes fixed and rotary-wing aircraft to
+              deploy troops and provide logistics.
+            </p>
+          </div>
+        </div>
+        <div class="orbatCard">
+          <img class="orbatHero" src="/orbat-images/reaper.jpg" />
+          <div class="orbatDetails">
+            <h3 class="orbatTitle">Reaper</h3>
+            <p class="orbatDescription">
+              Close air support. Expert pilots and gunners entrusted with our
+              deadliest weapons of war.
+            </p>
+          </div>
+        </div>
+        <div class="orbatCard">
+          <img class="orbatHero" src="orbat-images/reclaimer.jpg" />
+          <div class="orbatDetails">
+            <h3 class="orbatTitle">Reclaimer</h3>
+            <p class="orbatDescription">
+              Special materials acquisition/recovery team. Specialises in CBRN
+              and recovering anomalous assets.
+            </p>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article id="joining">
+      <h2 class="uppercase">Only <span>3 steps</span> to join</h2>
+      <p>
+        The process is easy, quick, and straightforward. If you qualify, you
+        will be contacted via Discord by a representative of the unit for a
+        brief interview.
+      </p>
+      <div class="joiningStepsGrid">
+        <div class="step">
+          <div class="stepTitle">Apply via Discord</div>
+          <div class="stepDescription">
+            Join our Discord server and complete the application form via
+            Discord's built-in system.
+          </div>
+        </div>
+        <div class="step">
+          <div class="stepTitle">Attend your interview</div>
+          <div class="stepDescription">
+            A representative of the unit will contact you to schedule a brief
+            interview to assess your fit for the group and answer any questions
+            you may have.
+          </div>
+        </div>
+        <div class="step">
+          <div class="stepTitle">Join your first operation</div>
+          <div class="stepDescription">
+            Once accepted, you will be invited to join your first operation with
+            the unit. This is where you can experience the camaraderie and
+            teamwork that defines our group.
+          </div>
+        </div>
+      </div>
+      <div class="joiningRequirements">
+        <h3 class="uppercase">Requirements</h3>
+        <div class="requirementsGrid">
+          <div class="requirement">
+            <div class="requirementTitle">18 years or older</div>
+            <div class="requirementDescription">
+              Due to the nature of our operations, we require all members to be
+              at least 18 years old.
+            </div>
+          </div>
+          <div class="requirement">
+            <div class="requirementTitle">Working microphone</div>
+            <div class="requirementDescription">
+              All members must have a working microphone for communication
+              during operations.
+            </div>
+          </div>
+          <div class="requirement">
+            <div class="requirementTitle">Legit copy of Arma 3</div>
+            <div class="requirementDescription">
+              A legitimate copy of Arma 3 is required to participate in our
+              operations.
+            </div>
+          </div>
+          <div class="requirement">
+            <div class="requirementTitle">Work-ready English skills</div>
+            <div class="requirementDescription">
+              Members must have a good command of English to understand commands
+              and communicate effectively.
+            </div>
+          </div>
+          <div class="requirement">
+            <div class="requirementTitle">Ability to work in a team</div>
+            <div class="requirementDescription">
+              Teamwork is essential in our operations, and all members must be
+              able to work well with others.
+            </div>
+          </div>
+          <div class="requirement">
+            <div class="requirementTitle">Willingness to learn and adapt</div>
+            <div class="requirementDescription">
+              Members must be open to feedback and willing to learn new skills
+              to improve their performance.
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <footer>
+      "Unnamed Arma Group" is a fictional Arma 3 community created by
+      <a href="https://unnamed.group">Unnamed Group</a>, a non-profit
+      organization dedicated to providing safe and enjoyable gaming experiences.
+    </footer>
+  </body>
+  <script>
+    // Add scroll event listener to header
+    window.addEventListener("scroll", function () {
+      const header = document.querySelector("header");
+      if (window.scrollY > 50) {
+        header.classList.add("scrolled");
+      } else {
+        header.classList.remove("scrolled");
+      }
+    });
+
+    // Select each text element inside the main title, wrap it in a span, then apply a black background and padding to the spans to create a highlight effect
+    const mainTitle = document.querySelector(".mainTitle");
+    mainTitle.innerHTML = mainTitle.textContent
+      .split("")
+      .map((word) => `<span>${word}</span>`)
+      .join("");
+    const spans = mainTitle.querySelectorAll("span");
+    spans.forEach((span) => {
+      span.style.background = "black";
+      span.style.color = "white"; // Ensure text is readable
+
+      // Add y-axis padding to each span and left/right padding to first and last spans
+      span.style.padding = "5px 0";
+      if (span === spans[0]) {
+        span.style.paddingLeft = "10px";
+      }
+      if (span === spans[spans.length - 1]) {
+        span.style.paddingRight = "10px";
+      }
+    });
+
+    // Typewriter effect for main title
+    let index = 0;
+    const typewriterEffect = () => {
+      if (index < spans.length) {
+        spans[index].style.opacity = 1; // Show the current span
+        index++;
+        setTimeout(typewriterEffect, 100); // Adjust speed here
+      }
+    };
+    typewriterEffect();
+
+    // click on orbat images to open in new tab (with cursor pointer)
+    const orbatCards = document.querySelectorAll(".orbatCard");
+    orbatCards.forEach((card) => {
+      const img = card.querySelector(".orbatHero");
+      img.style.cursor = "pointer"; // Change cursor to pointer
+      img.addEventListener("click", () => {
+        const imgSrc = img.src;
+        window.open(imgSrc, "_blank");
+      });
+    });
+  </script>
+</html>

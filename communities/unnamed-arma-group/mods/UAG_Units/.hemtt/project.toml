@@ -1,0 +1,44 @@
+name = "UAG Units"
+prefix = "UAG_Units"
+mainprefix = "z"
+
+[version]
+major = 0
+minor = 0
+patch = 0
+git_hash = 8
+
+[files]
+include = [
+    "files/uag.paa",
+    "files/uag_hover.paa",
+]
+
+[properties]
+author = "UAG Development Team"
+url = "https://github.com/uagpmc/arma3"
+
+[hemtt.launch.default]
+workshop = [
+    "2369477168", # Advanced Developer Tools Workshop ID
+]
+
+[hemtt.launch.dev]
+extends = "default"
+workshop = [
+    "450814997", # CBA_A3's Workshop ID
+    "463939057", # ACE3's Workshop ID
+    "751965892", # ACRE's Workshop ID
+]
+
+[hemtt.launch.all]
+extends = "default"
+workshop = [
+    "450814997", # CBA_A3's Workshop ID
+    "463939057", # ACE3's Workshop ID
+    "751965892", # ACRE's Workshop ID
+    "2262006564", # cTab's Workshop ID
+]
+parameters = [
+    "-mod=ws;rf;",
+]
