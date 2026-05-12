@@ -1,0 +1,19 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "compatibility_date": "2026-03-29",
+  "account_id": "424d9dabd39849818d9e22366a20e4d6",
+  "name": "unnamed-group",
+  "assets": {
+    "directory": "./source/",
+  },
+  "minify": true,
+  "observability": {
+    "enabled": true,
+  },
+  "routes": [
+    {
+      "pattern": "unnamed.group",
+      "custom_domain": true,
+    },
+  ],
+}
