@@ -1,0 +1,21 @@
+{
+  "type": "module",
+  "scripts": {
+    "deploy": "run-s vitepress:clear-dist vitepress:build vitepress:build:pwa-move wrangler:deploy",
+    "wrangler:deploy": "npx wrangler deploy",
+    "vitepress:dev": "vitepress dev",
+    "vitepress:build": "vitepress build",
+    "vitepress:build:pwa-move": "shx mv markdown/.vitepress/dist/* .vitepress/dist/",
+    "vitepress:clear-dist": "shx rm -rf .vitepress/dist",
+    "vitepress:preview": "vitepress preview"
+  },
+  "devDependencies": {
+    "@vite-pwa/vitepress": "^1.1.0",
+    "markdown-it-mathjax3": "^4.3.2",
+    "npm-run-all2": "^8.0.4",
+    "shx": "^0.4.0",
+    "vitepress": "^2.0.0-alpha.17",
+    "vitepress-plugin-tabs": "^0.8.0",
+    "vue": "^3.5.31"
+  }
+}

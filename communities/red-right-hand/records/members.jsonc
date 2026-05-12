@@ -1,0 +1,118 @@
+[
+  {
+    "discordId": "122029090839461889",
+    "name": "Penguin",
+    "track": "Naval",
+    "rank": 2,
+    "preferences": [
+      {
+        "name": "Pilot",
+        "value": 3,
+      },
+      {
+        "name": "Space Superiority Fighter Pilot",
+        "value": 3,
+      },
+      {
+        "name": "Anti-Capital Fighter Pilot",
+        "value": 2,
+      },
+      {
+        "name": "Ground Bomber Pilot",
+        "value": 2,
+      },
+      {
+        "name": "Dropship Pilot",
+        "value": 2,
+      },
+      {
+        "name": "Boarding Ship Pilot",
+        "value": 2,
+      },
+      {
+        "name": "Ship of the Line Pilot",
+        "value": 1,
+      },
+      {
+        "name": "Command Ship Pilot",
+        "value": 1,
+      },
+      {
+        "name": "Carrier Pilot",
+        "value": 2,
+      },
+      {
+        "name": "Interdictor Pilot",
+        "value": 3,
+      },
+      {
+        "name": "Ambulance Pilot",
+        "value": 2,
+      },
+      {
+        "name": "Minelayer Pilot",
+        "value": 2,
+      },
+      {
+        "name": "Snub Fighter Pilot",
+        "value": 3,
+      },
+      {
+        "name": "Anti-Swarm Ship Pilot",
+        "value": 2,
+      },
+    ],
+  },
+  {
+    "discordId": "831891526027444225",
+    "name": "Alyth",
+    "track": "Naval",
+    "rank": 2,
+    "preferences": [
+      {
+        "name": "Crew",
+        "value": 3,
+      },
+      {
+        "name": "Ground Bomber Crew",
+        "value": 2,
+      },
+      {
+        "name": "Dropship Crew",
+        "value": 2,
+      },
+      {
+        "name": "Boarding Ship Crew",
+        "value": 2,
+      },
+      {
+        "name": "Ship of the Line Crew",
+        "value": 3,
+      },
+      {
+        "name": "Command Ship Crew",
+        "value": 3,
+      },
+      {
+        "name": "Carrier Crew",
+        "value": 3,
+      },
+      {
+        "name": "Interdictor Crew",
+        "value": 1,
+      },
+      {
+        "name": "Ambulance Crew",
+        "value": 1,
+      },
+      {
+        "name": "Minelayer Crew",
+        "value": 1,
+      },
+      {
+        "name": "Anti-Swarm Ship Crew",
+        "value": 3,
+      },
+    ],
+  },
+]
