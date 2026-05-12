@@ -1,6 +1,6 @@
 services:
   174bg-net:
-    build: https://github.com/zuedev/unnamed-group.git#master:communities/red-right-hand/alpha.174bg.net
+    build: https://github.com/zuedev/unnamed-group.git#master:communities/red-right-hand/174bg.net
     restart: unless-stopped
     ports:
       - "3000:3000/tcp"
