@@ -19,5 +19,9 @@
       "pattern": "red-right-hand.unnamed.group",
       "custom_domain": true,
     },
+    {
+      "pattern": "174bg.net",
+      "custom_domain": true,
+    },
   ],
 }
