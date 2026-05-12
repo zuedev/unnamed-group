@@ -1,6 +1,6 @@
 import { Inter, Fira_Code } from "next/font/google";
 import "./globals.css";
-import { CommandLineIcon } from "@heroicons/react/24/solid";
+import TerminalOverlay from "@/components/TerminalOverlay";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -11,18 +11,6 @@ const firaCode = Fira_Code({
   variable: "--font-fira-code",
   subsets: ["latin"],
 });
-
-function TerminalButton() {
-  return (
-    <a
-      href="/terminal/index.html"
-      className="fixed top-4 right-4 bg-gray-800 text-white p-3 rounded-full shadow-lg hover:bg-gray-700 transition-colors z-50"
-      title="Access the web terminal"
-    >
-      <CommandLineIcon className="h-5 w-5" />
-    </a>
-  );
-}
 
 export const metadata = {
   title: "174th Battle Group",
@@ -39,7 +27,7 @@ export default function RootLayout({ children }) {
       className={`${inter.variable} ${firaCode.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <TerminalButton />
+        <TerminalOverlay />
         {children}
       </body>
     </html>
