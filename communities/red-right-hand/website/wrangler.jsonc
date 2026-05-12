@@ -23,5 +23,9 @@
       "pattern": "174bg.net",
       "custom_domain": true,
     },
+    {
+      "pattern": "www.174bg.net",
+      "custom_domain": true,
+    },
   ],
 }
