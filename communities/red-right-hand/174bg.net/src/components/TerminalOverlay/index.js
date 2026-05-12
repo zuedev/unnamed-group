@@ -10,7 +10,7 @@ export default function TerminalOverlay() {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="fixed top-4 right-4 bg-gray-800 text-white p-3 rounded-full shadow-lg hover:bg-gray-700 transition-colors z-50"
+        className="fixed bottom-4 right-4 bg-gray-800 text-white p-3 rounded-full shadow-lg hover:bg-gray-700 transition-colors z-50"
         title="Access the web terminal"
       >
         <CommandLineIcon className="h-5 w-5" />

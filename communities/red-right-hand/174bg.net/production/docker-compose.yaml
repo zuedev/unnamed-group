@@ -5,3 +5,4 @@ services:
     ports:
       - "3000:3000/tcp"
       - "3000:3000/udp"
+    env_file: 174bg-net.env # we don't include this file for obvious reasons, but it should contain the necessary environment variables for the application to run
