@@ -1,110 +1,87 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Unnamed Group | Games Should be Fun, not Work.</title>
+    <title>Unnamed Group</title>
     <meta
       name="description"
-      content="We're a community of gamers who enjoy playing games together in a casual and fun manner. Come join the Discord to get involved!"
+      content="Unnamed Group is a non-profit organization dedicated to creating and supporting open-source gaming communities. Join us on Discord, explore our projects, and be part of our mission to foster creativity and collaboration in the gaming world."
     />
-    <meta
-      name="keywords"
-      content="unnamed group, unnamed, group, games, gaming, community, discord, memes, fun, casual"
-    />
-    <link rel="icon" href="logo.gif" />
     <style>
+      /* import inter font */
+      @import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+
+      /* white on black */
       html {
         background: black;
         color: white;
-        font-family: monospace;
       }
 
+      /* set default font */
       body {
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        max-width: 400px;
-        margin: 0 auto;
+        font-family: "Inter", sans-serif;
       }
 
-      ::-webkit-scrollbar {
-        display: none;
-      }
-
-      main,
-      header,
-      footer {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-      }
-
-      header {
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-      }
-
-      #logo {
-        height: 100px;
-        width: 100px;
-      }
-
-      #socials {
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        gap: 1rem;
-        margin: 1rem 0;
-      }
-
-      #socials img {
-        height: 50px;
-        width: 50px;
-      }
-
-      main p {
-        font-size: 1.5rem;
+      /* justify it all */
+      * {
         text-align: justify;
       }
 
-      footer {
-        flex-direction: row;
-        justify-content: space-between;
+      /* style links */
+      a {
+        color: inherit;
+        text-decoration: none;
       }
 
-      a {
-        color: gold;
-        text-decoration: none;
+      a:hover {
+        text-decoration: underline;
       }
     </style>
   </head>
   <body>
-    <header>
-      <img id="logo" src="logo.gif" alt="Unnamed Group logo" />
-      <div id="socials">
-        <a href="https://unnamed.group/discord">
-          <img src="https://cdn.simpleicons.org/discord" />
+    <main>
+      <div>
+        <h1 style="margin: 0">Unnamed Group</h1>
+        <h2 style="margin: 0">Non-profit open-source gaming communities</h2>
+      </div>
+
+      <p style="max-width: 600px; margin-top: 1rem">
+        Unnamed Group is a non-profit organization dedicated to creating and
+        supporting open-source gaming communities. Join us on Discord, explore
+        our projects, and be part of our mission to foster creativity and
+        collaboration in the gaming world.
+      </p>
+
+      <div
+        id="community-links"
+        style="
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+          margin-top: 1rem;
+        "
+      >
+        <a
+          href="https://unnamed.group/discord"
+          style="background: #5865f2; padding: 0.5rem"
+        >
+          Unnamed Group Discord
+        </a>
+        <a
+          href="https://uagpmc.com"
+          style="background: #90b477; padding: 0.5rem"
+        >
+          <b>UAG:</b> Our Arma 3 community focused on cooperative gameplay.
+        </a>
+        <a
+          href="https://red-right-hand.unnamed.group"
+          style="background: #d40404; padding: 0.5rem"
+        >
+          <b>Red Right Hand:</b> Star Citizen organisation bringing
+          player-driven events to the 'verse.
         </a>
       </div>
-    </header>
-    <main>
-      <p>
-        We're a community of gamers who enjoy playing games together in a casual
-        and fun manner. Come join the Discord to get involved!
-      </p>
     </main>
-    <footer>
-      <a
-        href="https://find-and-update.company-information.service.gov.uk/company/14751183"
-      >
-        Est. 2016, Inc. 2023
-      </a>
-      <a href="mailto:hello@unnamed.group">hello@unnamed.group</a>
-    </footer>
   </body>
 </html>
