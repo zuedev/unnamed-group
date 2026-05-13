@@ -89,6 +89,9 @@ ENV HOSTNAME="0.0.0.0"
 # Copy production assets
 COPY --from=builder --chown=node:node /app/public ./public
 
+# Copy auth config so migrations can be run against the production container
+COPY --from=builder --chown=node:node /app/src ./src
+
 # Set the correct permission for prerender cache
 RUN mkdir .next
 RUN chown node:node .next

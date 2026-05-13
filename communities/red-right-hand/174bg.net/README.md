@@ -11,5 +11,5 @@ The website is built using [Next.js](https://nextjs.org/) and is deployed via [D
 After starting the containers, run the following command to apply database migrations:
 
 ```sh
-docker compose exec 174bg-net npx auth@latest migrate --yes
+docker compose exec 174bg-net npx auth@latest migrate --config src/auth.js --yes
 ```
