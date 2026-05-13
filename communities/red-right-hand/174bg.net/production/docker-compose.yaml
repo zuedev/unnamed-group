@@ -5,4 +5,13 @@ services:
     ports:
       - "3000:3000/tcp"
       - "3000:3000/udp"
-    env_file: 174bg-net.env # we don't include this file for obvious reasons, but it should contain the necessary environment variables for the application to run
+    env_file: .env.174bg-net # we don't include this file for obvious reasons, but it should contain the necessary environment variables for the application to run
+
+  postgres:
+    image: postgres:18
+    env_file: .env.postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    restart: unless-stopped
