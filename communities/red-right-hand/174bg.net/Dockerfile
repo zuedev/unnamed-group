@@ -89,6 +89,9 @@ ENV HOSTNAME="0.0.0.0"
 # Copy production assets
 COPY --from=builder --chown=node:node /app/public ./public
 
+# Copy database migration files
+COPY --from=builder --chown=node:node /app/better-auth_migrations ./better-auth_migrations
+
 # Set the correct permission for prerender cache
 RUN mkdir .next
 RUN chown node:node .next

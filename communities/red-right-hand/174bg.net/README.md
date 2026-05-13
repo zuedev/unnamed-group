@@ -11,7 +11,7 @@ The website is built using [Next.js](https://nextjs.org/) and is deployed via [D
 After starting the containers, apply the database migrations by piping each SQL file in `better-auth_migrations/` into the postgres container:
 
 ```sh
-cat better-auth_migrations/*.sql | docker compose exec -T postgres psql -U postgres -d postgres
+docker compose exec -T 174bg-net sh -c 'cat better-auth_migrations/*.sql' | docker compose exec -T postgres psql -U postgres -d postgres
 ```
 
 > If your `.env` uses a different `POSTGRES_USER` or `POSTGRES_DB`, substitute those values for `postgres` above.
