@@ -1,6 +1,5 @@
 import { Inter, Fira_Code } from "next/font/google";
 import "./globals.css";
-import TerminalOverlay from "@/components/TerminalOverlay";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -26,10 +25,7 @@ export default function RootLayout({ children }) {
       lang="en"
       className={`${inter.variable} ${firaCode.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
-        <TerminalOverlay />
-        {children}
-      </body>
+      <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );
 }
