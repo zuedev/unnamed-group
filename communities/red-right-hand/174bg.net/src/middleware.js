@@ -4,14 +4,13 @@ export async function middleware(request) {
   let session = null;
 
   try {
-    const res = await fetch(
-      new URL("/api/auth/get-session", request.nextUrl.origin),
-      {
-        headers: {
-          cookie: request.headers.get("cookie") ?? "",
-        },
+    const internalUrl =
+      process.env.BETTER_AUTH_URL_INTERNAL || "http://localhost:3000";
+    const res = await fetch(new URL("/api/auth/get-session", internalUrl), {
+      headers: {
+        cookie: request.headers.get("cookie") ?? "",
       },
-    );
+    });
     session = await res.json();
   } catch {
     // If session check fails, treat as unauthenticated
