@@ -1,9 +1,6 @@
-import { ClerkProvider } from "@clerk/nextjs";
 import { Inter, Fira_Code } from "next/font/google";
-import { Suspense } from "react";
 import "./globals.css";
 import TerminalOverlay from "@/components/TerminalOverlay";
-import AuthHeader from "@/components/AuthHeader";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -30,13 +27,8 @@ export default function RootLayout({ children }) {
       className={`${inter.variable} ${firaCode.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <ClerkProvider>
-          <Suspense>
-            <AuthHeader />
-          </Suspense>
-          <TerminalOverlay />
-          {children}
-        </ClerkProvider>
+        <TerminalOverlay />
+        {children}
       </body>
     </html>
   );
