@@ -13,12 +13,6 @@
         font-family: "Inter";
       }
 
-      /* dark mode styles */
-      body.dark-mode {
-        background-color: #121212;
-        color: #ffffff;
-      }
-
       /* text should be justified by default */
       body {
         text-align: justify;
@@ -85,8 +79,6 @@
       console.log("DOMContentLoaded");
 
       generateTableOfContents();
-
-      addDarkModeToggleButton();
     });
 
     function generateTableOfContents() {
@@ -106,31 +98,6 @@
 
       toc.appendChild(tocList);
       document.body.insertBefore(toc, document.body.firstChild);
-    }
-
-    function addDarkModeToggleButton() {
-      if (localStorage.getItem("darkMode") === "enabled") {
-        document.body.classList.add("dark-mode");
-      }
-
-      const toggleButton = document.createElement("button");
-      toggleButton.textContent = "Toggle Dark Mode";
-      toggleButton.style.position = "fixed";
-      toggleButton.style.bottom = "10px";
-      toggleButton.style.right = "10px";
-      toggleButton.style.padding = "10px";
-      toggleButton.style.zIndex = "1000";
-
-      toggleButton.addEventListener("click", () => {
-        document.body.classList.toggle("dark-mode");
-        if (document.body.classList.contains("dark-mode")) {
-          localStorage.setItem("darkMode", "enabled");
-        } else {
-          localStorage.removeItem("darkMode");
-        }
-      });
-
-      document.body.appendChild(toggleButton);
     }
   </script>
 </html>
