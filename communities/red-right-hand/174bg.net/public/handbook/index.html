@@ -596,6 +596,13 @@
 
       headings.forEach((heading) => {
         const level = parseInt(heading.tagName[1]);
+        if (!heading.id) {
+          heading.id = heading.textContent
+            .trim()
+            .toLowerCase()
+            .replace(/[^\w\s-]/g, "")
+            .replace(/\s+/g, "-");
+        }
         const tocLink = document.createElement("a");
         tocLink.textContent = heading.textContent;
         tocLink.href = `#${heading.id}`;
