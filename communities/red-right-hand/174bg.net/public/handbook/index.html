@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>174th Battle Group Handbook</title>
+    <style>
+      /* import inter font */
+      @import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+
+      /* set default font */
+      body {
+        font-family: "Inter";
+      }
+
+      /* dark mode styles */
+      body.dark-mode {
+        background-color: #121212;
+        color: #ffffff;
+      }
+
+      /* text should be justified by default */
+      body {
+        text-align: justify;
+      }
+    </style>
+  </head>
+  <body>
+    <article id="introduction">
+      <h1>174th Battle Group Handbook</h1>
+      <p>
+        This handbook is intended to provide a comprehensive overview of the
+        174th Battle Group, its structure, operations, and guidelines for
+        members. It serves as a reference for both new recruits and seasoned
+        members to ensure consistency and efficiency within the group.
+      </p>
+    </article>
+
+    <article id="using-this-handbook">
+      <h2>Using This Handbook</h2>
+      <p>
+        This handbook is organized into sections that cover various aspects of
+        the 174th Battle Group. Each section is designed to provide clear and
+        concise information on specific topics.
+      </p>
+      <p>
+        Members are encouraged to familiarize themselves with the contents of
+        this handbook and refer to it regularly to ensure they are adhering to
+        the standards and expectations of the 174th Battle Group.
+      </p>
+    </article>
+
+    <article id="departments">
+      <h2>Departments</h2>
+      <p>
+        The 174th Battle Group is organized into several departments, each
+        responsible for specific functions and operations. These departments
+        include:
+      </p>
+      <ul>
+        <li>
+          <strong>Command:</strong> Responsible for overall leadership,
+          strategy, and decision-making.
+        </li>
+        <li>
+          <strong>Operations:</strong> Responsible for planning and executing
+          missions.
+        </li>
+        <li>
+          <strong>Human Resources:</strong> Manages recruitment, training, and
+          personnel welfare.
+        </li>
+        <li>
+          <strong>Logistics:</strong> Manages supplies, equipment, and
+          transportation.
+        </li>
+        <li>
+          <strong>Mining:</strong> Oversees resource extraction and management.
+        </li>
+      </ul>
+    </article>
+  </body>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      console.log("DOMContentLoaded");
+
+      generateTableOfContents();
+
+      addDarkModeToggleButton();
+    });
+
+    function generateTableOfContents() {
+      const headings = document.querySelectorAll("h1, h2, h3, h4, h5, h6");
+      const toc = document.createElement("nav");
+      toc.id = "table-of-contents";
+      const tocList = document.createElement("ul");
+
+      headings.forEach((heading) => {
+        const tocItem = document.createElement("li");
+        const tocLink = document.createElement("a");
+        tocLink.textContent = heading.textContent;
+        tocLink.href = `#${heading.id}`;
+        tocItem.appendChild(tocLink);
+        tocList.appendChild(tocItem);
+      });
+
+      toc.appendChild(tocList);
+      document.body.insertBefore(toc, document.body.firstChild);
+    }
+
+    function addDarkModeToggleButton() {
+      if (localStorage.getItem("darkMode") === "enabled") {
+        document.body.classList.add("dark-mode");
+      }
+
+      const toggleButton = document.createElement("button");
+      toggleButton.textContent = "Toggle Dark Mode";
+      toggleButton.style.position = "fixed";
+      toggleButton.style.bottom = "10px";
+      toggleButton.style.right = "10px";
+      toggleButton.style.padding = "10px";
+      toggleButton.style.zIndex = "1000";
+
+      toggleButton.addEventListener("click", () => {
+        document.body.classList.toggle("dark-mode");
+        if (document.body.classList.contains("dark-mode")) {
+          localStorage.setItem("darkMode", "enabled");
+        } else {
+          localStorage.removeItem("darkMode");
+        }
+      });
+
+      document.body.appendChild(toggleButton);
+    }
+  </script>
+</html>
