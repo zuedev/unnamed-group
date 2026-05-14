@@ -5,6 +5,15 @@ const nextConfig = {
 
   // generate a minimal, production-ready Docker image with only the required runtime files and dependencies
   output: "standalone",
+
+  async rewrites() {
+    return [
+      {
+        source: "/handbook/:path*",
+        destination: "/handbook/index.html",
+      },
+    ];
+  },
 };
 
 export default nextConfig;
