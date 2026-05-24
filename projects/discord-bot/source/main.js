@@ -43,7 +43,7 @@ discord.on(Events.ClientReady, async () => {
           channel.members.size === 0
         ) {
           console.log(
-            `Deleting empty voice channel: ${channel.name} in guild: ${guild.name}`
+            `Deleting empty voice channel: ${channel.name} in guild: ${guild.name}`,
           );
           channel.delete().catch(console.error);
         }
@@ -60,11 +60,11 @@ discord.on(Events.ClientReady, async () => {
   await discord.rest.put(
     Routes.applicationGuildCommands(
       discord.application.id,
-      process.env.DISCORD_GUILD_ID
+      process.env.DISCORD_GUILD_ID,
     ),
     {
       body: commands.guild,
-    }
+    },
   );
 
   // register global commands
@@ -73,7 +73,7 @@ discord.on(Events.ClientReady, async () => {
   });
 
   console.log(
-    `Bot is ready! Logged in as: ${discord.user.tag} (${discord.user.id})`
+    `Bot is ready! Logged in as: ${discord.user.tag} (${discord.user.id})`,
   );
 });
 
@@ -90,7 +90,9 @@ discord.on(Events.MessageCreate, async (message) => {
     switch (command) {
       case "purge-members-without-roles":
         // user should have administrator permissions to run this command
-        if (!message.member.permissions.has(PermissionFlagsBits.Administrator)) {
+        if (
+          !message.member.permissions.has(PermissionFlagsBits.Administrator)
+        ) {
           message.reply("You do not have permission to run this command.");
           return;
         }
@@ -111,10 +113,8 @@ discord.on(Events.MessageCreate, async (message) => {
             }
           }
         });
-        
-        message.channel.send(
-          `Purged ${deletedCount} members without roles.`
-        );
+
+        message.channel.send(`Purged ${deletedCount} members without roles.`);
         break;
       default:
         break;
@@ -145,7 +145,7 @@ discord.on(Events.VoiceStateUpdate, async (oldState, newState) => {
   // has the user joined the "create voice channel" voice channel?
   if (newState.channel?.name === "create voice channel") {
     console.log(
-      `User ${newState.member.user.username} has joined the "create voice channel" voice channel. Creating a new voice channel...`
+      `User ${newState.member.user.username} has joined the "create voice channel" voice channel. Creating a new voice channel...`,
     );
 
     // does the user already have a voice channel?
@@ -158,11 +158,11 @@ discord.on(Events.VoiceStateUpdate, async (oldState, newState) => {
       })
     ) {
       console.log(
-        `User ${newState.member.user.username} already has a voice channel. Not creating a new one.`
+        `User ${newState.member.user.username} already has a voice channel. Not creating a new one.`,
       );
     } else {
       console.log(
-        `User ${newState.member.user.username} does not have a voice channel. Creating a new one.`
+        `User ${newState.member.user.username} does not have a voice channel. Creating a new one.`,
       );
 
       const guild = newState.guild;
@@ -193,7 +193,7 @@ discord.on(Events.VoiceStateUpdate, async (oldState, newState) => {
     await newState.member.voice.setChannel(voiceChannelId);
 
     console.log(
-      `Moved user ${newState.member.user.username} to their voice channel.`
+      `Moved user ${newState.member.user.username} to their voice channel.`,
     );
   }
 });
