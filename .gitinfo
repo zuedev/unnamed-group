@@ -9,5 +9,8 @@
       "zuedev@gmail.com"
     ]
   ],
+  "mirrors": [
+    "https://github.com/zuedev/unnamed-group"
+  ],
   "license": "Unlicense"
 }
