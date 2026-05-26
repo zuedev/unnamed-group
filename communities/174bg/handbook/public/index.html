@@ -882,9 +882,7 @@
             <ul>
               <li>
                 <strong>Primary Ship:</strong>
-                <a href="https://starcitizen.tools/Hull_C">Hull C</a>
-                (<a href="https://starcitizen.tools/Hull_E">Hull E</a> once
-                available)
+                Hull C (Hull E once available)
               </li>
             </ul>
           </section>
@@ -1195,6 +1193,8 @@
       console.log("DOMContentLoaded");
 
       generateTableOfContents();
+
+      replaceWordsWithLinks();
     });
 
     function generateTableOfContents() {
@@ -1265,6 +1265,53 @@
           li.insertBefore(toggle, li.firstChild);
         }
       });
+    }
+
+    function replaceWordsWithLinks() {
+      const linkMap = {
+        "Hull C": "https://starcitizen.tools/Hull_C",
+        "Hull E": "https://starcitizen.tools/Hull_E",
+      };
+
+      const walker = document.createTreeWalker(
+        document.body,
+        NodeFilter.SHOW_TEXT,
+        null,
+        false,
+      );
+
+      let node;
+      while ((node = walker.nextNode())) {
+        const parent = node.parentNode;
+        if (parent && parent.tagName !== "A") {
+          let text = node.textContent;
+          let replaced = false;
+
+          for (const [word, url] of Object.entries(linkMap)) {
+            const regex = new RegExp(`\\b${word}\\b`, "g");
+            if (regex.test(text)) {
+              const link = document.createElement("a");
+              link.href = url;
+              link.textContent = word;
+              text = text.replace(regex, link.outerHTML);
+              replaced = true;
+
+              console.log(
+                `Replaced "${word}" with link to ${url} in text: "${node.textContent.trim()}"`,
+              );
+            }
+          }
+
+          if (replaced) {
+            const tempDiv = document.createElement("div");
+            tempDiv.innerHTML = text;
+            while (tempDiv.firstChild) {
+              parent.insertBefore(tempDiv.firstChild, node);
+            }
+            parent.removeChild(node);
+          }
+        }
+      }
     }
   </script>
 </html>
