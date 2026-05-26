@@ -1432,7 +1432,7 @@
         if (nested) {
           const toggle = document.createElement("button");
           const liLevel = parseInt(li.dataset.level);
-          const collapsed = liLevel > 2;
+          const collapsed = liLevel >= 2;
           toggle.className = "toc-toggle";
           toggle.textContent = collapsed ? "▶" : "▼";
           if (collapsed) li.classList.add("toc-collapsed");
