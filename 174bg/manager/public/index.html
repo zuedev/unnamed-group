@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      html {
+        font-family: monospace;
+        font-size: 16px;
+      }
+
+      #preferences table {
+        border-collapse: collapse;
+        min-width: 16rem;
+      }
+
+      #preferences thead th {
+        text-align: left;
+        padding: 0.4rem 0.75rem;
+        border-bottom: 2px solid #555;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: #888;
+      }
+
+      #preferences tbody tr:nth-child(even) {
+        background: rgba(0, 0, 0, 0.04);
+      }
+
+      #preferences tbody td {
+        padding: 0.4rem 0.75rem;
+        border-bottom: 1px solid #e0e0e0;
+      }
+
+      #preferences tbody td:last-child {
+        text-align: center;
+        width: 2.5rem;
+      }
+
+      #profile-warning {
+        margin-top: 0.75rem;
+        padding: 0.6rem 0.9rem;
+        background: #fdd;
+        border: 1px solid #c00;
+        border-radius: 4px;
+        color: #900;
+        font-weight: bold;
+      }
+
+      #welcome {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      #welcome-avatar {
+        width: 3rem;
+        height: 3rem;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+
+      #welcome-text {
+        font-size: 1.25rem;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>174th Battle Group: Manager</h1>
+
+    <section id="anonymous">
+      <p>You are not logged in. Please log in to access this site:</p>
+      <button id="login">Login with Discord</button>
+    </section>
+
+    <section
+      id="authed"
+      style="display: none; flex-direction: column; gap: 1em"
+    >
+      <div id="welcome">
+        <img id="welcome-avatar" src="" alt="" />
+        <span id="welcome-text"></span>
+      </div>
+      <div id="required-info" style="display: flex; flex-direction: column">
+        <h2 style="margin-bottom: 0">Required Information</h2>
+        <div><b>174BG ID:</b> <span id="174bg-id"></span></div>
+        <div>
+          <b>UEE Citizen Record ID:</b> <span id="uee-citizen-record-id"></span>
+        </div>
+        <div><b>RSI Display Name:</b> <span id="rsi-display-name"></span></div>
+        <div><b>RSI Handle:</b> <span id="rsi-handle"></span></div>
+        <div><b>Email:</b> <span id="user-email"></span></div>
+        <div><b>Branch:</b> <span id="174bg-branch"></span></div>
+        <div><b>Rank Number:</b> <span id="174bg-rank-number"></span></div>
+        <div><b>Rank Name:</b> <span id="174bg-rank-name"></span></div>
+        <div id="profile-warning" hidden>
+          ⚠️ Your profile is incomplete. Message an officer ASAP!
+        </div>
+      </div>
+      <div id="preferences"></div>
+      <div>
+        <button id="logout">Logout</button>
+      </div>
+    </section>
+  </body>
+  <script type="module">
+    import PocketBase from "https://esm.sh/pocketbase@0.27.0";
+
+    const pb = new PocketBase("https://db.174bg.net");
+
+    function populateWelcome() {
+      const record = pb.authStore.record ?? {};
+      const avatarEl = document.getElementById("welcome-avatar");
+      const textEl = document.getElementById("welcome-text");
+
+      const name = record["RSI_Handle"] || record["name"] || "Pilot";
+      textEl.textContent = `Welcome back, ${name}!`;
+
+      // PocketBase avatar URL pattern
+      const avatarFile = record["avatar"];
+      if (avatarFile) {
+        avatarEl.src = `https://db.174bg.net/api/files/${record.collectionId}/${record.id}/${avatarFile}`;
+        avatarEl.alt = name;
+        avatarEl.hidden = false;
+      } else {
+        avatarEl.hidden = true;
+      }
+    }
+
+    // ---------------------------------------------------------------------------
+    // Required-info field definitions — map span IDs to PocketBase field names
+    // ---------------------------------------------------------------------------
+    const REQUIRED_INFO_FIELDS = [
+      { id: "174bg-id", field: "id" },
+      { id: "uee-citizen-record-id", field: "UEE_Citizen_Record_ID" },
+      { id: "rsi-display-name", field: "RSI_Display_Name" },
+      { id: "rsi-handle", field: "RSI_Handle" },
+      { id: "user-email", field: "email" },
+      { id: "174bg-branch", field: "Branch" },
+      { id: "174bg-rank-number", field: "Rank_Number" },
+    ];
+
+    const RANK_NAMES = {
+      Naval: [
+        "Cadet",
+        "Ensign",
+        "Lieutenant",
+        "Captain",
+        "Commodore",
+        "Admiral",
+      ],
+      Marine: [
+        "Private",
+        "Corporal",
+        "Sergeant",
+        "Major",
+        "Commander",
+        "General",
+      ],
+      Auxiliary: [
+        "Trainee",
+        "Technician",
+        "Specialist",
+        "Supervisor",
+        "Chief",
+        "Marshal",
+      ],
+    };
+
+    function populateRequiredInfo() {
+      const record = pb.authStore.record ?? {};
+      let anyMissing = false;
+
+      for (const { id, field } of REQUIRED_INFO_FIELDS) {
+        const span = document.getElementById(id);
+        const value = record[field];
+        if (value) {
+          span.textContent = value;
+          span.style.color = "";
+        } else {
+          span.textContent = "MISSING";
+          span.style.color = "red";
+          anyMissing = true;
+        }
+      }
+
+      // Derive rank name from branch + rank number
+      const rankSpan = document.getElementById("174bg-rank-name");
+      const branch = record["Branch"];
+      const rankNumber = record["Rank_Number"];
+      const rankName = RANK_NAMES[branch]?.[rankNumber];
+      if (rankName) {
+        rankSpan.textContent = rankName;
+        rankSpan.style.color = "";
+      } else {
+        rankSpan.textContent = "MISSING";
+        rankSpan.style.color = "red";
+        anyMissing = true;
+      }
+
+      if (anyMissing) {
+        document.getElementById("profile-warning").hidden = false;
+      } else {
+        document.getElementById("profile-warning").hidden = true;
+      }
+    }
+
+    // ---------------------------------------------------------------------------
+    // Role preferences
+    // ---------------------------------------------------------------------------
+    const ROLES = [
+      { value: "ship_captain", text: "Ship Captain" },
+      { value: "medical_officer", text: "Medical Officer" },
+      { value: "rifleman", text: "Rifleman" },
+      { value: "engineer", text: "Engineer" },
+    ];
+
+    let rolesEditing = false;
+    let rolesTbody;
+    let rolesEditBtn;
+    let rolesCancelBtn;
+
+    function renderRoles(saved, editMode) {
+      rolesTbody.querySelectorAll("tr").forEach((tr) => {
+        const td = tr.querySelectorAll("td")[1];
+        if (editMode) {
+          const cb = document.createElement("input");
+          cb.type = "checkbox";
+          cb.checked = saved.includes(tr.dataset.roleValue);
+          td.replaceChildren(cb);
+        } else {
+          td.textContent = saved.includes(tr.dataset.roleValue) ? "✅" : "❌";
+        }
+      });
+    }
+
+    function buildRolesSection() {
+      const container = document.getElementById("preferences");
+
+      const heading = document.createElement("div");
+      const title = document.createElement("b");
+      title.textContent = "Role Preferences";
+      rolesEditBtn = document.createElement("button");
+      rolesEditBtn.type = "button";
+      rolesEditBtn.textContent = "✏️ Edit";
+      rolesCancelBtn = document.createElement("button");
+      rolesCancelBtn.type = "button";
+      rolesCancelBtn.textContent = "❌ Cancel";
+      rolesCancelBtn.hidden = true;
+      heading.append(title, " ", rolesEditBtn, " ", rolesCancelBtn);
+
+      const table = document.createElement("table");
+      const thead = document.createElement("thead");
+      const headerRow = document.createElement("tr");
+      for (const text of ["Role", ""]) {
+        const th = document.createElement("th");
+        th.textContent = text;
+        headerRow.appendChild(th);
+      }
+      thead.appendChild(headerRow);
+
+      rolesTbody = document.createElement("tbody");
+      for (const role of ROLES) {
+        const tr = document.createElement("tr");
+        tr.dataset.roleValue = role.value;
+        const tdName = document.createElement("td");
+        tdName.textContent = role.text;
+        const tdCheck = document.createElement("td");
+        tr.append(tdName, tdCheck);
+        rolesTbody.appendChild(tr);
+      }
+
+      table.append(thead, rolesTbody);
+      container.append(heading, table);
+    }
+
+    function loadRoles() {
+      rolesEditing = false;
+      rolesEditBtn.textContent = "✏️ Edit";
+      rolesCancelBtn.hidden = true;
+      renderRoles(pb.authStore.record?.rolePreferences?.roles ?? [], false);
+    }
+
+    buildRolesSection();
+
+    const loginBtn = document.getElementById("login");
+    const logoutBtn = document.getElementById("logout");
+    const anonymousSection = document.getElementById("anonymous");
+    const authedSection = document.getElementById("authed");
+
+    function updateAuthUI() {
+      const loggedIn = pb.authStore.isValid;
+      anonymousSection.style.display = loggedIn ? "none" : "";
+      authedSection.style.display = loggedIn ? "flex" : "none";
+    }
+
+    // Verify the stored session is still valid server-side
+    if (pb.authStore.isValid) {
+      try {
+        await pb.collection("members").authRefresh();
+      } catch {
+        pb.authStore.clear();
+      }
+    }
+
+    updateAuthUI();
+    if (pb.authStore.isValid) {
+      populateWelcome();
+      populateRequiredInfo();
+      loadRoles();
+    }
+
+    loginBtn.addEventListener("click", async () => {
+      loginBtn.disabled = true;
+      try {
+        await pb.collection("members").authWithOAuth2({ provider: "discord" });
+        updateAuthUI();
+        populateWelcome();
+        populateRequiredInfo();
+        loadRoles();
+      } catch (err) {
+        console.error("Login failed:", err);
+      } finally {
+        loginBtn.disabled = false;
+      }
+    });
+
+    logoutBtn.addEventListener("click", () => {
+      pb.authStore.clear();
+      updateAuthUI();
+    });
+
+    rolesEditBtn.addEventListener("click", async () => {
+      if (!rolesEditing) {
+        rolesEditing = true;
+        rolesEditBtn.textContent = "💾 Save";
+        rolesCancelBtn.hidden = false;
+        renderRoles(pb.authStore.record?.rolePreferences?.roles ?? [], true);
+      } else {
+        const selected = [
+          ...rolesTbody.querySelectorAll("input[type=checkbox]:checked"),
+        ].map((cb) => cb.closest("tr").dataset.roleValue);
+        rolesEditBtn.disabled = true;
+        rolesCancelBtn.disabled = true;
+        try {
+          const prefs = { roles: selected };
+          await pb
+            .collection("members")
+            .update(pb.authStore.record.id, { rolePreferences: prefs });
+          pb.authStore.record.rolePreferences = prefs;
+          rolesEditing = false;
+          rolesEditBtn.textContent = "✏️ Edit";
+          rolesCancelBtn.hidden = true;
+          renderRoles(selected, false);
+        } catch (err) {
+          console.error("Failed to save role preferences:", err);
+        } finally {
+          rolesEditBtn.disabled = false;
+          rolesCancelBtn.disabled = false;
+        }
+      }
+    });
+
+    rolesCancelBtn.addEventListener("click", () => {
+      rolesEditing = false;
+      rolesEditBtn.textContent = "✏️ Edit";
+      rolesCancelBtn.hidden = true;
+      renderRoles(pb.authStore.record?.rolePreferences?.roles ?? [], false);
+    });
+  </script>
+</html>
