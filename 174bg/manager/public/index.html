@@ -214,11 +214,54 @@
 
     async function fetchRoles() {
       ROLES = [
-        { value: "Ship Captain", text: "Ship Captain" },
-        { value: "Medical Officer", text: "Medical Officer" },
-        { value: "Engineer", text: "Engineer" },
-        { value: "Rifleman", text: "Rifleman" },
-        { value: "Pilot", text: "Pilot" },
+        { branch: "Naval", value: "Ship Captain", text: "Ship Captain" },
+        { branch: "Naval", value: "Pilot", text: "Pilot" },
+        { branch: "Naval", value: "Helmsman", text: "Helmsman" },
+        { branch: "Naval", value: "Gunner", text: "Gunner" },
+        { branch: "Marine", value: "Tactical Marine", text: "Tactical Marine" },
+        { branch: "Marine", value: "Heavy Marine", text: "Heavy Marine" },
+        { branch: "Marine", value: "Scout Marine", text: "Scout Marine" },
+        { branch: "Marine", value: "Combat Medic", text: "Combat Medic" },
+        { branch: "Marine", value: "Combat Engineer", text: "Combat Engineer" },
+        { branch: "Marine", value: "Warden", text: "Warden" },
+        { branch: "Auxiliary", value: "Engineer", text: "Engineer" },
+        {
+          branch: "Auxiliary",
+          value: "Hazardous Materials Specialist",
+          text: "Hazardous Materials Specialist",
+        },
+        {
+          branch: "Auxiliary",
+          value: "Medical Doctor",
+          text: "Medical Doctor",
+        },
+        { branch: "Auxiliary", value: "Quartermaster", text: "Quartermaster" },
+        {
+          branch: "Auxiliary",
+          value: "Cargo Technician",
+          text: "Cargo Technician",
+        },
+        { branch: "Auxiliary", value: "Craftsman", text: "Craftsman" },
+        {
+          branch: "Auxiliary",
+          value: "Mining Technician",
+          text: "Mining Technician",
+        },
+        {
+          branch: "Auxiliary",
+          value: "Salvage Operator",
+          text: "Salvage Operator",
+        },
+        {
+          branch: "Auxiliary",
+          value: "Expeditionary Analyst",
+          text: "Expeditionary Analyst",
+        },
+        {
+          branch: "Auxiliary",
+          value: "Intelligence Agent",
+          text: "Intelligence Agent",
+        },
       ];
     }
 
@@ -229,7 +272,7 @@
     let rolesStatus;
 
     function renderRoles(saved, editMode) {
-      rolesTbody.querySelectorAll("tr").forEach((tr) => {
+      rolesTbody.querySelectorAll("tr:not([data-separator])").forEach((tr) => {
         const td = tr.querySelectorAll("td")[1];
         if (editMode) {
           const cb = document.createElement("input");
@@ -269,7 +312,20 @@
       thead.appendChild(headerRow);
 
       rolesTbody = document.createElement("tbody");
+      let lastBranch = null;
       for (const role of ROLES) {
+        if (role.branch !== lastBranch) {
+          lastBranch = role.branch;
+          const sep = document.createElement("tr");
+          sep.dataset.separator = "true";
+          const tdSep = document.createElement("td");
+          tdSep.colSpan = 2;
+          tdSep.textContent = role.branch ?? "";
+          tdSep.style.cssText =
+            "font-weight:600; padding-top:0.75rem; padding-bottom:0.25rem; border-bottom:none; opacity:0.6; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.05em";
+          sep.appendChild(tdSep);
+          rolesTbody.appendChild(sep);
+        }
         const tr = document.createElement("tr");
         tr.dataset.roleValue = role.value;
         const tdName = document.createElement("td");
