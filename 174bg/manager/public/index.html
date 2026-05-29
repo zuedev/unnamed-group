@@ -75,6 +75,8 @@
       <button id="login">Login with Discord</button>
     </section>
 
+    <p id="oauth-status" style="font-size: 0.9rem"></p>
+
     <section
       id="authed"
       style="display: none; flex-direction: column; gap: 1em"
@@ -207,20 +209,24 @@
       }
     }
 
-    // ---------------------------------------------------------------------------
-    // Role preferences
-    // ---------------------------------------------------------------------------
-    const ROLES = [
-      { value: "ship_captain", text: "Ship Captain" },
-      { value: "medical_officer", text: "Medical Officer" },
-      { value: "rifleman", text: "Rifleman" },
-      { value: "engineer", text: "Engineer" },
-    ];
+    // Role options are fetched from the collection schema after auth
+    let ROLES = [];
+
+    async function fetchRoles() {
+      ROLES = [
+        { value: "Ship Captain", text: "Ship Captain" },
+        { value: "Medical Officer", text: "Medical Officer" },
+        { value: "Engineer", text: "Engineer" },
+        { value: "Rifleman", text: "Rifleman" },
+        { value: "Pilot", text: "Pilot" },
+      ];
+    }
 
     let rolesEditing = false;
     let rolesTbody;
     let rolesEditBtn;
     let rolesCancelBtn;
+    let rolesStatus;
 
     function renderRoles(saved, editMode) {
       rolesTbody.querySelectorAll("tr").forEach((tr) => {
@@ -273,17 +279,17 @@
       }
 
       table.append(thead, rolesTbody);
-      container.append(heading, table);
+      rolesStatus = document.createElement("p");
+      rolesStatus.style.cssText = "margin:0; font-size:0.85rem";
+      container.append(heading, table, rolesStatus);
     }
 
     function loadRoles() {
       rolesEditing = false;
       rolesEditBtn.textContent = "✏️ Edit";
       rolesCancelBtn.hidden = true;
-      renderRoles(pb.authStore.record?.rolePreferences?.roles ?? [], false);
+      renderRoles(pb.authStore.record?.RolePreferencesSelect ?? [], false);
     }
-
-    buildRolesSection();
 
     const loginBtn = document.getElementById("login");
     const logoutBtn = document.getElementById("logout");
@@ -305,8 +311,65 @@
       }
     }
 
+    // Complete OAuth redirect if returning from Discord
+    const oauthParams = new URLSearchParams(window.location.search);
+    const storedProvider = localStorage.getItem("pb_oauth_provider");
+    const oauthStatus = document.getElementById("oauth-status");
+
+    if (oauthParams.has("code") && oauthParams.has("state")) {
+      if (!storedProvider) {
+        oauthStatus.textContent =
+          "Login error: OAuth state lost (localStorage empty). Please try again.";
+        oauthStatus.style.color = "red";
+        window.history.replaceState({}, "", window.location.pathname);
+      } else {
+        oauthStatus.textContent = "Completing login...";
+        const provider = JSON.parse(storedProvider);
+        localStorage.removeItem("pb_oauth_provider");
+        const redirectUrl = window.location.origin + window.location.pathname;
+        try {
+          await pb
+            .collection("members")
+            .authWithOAuth2Code(
+              provider.name,
+              oauthParams.get("code"),
+              provider.codeVerifier,
+              redirectUrl,
+            );
+          oauthStatus.style.cssText =
+            "color:green; background:#dfd; border:1px solid #080; border-radius:4px; padding:0.5rem";
+          oauthStatus.textContent = "✅ Login successful!";
+          window.history.replaceState({}, "", window.location.pathname);
+          await fetchRoles();
+          buildRolesSection();
+          updateAuthUI();
+          populateWelcome();
+          populateRequiredInfo();
+          loadRoles();
+        } catch (err) {
+          console.error("OAuth callback failed:", err);
+          const detail = [
+            err?.message,
+            err?.response ? JSON.stringify(err.response) : null,
+            `code=${oauthParams.get("code")?.slice(0, 8)}…`,
+            `state=${oauthParams.get("state")?.slice(0, 8)}…`,
+            `redirect=${redirectUrl}`,
+            `provider=${provider.name}`,
+          ]
+            .filter(Boolean)
+            .join(" | ");
+          oauthStatus.style.cssText =
+            "color:red; background:#fdd; border:1px solid #c00; border-radius:4px; padding:0.5rem; font-family:monospace; font-size:0.8rem; white-space:pre-wrap; word-break:break-all";
+          oauthStatus.textContent = `Login error — send this to your admin:\n${detail}`;
+          window.history.replaceState({}, "", window.location.pathname);
+        }
+      }
+    }
+
     updateAuthUI();
     if (pb.authStore.isValid) {
+      await fetchRoles();
+      buildRolesSection();
       populateWelcome();
       populateRequiredInfo();
       loadRoles();
@@ -315,14 +378,17 @@
     loginBtn.addEventListener("click", async () => {
       loginBtn.disabled = true;
       try {
-        await pb.collection("members").authWithOAuth2({ provider: "discord" });
-        updateAuthUI();
-        populateWelcome();
-        populateRequiredInfo();
-        loadRoles();
+        const methods = await pb.collection("members").listAuthMethods();
+        const provider = methods.oauth2.providers.find(
+          (p) => p.name === "discord",
+        );
+        if (!provider) throw new Error("Discord provider not found");
+        const redirectUrl = window.location.origin + window.location.pathname;
+        localStorage.setItem("pb_oauth_provider", JSON.stringify(provider));
+        window.location.href =
+          provider.authUrl + encodeURIComponent(redirectUrl);
       } catch (err) {
         console.error("Login failed:", err);
-      } finally {
         loginBtn.disabled = false;
       }
     });
@@ -337,7 +403,7 @@
         rolesEditing = true;
         rolesEditBtn.textContent = "💾 Save";
         rolesCancelBtn.hidden = false;
-        renderRoles(pb.authStore.record?.rolePreferences?.roles ?? [], true);
+        renderRoles(pb.authStore.record?.RolePreferencesSelect ?? [], true);
       } else {
         const selected = [
           ...rolesTbody.querySelectorAll("input[type=checkbox]:checked"),
@@ -345,17 +411,23 @@
         rolesEditBtn.disabled = true;
         rolesCancelBtn.disabled = true;
         try {
-          const prefs = { roles: selected };
+          const prefs = selected;
           await pb
             .collection("members")
-            .update(pb.authStore.record.id, { rolePreferences: prefs });
-          pb.authStore.record.rolePreferences = prefs;
+            .update(pb.authStore.record.id, { RolePreferencesSelect: prefs });
+          pb.authStore.record.RolePreferencesSelect = prefs;
           rolesEditing = false;
           rolesEditBtn.textContent = "✏️ Edit";
           rolesCancelBtn.hidden = true;
+          rolesStatus.textContent = "";
           renderRoles(selected, false);
         } catch (err) {
           console.error("Failed to save role preferences:", err);
+          const msg = err?.response
+            ? JSON.stringify(err.response)
+            : (err?.message ?? String(err));
+          rolesStatus.style.color = "red";
+          rolesStatus.textContent = `Save failed: ${msg}`;
         } finally {
           rolesEditBtn.disabled = false;
           rolesCancelBtn.disabled = false;
@@ -367,7 +439,7 @@
       rolesEditing = false;
       rolesEditBtn.textContent = "✏️ Edit";
       rolesCancelBtn.hidden = true;
-      renderRoles(pb.authStore.record?.rolePreferences?.roles ?? [], false);
+      renderRoles(pb.authStore.record?.RolePreferencesSelect ?? [], false);
     });
   </script>
 </html>
