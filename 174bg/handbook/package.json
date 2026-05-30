@@ -11,12 +11,12 @@
   },
   "scripts": {
     "build-css": "npx @tailwindcss/cli -i ./source/index.css -o ./public/index.css",
-    "copy-html": "npx copyfiles -u 1 ./source/index.html ./public",
-    "build": "npx npm-run-all build-css copy-html",
+    "copy-files": "npx copyfiles -u 1 \"source/**/*.{html,js}\" public",
+    "build": "npx npm-run-all build-css copy-files",
     "watch-css": "npx @tailwindcss/cli -i ./source/index.css -o ./public/index.css --watch",
-    "watch-html": "npx chokidar \"source/**/*.html\" -c \"npm run copy-html\" --initial",
+    "watch-files": "npx chokidar \"source/**/*.{html,js}\" -c \"npm run copy-files\" --initial",
     "serve": "npx live-server public",
-    "dev": "npx npm-run-all --parallel watch-css watch-html serve",
+    "dev": "npx npm-run-all --parallel watch-css watch-files serve",
     "deploy": "npx wrangler deploy --minify",
     "build+deploy": "npx npm-run-all build deploy"
   }
