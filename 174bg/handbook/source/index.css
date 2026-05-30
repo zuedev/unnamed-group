@@ -10,6 +10,8 @@
   scrollbar-width: none; /* Firefox */
 }
 
-p {
+/* justify stuff */
+p,
+li {
   text-align: justify;
 }
