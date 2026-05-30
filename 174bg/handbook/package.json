@@ -11,6 +11,7 @@
     "build-css": "npx @tailwindcss/cli -i ./source/index.css -o ./public/index.css",
     "copy-html": "npx copyfiles -u 1 ./source/index.html ./public",
     "build": "npx npm-run-all build-css copy-html",
-    "deploy": "npx wrangler deploy --minify"
+    "deploy": "npx wrangler deploy --minify",
+    "build+deploy": "npx npm-run-all build deploy"
   }
 }
