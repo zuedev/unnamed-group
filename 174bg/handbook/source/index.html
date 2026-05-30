@@ -4,10 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>174th Battle Group Handbook</title>
+    <link href="index.css" rel="stylesheet" />
   </head>
   <body style="margin: 0; font-family: sans-serif">
-    <nav id="table-of-contents"></nav>
-    <main>
+    <main class="prose">
       <article id="introduction">
         <h1>174th Battle Group Handbook</h1>
         <p>
@@ -1617,44 +1617,46 @@
           "https://starcitizen.tools/TruHold_Tractor_Beam_Attachment",
       };
 
+      // Build one regex from every term, longest first so multi-word names
+      // like "Fury MX" win over shorter ones like "Fury".
+      const escaped = Object.keys(linkMap)
+        .sort((a, b) => b.length - a.length)
+        .map((term) => term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+      const termPattern = new RegExp(`\\b(${escaped.join("|")})\\b`, "g");
+
+      // Collect text nodes up front, since we mutate the DOM as we go.
       const walker = document.createTreeWalker(
         document.body,
         NodeFilter.SHOW_TEXT,
-        null,
-        false,
       );
+      const textNodes = [];
+      while (walker.nextNode()) textNodes.push(walker.currentNode);
 
-      const nodes = [];
-      while (walker.nextNode()) nodes.push(walker.currentNode);
+      for (const node of textNodes) {
+        // Skip text that is already inside a link.
+        if (node.parentNode.closest("a")) continue;
 
-      for (const node of nodes) {
-        const parent = node.parentNode;
-        if (parent && parent.tagName !== "A") {
-          let text = node.textContent;
-          let replaced = false;
+        const text = node.textContent;
+        const matches = [...text.matchAll(termPattern)];
+        if (matches.length === 0) continue;
 
-          for (const [word, url] of Object.entries(linkMap)) {
-            const regex = new RegExp(`\\b${word}\\b`, "g");
-            if (regex.test(text)) {
-              const link = document.createElement("a");
-              link.href = url;
-              link.textContent = word;
-              text = text.replace(regex, link.outerHTML);
-              replaced = true;
+        // Rebuild the node as a mix of plain text and anchor elements.
+        const fragment = document.createDocumentFragment();
+        let cursor = 0;
+        for (const match of matches) {
+          const term = match[0];
+          fragment.append(text.slice(cursor, match.index));
 
-              console.log(`Replaced "${word}" with link to ${url}`);
-            }
-          }
+          const link = document.createElement("a");
+          link.href = linkMap[term];
+          link.textContent = term;
+          fragment.append(link);
 
-          if (replaced) {
-            const tempDiv = document.createElement("div");
-            tempDiv.innerHTML = text;
-            while (tempDiv.firstChild) {
-              parent.insertBefore(tempDiv.firstChild, node);
-            }
-            parent.removeChild(node);
-          }
+          cursor = match.index + term.length;
         }
+        fragment.append(text.slice(cursor));
+
+        node.parentNode.replaceChild(fragment, node);
       }
     }
   </script>
