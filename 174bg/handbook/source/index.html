@@ -8,10 +8,17 @@
   </head>
   <body class="dark:bg-stone-900 flex flex-row">
     <nav
-      class="w-64 p-4 border-r border-stone-700 h-screen sticky top-0 overflow-y-auto hide-scrollbar"
+      class="w-64 p-4 border-r border-stone-700 h-screen sticky top-0 overflow-y-auto hide-scrollbar flex flex-col gap-4"
     >
+      <div id="search">
+        <input
+          type="text"
+          id="search-input"
+          placeholder="Search... (/)"
+          class="w-full p-2 rounded bg-stone-800 text-white focus:outline-none focus:ring-2 focus:ring-stone-500"
+        />
+      </div>
       <div id="table-of-contents"></div>
-      <div id="search"></div>
     </nav>
     <main class="prose dark:prose-invert mx-auto p-4 max-w-xl">
       <article id="introduction">
@@ -1533,74 +1540,6 @@
     </main>
   </body>
   <script src="wikilinks.js"></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      generateTableOfContents();
-    });
-
-    function generateTableOfContents() {
-      const container = document.getElementById("table-of-contents");
-      if (!container) return;
-
-      const sections = document.querySelectorAll(
-        "main article[id], main section[id]",
-      );
-
-      const entries = [];
-      sections.forEach((section) => {
-        const heading = section.querySelector("h1, h2, h3, h4, h5, h6");
-        if (!heading) return;
-        entries.push({
-          id: section.id,
-          level: parseInt(heading.tagName.charAt(1), 10),
-          text: heading.textContent.trim(),
-        });
-      });
-
-      if (entries.length === 0) return;
-
-      const baseLevel = Math.min(...entries.map((entry) => entry.level));
-
-      const rootList = document.createElement("ul");
-      rootList.className = "space-y-1 text-sm";
-      const stack = [{ level: baseLevel - 1, list: rootList, item: null }];
-
-      entries.forEach((entry) => {
-        while (
-          stack.length > 1 &&
-          entry.level <= stack[stack.length - 1].level
-        ) {
-          stack.pop();
-        }
-
-        const parent = stack[stack.length - 1];
-
-        let parentList = parent.list;
-        if (!parentList) {
-          parentList = document.createElement("ul");
-          parentList.className =
-            "mt-1 ml-3 space-y-1 border-l border-stone-200 pl-3 dark:border-stone-700";
-          parent.item.appendChild(parentList);
-          parent.list = parentList;
-        }
-
-        const listItem = document.createElement("li");
-        const link = document.createElement("a");
-        link.href = "#" + entry.id;
-        link.textContent = entry.text;
-        link.className =
-          "block rounded px-2 py-1 text-stone-600 no-underline transition-colors hover:bg-stone-100 hover:text-stone-900 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100";
-        listItem.appendChild(link);
-        parentList.appendChild(listItem);
-
-        stack.push({
-          level: entry.level,
-          list: null,
-          item: listItem,
-        });
-      });
-
-      container.appendChild(rootList);
-    }
-  </script>
+  <script src="table-of-contents.js"></script>
+  <script src="search.js"></script>
 </html>
