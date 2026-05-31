@@ -437,21 +437,26 @@
         const tr = document.createElement("tr");
 
         const tdDate = document.createElement("td");
+        tdDate.dataset.label = "Date";
         tdDate.textContent = rec.created
           ? new Date(rec.created).toLocaleString()
           : "—";
 
         const tdSender = document.createElement("td");
+        tdSender.dataset.label = "Sender";
         tdSender.textContent = memberLabel(rec, "sender");
 
         const tdRecipient = document.createElement("td");
+        tdRecipient.dataset.label = "Recipient";
         tdRecipient.textContent = memberLabel(rec, "recipient");
 
         const tdUec = document.createElement("td");
         tdUec.className = "uec";
+        tdUec.dataset.label = "UEC";
         tdUec.textContent = Number(rec.uec ?? 0).toLocaleString();
 
         const tdNote = document.createElement("td");
+        tdNote.dataset.label = "Note";
         tdNote.textContent = rec.note ?? "";
 
         tr.append(tdDate, tdSender, tdRecipient, tdUec, tdNote);
