@@ -38,6 +38,41 @@
         width: 2.5rem;
       }
 
+      #ledger table {
+        border-collapse: collapse;
+        min-width: 16rem;
+      }
+
+      #ledger thead th {
+        text-align: left;
+        padding: 0.4rem 0.75rem;
+        border-bottom: 2px solid #555;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: #888;
+      }
+
+      #ledger tbody tr:nth-child(even) {
+        background: rgba(0, 0, 0, 0.04);
+      }
+
+      #ledger tbody td {
+        padding: 0.4rem 0.75rem;
+        border-bottom: 1px solid #e0e0e0;
+      }
+
+      #ledger td.uec {
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+      }
+
+      #ledger .empty {
+        margin: 0;
+        font-size: 0.85rem;
+        color: #888;
+      }
+
       #profile-warning {
         margin-top: 0.75rem;
         padding: 0.6rem 0.9rem;
@@ -105,6 +140,7 @@
         </div>
       </div>
       <div id="preferences"></div>
+      <div id="ledger"></div>
       <div>
         <button id="logout">Logout</button>
       </div>
@@ -433,6 +469,90 @@
       renderRoles(pb.authStore.record?.RolePreferencesSelect ?? [], false);
     }
 
+    function memberLabel(record, id) {
+      const m = record?.expand?.[id];
+      return m ? m.RSI_Handle || m.name || m.id : (record?.[id] ?? "—");
+    }
+
+    async function loadLedger() {
+      const container = document.getElementById("ledger");
+      container.innerHTML = "";
+
+      const heading = document.createElement("div");
+      const title = document.createElement("b");
+      title.textContent = "Ledger";
+      heading.appendChild(title);
+      container.appendChild(heading);
+
+      const userId = pb.authStore.record?.id;
+      if (!userId) return;
+
+      let records;
+      try {
+        records = await pb.collection("ledger").getFullList({
+          expand: "sender,recipient",
+          sort: "-created",
+          requestKey: null,
+          cache: "no-store",
+        });
+      } catch (err) {
+        console.error("Failed to load ledger:", err);
+        const p = document.createElement("p");
+        p.className = "empty";
+        p.style.color = "red";
+        p.textContent = `Failed to load ledger: ${err?.message ?? String(err)}`;
+        container.appendChild(p);
+        return;
+      }
+
+      if (records.length === 0) {
+        const p = document.createElement("p");
+        p.className = "empty";
+        p.textContent = "No ledger entries.";
+        container.appendChild(p);
+        return;
+      }
+
+      const table = document.createElement("table");
+      const thead = document.createElement("thead");
+      const headerRow = document.createElement("tr");
+      for (const text of ["Date", "Sender", "Recipient", "UEC", "Note"]) {
+        const th = document.createElement("th");
+        th.textContent = text;
+        headerRow.appendChild(th);
+      }
+      thead.appendChild(headerRow);
+
+      const tbody = document.createElement("tbody");
+      for (const rec of records) {
+        const tr = document.createElement("tr");
+
+        const tdDate = document.createElement("td");
+        tdDate.textContent = rec.created
+          ? new Date(rec.created).toLocaleString()
+          : "—";
+
+        const tdSender = document.createElement("td");
+        tdSender.textContent = memberLabel(rec, "sender");
+
+        const tdRecipient = document.createElement("td");
+        tdRecipient.textContent = memberLabel(rec, "recipient");
+
+        const tdUec = document.createElement("td");
+        tdUec.className = "uec";
+        tdUec.textContent = Number(rec.uec ?? 0).toLocaleString();
+
+        const tdNote = document.createElement("td");
+        tdNote.textContent = rec.note ?? "";
+
+        tr.append(tdDate, tdSender, tdRecipient, tdUec, tdNote);
+        tbody.appendChild(tr);
+      }
+
+      table.append(thead, tbody);
+      container.appendChild(table);
+    }
+
     const loginBtn = document.getElementById("login");
     const logoutBtn = document.getElementById("logout");
     const anonymousSection = document.getElementById("anonymous");
@@ -488,6 +608,7 @@
           populateWelcome();
           populateRequiredInfo();
           loadRoles();
+          loadLedger();
         } catch (err) {
           console.error("OAuth callback failed:", err);
           const detail = [
@@ -515,6 +636,7 @@
       populateWelcome();
       populateRequiredInfo();
       loadRoles();
+      loadLedger();
     }
 
     loginBtn.addEventListener("click", async () => {
