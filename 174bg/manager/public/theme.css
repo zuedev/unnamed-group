@@ -196,7 +196,12 @@ button:disabled {
   background: rgba(56, 189, 248, 0.1);
 }
 
-#preferences tbody td:last-child {
+#preferences thead th:not(:first-child) {
+  text-align: center;
+  width: 2.5rem;
+}
+
+#preferences tbody td:not(:first-child) {
   text-align: center;
   width: 2.5rem;
 }

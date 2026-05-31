@@ -309,16 +309,58 @@
     let rolesCancelBtn;
     let rolesStatus;
 
-    function renderRoles(saved, editMode) {
+    // OtherJsonData may be stored as an object or a JSON string
+    function getOtherJsonData() {
+      const raw = pb.authStore.record?.OtherJsonData;
+      if (!raw) return {};
+      if (typeof raw === "string") {
+        try {
+          return JSON.parse(raw) || {};
+        } catch {
+          return {};
+        }
+      }
+      return { ...raw };
+    }
+
+    function getFavouriteRole() {
+      return getOtherJsonData().FavouriteRole ?? null;
+    }
+
+    function renderRoles(saved, favourite, editMode) {
       rolesTbody.querySelectorAll("tr:not([data-separator])").forEach((tr) => {
-        const td = tr.querySelectorAll("td")[1];
+        const tds = tr.querySelectorAll("td");
+        const prefTd = tds[1];
+        const favTd = tds[2];
+        const value = tr.dataset.roleValue;
         if (editMode) {
           const cb = document.createElement("input");
           cb.type = "checkbox";
-          cb.checked = saved.includes(tr.dataset.roleValue);
-          td.replaceChildren(cb);
+          cb.checked = saved.includes(value);
+          prefTd.replaceChildren(cb);
+
+          const radio = document.createElement("input");
+          radio.type = "radio";
+          radio.name = "favourite-role";
+          radio.value = value;
+          radio.checked = favourite === value;
+          radio.dataset.wasChecked = radio.checked ? "true" : "false";
+          // Clicking an already-selected radio clears the favourite
+          radio.addEventListener("click", () => {
+            if (radio.dataset.wasChecked === "true") {
+              radio.checked = false;
+              radio.dataset.wasChecked = "false";
+            } else {
+              rolesTbody
+                .querySelectorAll("input[name=favourite-role]")
+                .forEach((r) => (r.dataset.wasChecked = "false"));
+              radio.dataset.wasChecked = "true";
+            }
+          });
+          favTd.replaceChildren(radio);
         } else {
-          td.textContent = saved.includes(tr.dataset.roleValue) ? "✅" : "❌";
+          prefTd.textContent = saved.includes(value) ? "✅" : "❌";
+          favTd.textContent = favourite === value ? "⭐" : "";
         }
       });
     }
@@ -342,7 +384,7 @@
       const table = document.createElement("table");
       const thead = document.createElement("thead");
       const headerRow = document.createElement("tr");
-      for (const text of ["Role", ""]) {
+      for (const text of ["Role", "✅", "⭐"]) {
         const th = document.createElement("th");
         th.textContent = text;
         headerRow.appendChild(th);
@@ -357,7 +399,7 @@
           const sep = document.createElement("tr");
           sep.dataset.separator = "true";
           const tdSep = document.createElement("td");
-          tdSep.colSpan = 2;
+          tdSep.colSpan = 3;
           tdSep.textContent = role.branch ?? "";
           tdSep.style.cssText =
             "font-weight:600; padding-top:0.75rem; padding-bottom:0.25rem; border-bottom:none; opacity:0.6; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.05em";
@@ -378,7 +420,8 @@
           tdName.textContent = role.text;
         }
         const tdCheck = document.createElement("td");
-        tr.append(tdName, tdCheck);
+        const tdFav = document.createElement("td");
+        tr.append(tdName, tdCheck, tdFav);
         rolesTbody.appendChild(tr);
       }
 
@@ -392,7 +435,11 @@
       rolesEditing = false;
       rolesEditBtn.textContent = "✏️ Edit";
       rolesCancelBtn.hidden = true;
-      renderRoles(pb.authStore.record?.RolePreferencesSelect ?? [], false);
+      renderRoles(
+        pb.authStore.record?.RolePreferencesSelect ?? [],
+        getFavouriteRole(),
+        false,
+      );
     }
 
     function memberLabel(record, id) {
@@ -598,24 +645,39 @@
         rolesEditing = true;
         rolesEditBtn.textContent = "💾 Save";
         rolesCancelBtn.hidden = false;
-        renderRoles(pb.authStore.record?.RolePreferencesSelect ?? [], true);
+        renderRoles(
+          pb.authStore.record?.RolePreferencesSelect ?? [],
+          getFavouriteRole(),
+          true,
+        );
       } else {
         const selected = [
           ...rolesTbody.querySelectorAll("input[type=checkbox]:checked"),
         ].map((cb) => cb.closest("tr").dataset.roleValue);
+        const favRadio = rolesTbody.querySelector(
+          "input[name=favourite-role]:checked",
+        );
+        // Favourite must be one of the selected preferences
+        let favourite = favRadio ? favRadio.value : null;
+        if (favourite && !selected.includes(favourite)) favourite = null;
         rolesEditBtn.disabled = true;
         rolesCancelBtn.disabled = true;
         try {
           const prefs = selected;
-          await pb
-            .collection("members")
-            .update(pb.authStore.record.id, { RolePreferencesSelect: prefs });
+          const other = getOtherJsonData();
+          if (favourite) other.FavouriteRole = favourite;
+          else delete other.FavouriteRole;
+          await pb.collection("members").update(pb.authStore.record.id, {
+            RolePreferencesSelect: prefs,
+            OtherJsonData: other,
+          });
           pb.authStore.record.RolePreferencesSelect = prefs;
+          pb.authStore.record.OtherJsonData = other;
           rolesEditing = false;
           rolesEditBtn.textContent = "✏️ Edit";
           rolesCancelBtn.hidden = true;
           rolesStatus.textContent = "";
-          renderRoles(selected, false);
+          renderRoles(selected, favourite, false);
         } catch (err) {
           console.error("Failed to save role preferences:", err);
           const msg = err?.response
@@ -634,7 +696,11 @@
       rolesEditing = false;
       rolesEditBtn.textContent = "✏️ Edit";
       rolesCancelBtn.hidden = true;
-      renderRoles(pb.authStore.record?.RolePreferencesSelect ?? [], false);
+      renderRoles(
+        pb.authStore.record?.RolePreferencesSelect ?? [],
+        getFavouriteRole(),
+        false,
+      );
     });
   </script>
 </html>
