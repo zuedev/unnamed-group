@@ -76,6 +76,8 @@
         avatarEl.alt = name;
         avatarEl.hidden = false;
       } else {
+        avatarEl.removeAttribute("src");
+        avatarEl.alt = "";
         avatarEl.hidden = true;
       }
     }
@@ -128,7 +130,9 @@
       for (const { id, field } of REQUIRED_INFO_FIELDS) {
         const span = document.getElementById(id);
         const value = record[field];
-        if (value) {
+        // Treat only null/undefined/empty-string as missing so legitimately
+        // falsy values (e.g. Rank_Number 0, joined_rsi_org false) still show.
+        if (value != null && value !== "") {
           span.textContent = value;
           span.style.color = "";
         } else {
@@ -175,10 +179,9 @@
       }
     }
 
-    // Role options are fetched from the collection schema after auth
     let ROLES = [];
 
-    async function fetchRoles() {
+    function fetchRoles() {
       ROLES = [
         {
           branch: "Naval",
@@ -466,7 +469,6 @@
           expand: "sender,recipient",
           sort: "-created",
           requestKey: null,
-          cache: "no-store",
         });
       } catch (err) {
         console.error("Failed to load ledger:", err);
@@ -536,6 +538,15 @@
     const anonymousSection = document.getElementById("anonymous");
     const authedSection = document.getElementById("authed");
 
+    function initAuthedUI() {
+      fetchRoles();
+      buildRolesSection();
+      populateWelcome();
+      populateRequiredInfo();
+      loadRoles();
+      loadLedger();
+    }
+
     function updateAuthUI() {
       const loggedIn = pb.authStore.isValid;
       anonymousSection.style.display = loggedIn ? "none" : "";
@@ -580,13 +591,8 @@
             "color:green; background:#dfd; border:1px solid #080; border-radius:4px; padding:0.5rem";
           oauthStatus.textContent = "✅ Login successful!";
           window.history.replaceState({}, "", window.location.pathname);
-          await fetchRoles();
-          buildRolesSection();
           updateAuthUI();
-          populateWelcome();
-          populateRequiredInfo();
-          loadRoles();
-          loadLedger();
+          initAuthedUI();
         } catch (err) {
           console.error("OAuth callback failed:", err);
           const detail = [
@@ -609,12 +615,7 @@
 
     updateAuthUI();
     if (pb.authStore.isValid) {
-      await fetchRoles();
-      buildRolesSection();
-      populateWelcome();
-      populateRequiredInfo();
-      loadRoles();
-      loadLedger();
+      initAuthedUI();
     }
 
     loginBtn.addEventListener("click", async () => {
