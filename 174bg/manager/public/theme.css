@@ -1,0 +1,260 @@
+:root {
+  --bg: #070b14;
+  --bg-grid: rgba(56, 189, 248, 0.06);
+  --panel: rgba(15, 23, 42, 0.72);
+  --panel-border: rgba(56, 189, 248, 0.22);
+  --panel-border-strong: rgba(56, 189, 248, 0.5);
+  --text: #dbe7f3;
+  --text-dim: #7e93ab;
+  --accent: #38bdf8;
+  --accent-2: #22d3ee;
+  --accent-glow: rgba(56, 189, 248, 0.45);
+  --danger: #f87171;
+  --danger-bg: rgba(248, 113, 113, 0.12);
+  --success: #34d399;
+  --row-alt: rgba(56, 189, 248, 0.04);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: "Rajdhani", system-ui, sans-serif;
+  font-size: 16px;
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  padding: 2.5rem 1.25rem 4rem;
+  color: var(--text);
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(
+      ellipse 80% 60% at 50% -10%,
+      rgba(56, 189, 248, 0.18),
+      transparent 60%
+    ),
+    linear-gradient(var(--bg-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--bg-grid) 1px, transparent 1px);
+  background-size:
+    100% 100%,
+    44px 44px,
+    44px 44px;
+  background-attachment: fixed;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+h1 {
+  font-family: "Orbitron", sans-serif;
+  font-weight: 900;
+  font-size: clamp(1.5rem, 4vw, 2.4rem);
+  letter-spacing: 0.04em;
+  text-align: center;
+  margin: 0 0 1.75rem;
+  background: linear-gradient(120deg, var(--accent), var(--accent-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 28px var(--accent-glow);
+}
+
+h2 {
+  font-family: "Orbitron", sans-serif;
+  font-size: 1.05rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0 0 0.75rem;
+}
+
+a {
+  color: var(--accent-2);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.15s ease;
+}
+
+a:hover {
+  border-bottom-color: var(--accent-2);
+}
+
+body > h1,
+#anonymous,
+#oauth-status,
+#authed {
+  width: 100%;
+  max-width: 760px;
+}
+
+/* Panels ----------------------------------------------------------- */
+#anonymous,
+#required-info,
+#preferences,
+#ledger,
+#welcome {
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 14px;
+  padding: 1.25rem 1.4rem;
+  backdrop-filter: blur(10px);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.3),
+    0 18px 48px rgba(0, 0, 0, 0.45);
+}
+
+#anonymous p {
+  margin-top: 0;
+}
+
+/* Buttons ---------------------------------------------------------- */
+button {
+  font-family: "Rajdhani", sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.03em;
+  color: #04121f;
+  background: linear-gradient(120deg, var(--accent), var(--accent-2));
+  border: none;
+  border-radius: 8px;
+  padding: 0.55rem 1.1rem;
+  cursor: pointer;
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.2s ease,
+    filter 0.2s ease;
+  box-shadow: 0 6px 18px var(--accent-glow);
+}
+
+button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 26px var(--accent-glow);
+  filter: brightness(1.08);
+}
+
+button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Required info ---------------------------------------------------- */
+#required-info > div:not(:first-child):not(#profile-warning) {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid rgba(56, 189, 248, 0.08);
+}
+
+#required-info > div b {
+  color: var(--text-dim);
+  font-weight: 600;
+}
+
+/* Tables ----------------------------------------------------------- */
+#preferences table,
+#ledger table {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 16rem;
+}
+
+#preferences thead th,
+#ledger thead th {
+  text-align: left;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 2px solid var(--panel-border-strong);
+  font-family: "Orbitron", sans-serif;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+}
+
+#preferences tbody tr:nth-child(even),
+#ledger tbody tr:nth-child(even) {
+  background: var(--row-alt);
+}
+
+#preferences tbody td,
+#ledger tbody td {
+  padding: 0.45rem 0.75rem;
+  border-bottom: 1px solid rgba(56, 189, 248, 0.1);
+}
+
+#preferences tbody tr:hover:not([data-separator]),
+#ledger tbody tr:hover {
+  background: rgba(56, 189, 248, 0.1);
+}
+
+#preferences tbody td:last-child {
+  text-align: center;
+  width: 2.5rem;
+}
+
+#ledger td.uec {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent-2);
+  font-weight: 600;
+}
+
+#ledger .empty {
+  margin: 0.25rem 0 0;
+  font-size: 0.9rem;
+  color: var(--text-dim);
+}
+
+input[type="checkbox"] {
+  width: 1.05rem;
+  height: 1.05rem;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+/* Status & warnings ------------------------------------------------ */
+#oauth-status {
+  font-size: 0.9rem;
+}
+
+#profile-warning {
+  margin-top: 0.75rem;
+  padding: 0.7rem 1rem;
+  background: var(--danger-bg);
+  border: 1px solid var(--danger);
+  border-radius: 8px;
+  color: var(--danger);
+  font-weight: 700;
+}
+
+/* Welcome ---------------------------------------------------------- */
+#welcome {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+#welcome-avatar {
+  width: 3.25rem;
+  height: 3.25rem;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--accent);
+  box-shadow: 0 0 18px var(--accent-glow);
+}
+
+#welcome-text {
+  font-family: "Orbitron", sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
