@@ -613,10 +613,12 @@
       }
     }
 
-    updateAuthUI();
-    if (pb.authStore.isValid) {
-      initAuthedUI();
-    }
+    if (!oauthParams.has("code") || !oauthParams.has("state")) {
+		updateAuthUI();
+    	if (pb.authStore.isValid) {
+    	  initAuthedUI();
+    	}
+	}
 
     loginBtn.addEventListener("click", async () => {
       loginBtn.disabled = true;
