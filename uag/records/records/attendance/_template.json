@@ -1,0 +1,10 @@
+{
+  "$schema": "./_schema.json",
+  "session": "YYMMDD",
+  "members": [
+    "member1_discord_id",
+    "member2_discord_id",
+    "member3_discord_id",
+    "member4_discord_id"
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$comment": "This schema defines the structure for UAG reserves data.",
+  "discord_id": {
+    "type": "string",
+    "description": "The Discord ID of the member joining the reserves."
+  },
+  "start_date": {
+    "type": "string",
+    "format": "date",
+    "description": "The start date of the reserve period in YYMMDD format."
+  },
+  "end_date": {
+    "type": "string",
+    "format": "date",
+    "description": "The end date of the reserve period in YYMMDD format."
+  },
+  "reason": {
+    "type": "string",
+    "description": "The reason for going into reserves."
+  },
+  "notified_on": {
+    "type": "string",
+    "format": "date",
+    "description": "The date a staff member was notified about the reserve."
+  },
+  "approved_by": {
+    "type": "string",
+    "description": "The Discord ID of the staff member who approved the reserve request."
+  }
+}

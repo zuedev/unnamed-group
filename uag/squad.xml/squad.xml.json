@@ -1,0 +1,18 @@
+{
+  "nick": "UAG",
+  "name": "Unnamed Arma Group",
+  "email": "squad@uagpmc.com",
+  "web": "uagpmc.com",
+  "picture": "logo.paa",
+  "title": "Use this e.g. for your squads name or your squads URL",
+  "members": [
+    {
+      "id": "76561198048656902",
+      "nick": "Cody",
+      "name": "Cody Burton",
+      "email": "zuedev@uagpmc.com",
+      "icq": "N/A",
+      "remark": "Mostly harmless"
+    }
+  ]
+}

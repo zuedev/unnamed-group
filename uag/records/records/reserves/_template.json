@@ -1,0 +1,9 @@
+{
+  "$schema": "./_schema.json",
+  "discord_id": "member_discord_id",
+  "start_date": "YYMMDD",
+  "end_date": "YYMMDD",
+  "reason": "reason_for_reserves",
+  "notified_on": "YYMMDD",
+  "approved_by": "approving_staff_discord_id"
+}

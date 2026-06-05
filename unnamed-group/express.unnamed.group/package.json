@@ -1,0 +1,11 @@
+{
+  "scripts": {
+    "start": "node src/main.js",
+    "dev": "node src/main.js",
+    "dev:watch": "node --watch src/main.js"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "gamedig": "^5.3.2"
+  }
+}

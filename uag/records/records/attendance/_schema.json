@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$comment": "This schema defines the structure for UAG attendance records.",
+  "session": {
+    "type": "string",
+    "format": "string",
+    "description": "The unique identifier for the session made up of date and optional uid in the format YYMMDD[-uid]."
+  },
+  "members": {
+    "type": "array",
+    "items": {
+      "type": "string",
+      "format": "string"
+    },
+    "description": "An array of members who attended the session identified by their Discord user IDs."
+  }
+}
