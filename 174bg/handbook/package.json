@@ -8,7 +8,7 @@
     "live-server": "^1.2.2",
     "npm-run-all": "^4.1.5",
     "tailwindcss": "^4.3.0",
-    "wrangler": "^4.95.0"
+    "wrangler": "^4.105.0"
   },
   "scripts": {
     "build-css": "npx @tailwindcss/cli -i ./source/index.css -o ./public/index.css",
