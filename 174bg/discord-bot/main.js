@@ -109,7 +109,12 @@ const commands = [
       );
 
       // notify all members with the quartermaster role
+      // fetch guild members so the cache (and role.members) reflects the latest state
+      await interaction.guild.members.fetch();
       const quartermasterMembers = quartermasterRole.members;
+      console.log(
+        `Notifying ${quartermasterMembers.size} quartermaster members...`,
+      );
       for (const member of quartermasterMembers.values()) {
         await member.send(
           `A new requisition ticket has been created: <#${newChannel.id}>`,
@@ -149,7 +154,9 @@ const commands = [
   },
 ];
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+const client = new Client({
+  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers],
+});
 
 client.on(Events.ClientReady, async (readyClient) => {
   console.log(`Logged in as ${readyClient.user.tag}!`);
