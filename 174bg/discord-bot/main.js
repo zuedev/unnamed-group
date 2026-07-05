@@ -33,7 +33,8 @@ const commands = [
 
       // get "tickets" category
       const ticketsCategory = interaction.guild.channels.cache.find(
-        (channel) => channel.name === "tickets" && channel.type === 4,
+        (channel) =>
+          channel.name.toLowerCase() === "tickets" && channel.type === 4,
       );
 
       if (!ticketsCategory)
@@ -41,7 +42,7 @@ const commands = [
 
       // get the quartermaster role id
       const quartermasterRole = interaction.guild.roles.cache.find(
-        (role) => role.name === "Quartermaster",
+        (role) => role.name.toLowerCase() === "quartermaster",
       );
 
       if (!quartermasterRole)
@@ -106,6 +107,14 @@ const commands = [
       sendMessageToLogsChannel(
         `Requisition ticket <#${newChannel.id}> created by <@${interaction.user.id}>`,
       );
+
+      // notify all members with the quartermaster role
+      const quartermasterMembers = quartermasterRole.members;
+      for (const member of quartermasterMembers.values()) {
+        await member.send(
+          `A new requisition ticket has been created: <#${newChannel.id}>`,
+        );
+      }
     },
   },
   {
@@ -176,7 +185,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
     if (interaction.customId === "close_req_ticket") {
       // get the quartermaster role id
       const quartermasterRole = interaction.guild.roles.cache.find(
-        (role) => role.name === "Quartermaster",
+        (role) => role.name.toLowerCase() === "quartermaster",
       );
 
       if (!quartermasterRole)
