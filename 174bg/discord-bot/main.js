@@ -53,7 +53,7 @@ const commands = [
       const timestamp = new Date()
         .toISOString()
         .replace(/[-:.T]/g, "")
-        .slice(2, 12);
+        .slice(2, 16); // YYMMDDHHMMSS
       const channelName = `req-${timestamp}`;
 
       const newChannel = await interaction.guild.channels.create({
