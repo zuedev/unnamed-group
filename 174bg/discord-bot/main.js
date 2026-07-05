@@ -127,7 +127,8 @@ const commands = [
     execute: async (interaction) => {
       // get "tickets" category
       const ticketsCategory = interaction.guild.channels.cache.find(
-        (channel) => channel.name === "tickets" && channel.type === 4,
+        (channel) =>
+          channel.name.toLowerCase() === "tickets" && channel.type === 4,
       );
 
       if (!ticketsCategory)
