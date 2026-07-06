@@ -229,6 +229,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
                   (message) =>
                     `${message.author.tag}/${message.author.id}: ${message.content}`,
                 )
+                .reverse()
                 .join("\n"),
             ),
           },
