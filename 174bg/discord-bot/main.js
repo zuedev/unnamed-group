@@ -207,13 +207,30 @@ client.on(Events.InteractionCreate, async (interaction) => {
         });
       }
 
+      // fetch all messages in the channel
+      const messages = await interaction.channel.messages.fetch();
+
+      // capture channel info before it's deleted (and removed from cache)
+      const channelId = interaction.channel.id;
+      const channelName = interaction.channel.name;
+
       // delete the channel
       await interaction.channel.delete();
 
       // log
-      sendMessageToLogsChannel(
-        `<#${interaction.channel.id}> closed by <@${interaction.user.id}>`,
-      );
+      sendMessageToLogsChannel({
+        content: `<#${channelId}> closed by <@${interaction.user.id}>`,
+        files: [
+          {
+            name: `${channelName}.txt`,
+            attachment: Buffer.from(
+              messages
+                .map((message) => `${message.author.tag}: ${message.content}`)
+                .join("\n"),
+            ),
+          },
+        ],
+      });
     }
   }
 });
