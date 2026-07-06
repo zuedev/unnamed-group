@@ -225,7 +225,10 @@ client.on(Events.InteractionCreate, async (interaction) => {
             name: `${channelName}.txt`,
             attachment: Buffer.from(
               messages
-                .map((message) => `${message.author.tag}: ${message.content}`)
+                .map(
+                  (message) =>
+                    `${message.author.tag}/${message.author.id}: ${message.content}`,
+                )
                 .join("\n"),
             ),
           },
