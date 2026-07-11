@@ -5,6 +5,8 @@
   "scripts": {
     "dev": "npx vitepress dev",
     "build": "npx vitepress build",
-    "preview": "npx vitepress preview"
+    "preview": "npx vitepress preview",
+    "deploy": "npx wrangler@latest deploy",
+    "build+deploy": "npx wrangler@latest deploy"
   }
 }

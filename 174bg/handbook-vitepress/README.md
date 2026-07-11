@@ -8,3 +8,5 @@ A VitePress rebuild of the [174th Battle Group Handbook](../handbook), a guide f
 - `npm run dev` — start the local dev server
 - `npm run build` — build the static site to `.vitepress/dist`
 - `npm run preview` — preview the production build locally
+- `npm run deploy` — deploy the site to Cloudflare
+- `npm run build+deploy` — build and deploy the site to Cloudflare
