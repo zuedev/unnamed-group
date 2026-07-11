@@ -3,3 +3,49 @@
 .vp-doc li {
   text-align: justify;
 }
+
+/**
+ * The source handbook (174bg/handbook) themed dark mode with Tailwind's
+ * neutral "stone" palette (`dark:bg-stone-900`, `border-stone-700`, etc.)
+ * instead of a colorful brand accent - links in its `prose`/`prose-invert`
+ * typography are the same neutral tone as body text, just underlined, with
+ * no blue/purple anywhere. Recreate that same flat, warm-gray dark theme via
+ * VitePress's CSS custom properties. Light mode is left as VitePress's
+ * default, since the source only ever customized the `dark:` variant.
+ */
+.dark {
+  --vp-c-bg: #1c1917; /* stone-900 */
+  --vp-c-bg-alt: #1c1917; /* stone-900, same as bg: the source used one flat
+    background for body/header/nav, separated only by a border */
+  --vp-c-bg-elv: #292524; /* stone-800 */
+  --vp-c-bg-soft: #292524; /* stone-800, matches hover:bg-stone-800 */
+
+  --vp-c-border: #44403c; /* stone-700 */
+  --vp-c-divider: #44403c; /* stone-700 */
+  --vp-c-gutter: #44403c; /* stone-700 */
+
+  --vp-c-text-1: #f5f5f4; /* stone-100 */
+  --vp-c-text-2: #d6d3d1; /* stone-300 */
+  --vp-c-text-3: #a8a29e; /* stone-400 */
+
+  --vp-c-brand-1: #d6d3d1; /* stone-300, used for links/current nav items */
+  --vp-c-brand-2: #e7e5e4; /* stone-200, hover */
+  --vp-c-brand-3: #a8a29e; /* stone-400 */
+  --vp-c-brand-soft: rgba(168, 162, 158, 0.16);
+}
+
+/**
+ * Role "Prerequisites" lists use a `::: info` container. The source markup
+ * de-emphasised these inline with `opacity-50` rather than calling attention
+ * to them, so tone the callout down (no fill, muted border/text) instead of
+ * VitePress's usual boxed styling.
+ */
+.custom-block.info {
+  border-color: var(--vp-c-border);
+  background-color: transparent;
+  opacity: 0.7;
+}
+
+.custom-block.info .custom-block-title {
+  color: var(--vp-c-text-2);
+}
