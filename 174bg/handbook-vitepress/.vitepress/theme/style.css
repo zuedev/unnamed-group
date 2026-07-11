@@ -5,47 +5,223 @@
 }
 
 /**
- * The source handbook (174bg/handbook) themed dark mode with Tailwind's
- * neutral "stone" palette (`dark:bg-stone-900`, `border-stone-700`, etc.)
- * instead of a colorful brand accent - links in its `prose`/`prose-invert`
- * typography are the same neutral tone as body text, just underlined, with
- * no blue/purple anywhere. Recreate that same flat, warm-gray dark theme via
- * VitePress's CSS custom properties. Light mode is left as VitePress's
- * default, since the source only ever customized the `dark:` variant.
+ * ============================================================================
+ * "HUD" theme - ported from 174bg/manager/public/theme.css so the two
+ * 174bg sites (manager.174bg.net and handbook.174bg.net) share a look: a
+ * near-black navy backdrop with a faint cyan grid + radial glow, Orbitron
+ * headings, Rajdhani body text, and glassy cyan-bordered panels. Manager has
+ * no light mode at all, so this is applied unconditionally (see
+ * `appearance: "force-dark"` in config.mts) rather than scoped to `.dark`.
+ * ============================================================================
  */
-.dark {
-  --vp-c-bg: #1c1917; /* stone-900 */
-  --vp-c-bg-alt: #1c1917; /* stone-900, same as bg: the source used one flat
-    background for body/header/nav, separated only by a border */
-  --vp-c-bg-elv: #292524; /* stone-800 */
-  --vp-c-bg-soft: #292524; /* stone-800, matches hover:bg-stone-800 */
 
-  --vp-c-border: #44403c; /* stone-700 */
-  --vp-c-divider: #44403c; /* stone-700 */
-  --vp-c-gutter: #44403c; /* stone-700 */
+:root {
+  --hud-bg: #070b14;
+  --hud-bg-grid: rgba(56, 189, 248, 0.06);
+  --hud-panel: rgba(15, 23, 42, 0.72);
+  --hud-panel-solid: #0f172a;
+  --hud-panel-border: rgba(56, 189, 248, 0.22);
+  --hud-panel-border-strong: rgba(56, 189, 248, 0.5);
+  --hud-text: #dbe7f3;
+  --hud-text-dim: #7e93ab;
+  --hud-accent: #38bdf8;
+  --hud-accent-2: #22d3ee;
+  --hud-accent-glow: rgba(56, 189, 248, 0.45);
+  --hud-row-alt: rgba(56, 189, 248, 0.04);
 
-  --vp-c-text-1: #f5f5f4; /* stone-100 */
-  --vp-c-text-2: #d6d3d1; /* stone-300 */
-  --vp-c-text-3: #a8a29e; /* stone-400 */
+  /* Map onto VitePress's own theme variables. */
+  --vp-font-family-base: "Rajdhani", system-ui, sans-serif;
 
-  --vp-c-brand-1: #d6d3d1; /* stone-300, used for links/current nav items */
-  --vp-c-brand-2: #e7e5e4; /* stone-200, hover */
-  --vp-c-brand-3: #a8a29e; /* stone-400 */
-  --vp-c-brand-soft: rgba(168, 162, 158, 0.16);
+  --vp-c-bg: var(--hud-bg);
+  --vp-c-bg-alt: var(--hud-panel-solid);
+  --vp-c-bg-elv: var(--hud-panel-solid);
+  --vp-c-bg-soft: var(--hud-panel-solid);
+
+  --vp-c-border: var(--hud-panel-border);
+  --vp-c-divider: var(--hud-panel-border);
+  --vp-c-gutter: var(--hud-panel-border);
+
+  --vp-c-text-1: var(--hud-text);
+  --vp-c-text-2: var(--hud-text-dim);
+  --vp-c-text-3: var(--hud-text-dim);
+
+  --vp-c-brand-1: var(--hud-accent);
+  --vp-c-brand-2: var(--hud-accent-2);
+  --vp-c-brand-3: var(--hud-accent);
+  --vp-c-brand-soft: rgba(56, 189, 248, 0.16);
+
+  /* VitePress applies these to several nav/sidebar-internal elements (e.g.
+     `.content-body`, the sidebar curtain) directly, not just the outer
+     `.VPNavBar`/`.VPSidebar`. Setting them here (rather than force-overriding
+     just the outer elements with `!important`) keeps every part of the nav
+     bar - including bits VitePress itself makes transparent around the
+     title on wide/sidebar layouts - the same glass color instead of a
+     patchwork of the wrong shade. */
+  --vp-nav-bg-color: var(--hud-panel);
+  --vp-sidebar-bg-color: var(--hud-panel);
+}
+
+/* Faint cyan grid + top glow behind the whole site, like the Manager page. */
+html,
+body {
+  background-color: var(--hud-bg);
+  background-image:
+    radial-gradient(
+      ellipse 80% 60% at 50% -10%,
+      rgba(56, 189, 248, 0.18),
+      transparent 60%
+    ),
+    linear-gradient(var(--hud-bg-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--hud-bg-grid) 1px, transparent 1px);
+  background-size:
+    100% 100%,
+    44px 44px,
+    44px 44px;
+  background-attachment: fixed;
+}
+
+/* Nav bar and sidebar become frosted glass panels over that grid. */
+.VPNavBar,
+.VPSidebar,
+.VPNavBar .content-body {
+  backdrop-filter: blur(10px);
+}
+
+.VPNavBar {
+  border-bottom: 1px solid var(--hud-panel-border);
+}
+
+.VPSidebar {
+  border-right: 1px solid var(--hud-panel-border);
+}
+
+/* Orbitron for headings and nav/sidebar chrome, in place of the default font. */
+.vp-doc h1,
+.vp-doc h2,
+.vp-doc h3,
+.VPNavBarTitle .title,
+.VPNavBarMenuLink,
+.VPSidebarItem.level-0 > .item .text {
+  font-family: "Orbitron", sans-serif;
+}
+
+.VPNavBarTitle .title {
+  color: var(--hud-accent);
+  /* Orbitron is noticeably wider than the default font. VitePress gives the
+     title a fixed-width column matching the sidebar, so shrink the text (and
+     drop the extra letter-spacing) to fit - otherwise it overflows past its
+     column and visually overlaps the search box/nav links next to it on wide
+     (sidebar-visible) layouts. `text-overflow: ellipsis` is a safety net in
+     case it's ever still too wide (e.g. a longer title in the future). */
+  font-size: 0.75rem;
+  letter-spacing: 0.01em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.VPNavBarMenuLink,
+.VPSidebarItem.level-0 > .item .text {
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 0.8em;
+}
+
+/* Page titles get the same gradient + glow treatment as Manager's <h1>. */
+.vp-doc h1 {
+  font-weight: 900;
+  letter-spacing: 0.03em;
+  background: linear-gradient(120deg, var(--hud-accent), var(--hud-accent-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 28px var(--hud-accent-glow);
+}
+
+.vp-doc h2 {
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--hud-accent);
+}
+
+.vp-doc h3 {
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--hud-accent-2);
+}
+
+/* Content links: understated until hovered, like Manager's `a`/`a:hover`. */
+.vp-doc :not(.header-anchor):not(.custom-block-title) > a,
+.vp-doc a:not(.header-anchor) {
+  color: var(--hud-accent-2);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.15s ease;
+}
+
+.vp-doc a:not(.header-anchor):hover {
+  border-bottom-color: var(--hud-accent-2);
+}
+
+/* Ranks table styled like Manager's data tables. */
+.vp-doc table {
+  border-collapse: collapse;
+}
+
+.vp-doc thead th {
+  font-family: "Orbitron", sans-serif;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--hud-accent);
+  border-bottom: 2px solid var(--hud-panel-border-strong);
+}
+
+.vp-doc tbody tr:nth-child(even) {
+  background: var(--hud-row-alt);
+}
+
+.vp-doc tbody tr:hover {
+  background: rgba(56, 189, 248, 0.1);
 }
 
 /**
- * Role "Prerequisites" lists use a `::: info` container. The source markup
- * de-emphasised these inline with `opacity-50` rather than calling attention
- * to them, so tone the callout down (no fill, muted border/text) instead of
- * VitePress's usual boxed styling.
+ * Role "Prerequisites" lists use a `::: info` container. Style it as a glassy
+ * HUD panel (like Manager's `#required-info`/`#anonymous` cards) instead of
+ * VitePress's default boxed callout.
  */
 .custom-block.info {
-  border-color: var(--vp-c-border);
-  background-color: transparent;
-  opacity: 0.7;
+  background: var(--hud-panel);
+  border: 1px solid var(--hud-panel-border);
+  border-radius: 14px;
+  backdrop-filter: blur(10px);
 }
 
 .custom-block.info .custom-block-title {
-  color: var(--vp-c-text-2);
+  font-family: "Orbitron", sans-serif;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--hud-accent);
+}
+
+/**
+ * The local search modal's input row (`.search-bar`) has a border but no
+ * background of its own by default, so it blends into the modal shell
+ * behind it and barely reads as a distinct field. Give it its own panel
+ * shade to match the rest of the HUD chrome.
+ */
+.VPLocalSearchBox .search-bar {
+  background-color: var(--hud-panel-solid);
+}
+
+/**
+ * Same problem for the collapsed search button that sits in the top bar:
+ * VitePress gives it `background-color: var(--vp-c-bg-alt)` (the same solid
+ * navy as the button in the modal) but only adds a visible border on hover,
+ * so at rest it barely stands out against the nav bar's translucent glass
+ * behind it. Add a persistent border to match the rest of the HUD chrome.
+ */
+.DocSearch-Button {
+  border-color: var(--hud-panel-border);
 }

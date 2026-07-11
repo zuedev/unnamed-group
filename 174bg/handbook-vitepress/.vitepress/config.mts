@@ -4,6 +4,28 @@ export default defineConfig({
   title: "174th Battle Group Handbook",
   description: "A guide for members of the 174th Battle Group community.",
   srcDir: "docs",
+  // The sibling Manager site (174bg/manager) has no light mode at all, so
+  // match it by forcing dark mode here too instead of offering a toggle.
+  appearance: "force-dark",
+
+  head: [
+    ["link", { rel: "preconnect", href: "https://fonts.googleapis.com" }],
+    [
+      "link",
+      {
+        rel: "preconnect",
+        href: "https://fonts.gstatic.com",
+        crossorigin: "",
+      },
+    ],
+    [
+      "link",
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&display=swap",
+      },
+    ],
+  ],
 
   themeConfig: {
     outline: {
