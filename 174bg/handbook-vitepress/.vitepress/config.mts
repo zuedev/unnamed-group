@@ -15,6 +15,13 @@ export default defineConfig({
       provider: "local",
     },
 
+    nav: [
+      { text: "Organization", link: "/organization/departments" },
+      { text: "Membership", link: "/membership/joining-process" },
+      { text: "Conduct", link: "/conduct/rules-of-engagement" },
+      { text: "Fleet", link: "/fleet/fleet-composition" },
+    ],
+
     sidebar: [
       {
         text: "Introduction",
@@ -23,167 +30,227 @@ export default defineConfig({
           { text: "Using This Handbook", link: "/#using-this-handbook" },
         ],
       },
-      { text: "Departments", link: "/departments" },
       {
-        text: "Divisions",
-        link: "/divisions",
+        text: "Organization",
+        collapsed: false,
         items: [
-          { text: "Naval", link: "/divisions#naval-division" },
-          { text: "Marine", link: "/divisions#marine-division" },
-          { text: "Auxiliary", link: "/divisions#auxiliary-division" },
-        ],
-      },
-      {
-        text: "Roles",
-        link: "/roles",
-        items: [
-          { text: "Naval", link: "/roles#naval-roles" },
-          { text: "Marine", link: "/roles#marine-roles" },
-          { text: "Auxiliary", link: "/roles#auxiliary-roles" },
-        ],
-      },
-      { text: "Ranks", link: "/ranks" },
-      {
-        text: "Command Structure",
-        link: "/command-structure",
-        items: [
+          { text: "Departments", link: "/organization/departments" },
           {
-            text: "Chain of Command",
-            link: "/command-structure#chain-of-command",
+            text: "Divisions",
+            link: "/organization/divisions",
+            collapsed: true,
+            items: [
+              {
+                text: "Naval",
+                link: "/organization/divisions#naval-division",
+              },
+              {
+                text: "Marine",
+                link: "/organization/divisions#marine-division",
+              },
+              {
+                text: "Auxiliary",
+                link: "/organization/divisions#auxiliary-division",
+              },
+            ],
           },
           {
-            text: "Operational Authority",
-            link: "/command-structure#operational-authority",
+            text: "Roles",
+            link: "/organization/roles",
+            collapsed: true,
+            items: [
+              { text: "Naval", link: "/organization/roles#naval-roles" },
+              { text: "Marine", link: "/organization/roles#marine-roles" },
+              {
+                text: "Auxiliary",
+                link: "/organization/roles#auxiliary-roles",
+              },
+            ],
           },
+          { text: "Ranks", link: "/organization/ranks" },
           {
-            text: "Decision-Making",
-            link: "/command-structure#decision-making",
-          },
-        ],
-      },
-      {
-        text: "Joining Process",
-        link: "/joining-process",
-        items: [
-          { text: "Prerequisites", link: "/joining-process#prerequisites" },
-          { text: "Application", link: "/joining-process#application" },
-          { text: "Onboarding", link: "/joining-process#onboarding" },
-          {
-            text: "Probation Period",
-            link: "/joining-process#probation-period",
-          },
-          {
-            text: "Advancing to Rank 1",
-            link: "/joining-process#advancing-to-rank-1",
-          },
-        ],
-      },
-      {
-        text: "Rules of Engagement",
-        link: "/rules-of-engagement",
-        items: [
-          {
-            text: "Authorised Use of Force",
-            link: "/rules-of-engagement#authorised-use-of-force",
-          },
-          {
-            text: "Escalation and Warning",
-            link: "/rules-of-engagement#escalation-and-warning",
-          },
-          {
-            text: "Civilians and Neutrals",
-            link: "/rules-of-engagement#civilians-and-neutrals",
-          },
-          {
-            text: "Surrendered and Fleeing Enemies",
-            link: "/rules-of-engagement#surrendered-and-fleeing-enemies",
-          },
-          {
-            text: "Prohibited Actions",
-            link: "/rules-of-engagement#prohibited-actions",
-          },
-          {
-            text: "Friendly Fire",
-            link: "/rules-of-engagement#friendly-fire",
-          },
-          {
-            text: "Target Verification",
-            link: "/rules-of-engagement#target-verification",
+            text: "Command Structure",
+            link: "/organization/command-structure",
+            collapsed: true,
+            items: [
+              {
+                text: "Chain of Command",
+                link: "/organization/command-structure#chain-of-command",
+              },
+              {
+                text: "Operational Authority",
+                link: "/organization/command-structure#operational-authority",
+              },
+              {
+                text: "Decision-Making",
+                link: "/organization/command-structure#decision-making",
+              },
+            ],
           },
         ],
       },
       {
-        text: "Code of Conduct",
-        link: "/code-of-conduct",
+        text: "Membership",
+        collapsed: false,
         items: [
           {
-            text: "Expected Behaviour",
-            link: "/code-of-conduct#expected-behaviour",
+            text: "Joining Process",
+            link: "/membership/joining-process",
+            collapsed: true,
+            items: [
+              {
+                text: "Prerequisites",
+                link: "/membership/joining-process#prerequisites",
+              },
+              {
+                text: "Application",
+                link: "/membership/joining-process#application",
+              },
+              {
+                text: "Onboarding",
+                link: "/membership/joining-process#onboarding",
+              },
+              {
+                text: "Probation Period",
+                link: "/membership/joining-process#probation-period",
+              },
+              {
+                text: "Advancing to Rank 1",
+                link: "/membership/joining-process#advancing-to-rank-1",
+              },
+            ],
           },
           {
-            text: "Disciplinary Process",
-            link: "/code-of-conduct#disciplinary-process",
+            text: "Leave of Absence",
+            link: "/membership/leave-of-absence",
+            collapsed: true,
+            items: [
+              {
+                text: "Requesting Leave",
+                link: "/membership/leave-of-absence#requesting-leave",
+              },
+              {
+                text: "Duration",
+                link: "/membership/leave-of-absence#duration",
+              },
+              {
+                text: "Rank During Leave",
+                link: "/membership/leave-of-absence#rank-during-leave",
+              },
+              {
+                text: "Returning from Leave",
+                link: "/membership/leave-of-absence#returning-from-leave",
+              },
+              {
+                text: "Unannounced Absence",
+                link: "/membership/leave-of-absence#unannounced-absence",
+              },
+            ],
           },
-          {
-            text: "Grounds for Immediate Removal",
-            link: "/code-of-conduct#grounds-for-immediate-removal",
-          },
-          { text: "Appeals", link: "/code-of-conduct#appeals" },
         ],
       },
       {
-        text: "Leave of Absence",
-        link: "/leave-of-absence",
+        text: "Conduct",
+        collapsed: false,
         items: [
           {
-            text: "Requesting Leave",
-            link: "/leave-of-absence#requesting-leave",
+            text: "Rules of Engagement",
+            link: "/conduct/rules-of-engagement",
+            collapsed: true,
+            items: [
+              {
+                text: "Authorised Use of Force",
+                link: "/conduct/rules-of-engagement#authorised-use-of-force",
+              },
+              {
+                text: "Escalation and Warning",
+                link: "/conduct/rules-of-engagement#escalation-and-warning",
+              },
+              {
+                text: "Civilians and Neutrals",
+                link: "/conduct/rules-of-engagement#civilians-and-neutrals",
+              },
+              {
+                text: "Surrendered and Fleeing Enemies",
+                link: "/conduct/rules-of-engagement#surrendered-and-fleeing-enemies",
+              },
+              {
+                text: "Prohibited Actions",
+                link: "/conduct/rules-of-engagement#prohibited-actions",
+              },
+              {
+                text: "Friendly Fire",
+                link: "/conduct/rules-of-engagement#friendly-fire",
+              },
+              {
+                text: "Target Verification",
+                link: "/conduct/rules-of-engagement#target-verification",
+              },
+            ],
           },
-          { text: "Duration", link: "/leave-of-absence#duration" },
           {
-            text: "Rank During Leave",
-            link: "/leave-of-absence#rank-during-leave",
-          },
-          {
-            text: "Returning from Leave",
-            link: "/leave-of-absence#returning-from-leave",
-          },
-          {
-            text: "Unannounced Absence",
-            link: "/leave-of-absence#unannounced-absence",
+            text: "Code of Conduct",
+            link: "/conduct/code-of-conduct",
+            collapsed: true,
+            items: [
+              {
+                text: "Expected Behaviour",
+                link: "/conduct/code-of-conduct#expected-behaviour",
+              },
+              {
+                text: "Disciplinary Process",
+                link: "/conduct/code-of-conduct#disciplinary-process",
+              },
+              {
+                text: "Grounds for Immediate Removal",
+                link: "/conduct/code-of-conduct#grounds-for-immediate-removal",
+              },
+              { text: "Appeals", link: "/conduct/code-of-conduct#appeals" },
+            ],
           },
         ],
       },
       {
-        text: "Fleet Composition",
-        link: "/fleet-composition",
+        text: "Fleet",
+        collapsed: false,
         items: [
           {
-            text: "Design Principles",
-            link: "/fleet-composition#fleet-design-principles",
+            text: "Fleet Composition",
+            link: "/fleet/fleet-composition",
+            collapsed: true,
+            items: [
+              {
+                text: "Design Principles",
+                link: "/fleet/fleet-composition#fleet-design-principles",
+              },
+              {
+                text: "Standard Issue Ships",
+                link: "/fleet/fleet-composition#standard-issue-ships",
+              },
+              {
+                text: "Ship Loadouts",
+                link: "/fleet/fleet-composition#ship-loadouts",
+              },
+            ],
           },
           {
-            text: "Standard Issue Ships",
-            link: "/fleet-composition#standard-issue-ships",
-          },
-          {
-            text: "Ship Loadouts",
-            link: "/fleet-composition#ship-loadouts",
-          },
-        ],
-      },
-      {
-        text: "Gear Loadouts",
-        link: "/gear-loadouts",
-        items: [
-          {
-            text: "Marine Loadouts",
-            link: "/gear-loadouts#marine-loadouts",
-          },
-          { text: "Navy Loadouts", link: "/gear-loadouts#navy-loadouts" },
-          {
-            text: "Auxiliary Loadouts",
-            link: "/gear-loadouts#auxiliary-loadouts",
+            text: "Gear Loadouts",
+            link: "/fleet/gear-loadouts",
+            collapsed: true,
+            items: [
+              {
+                text: "Marine Loadouts",
+                link: "/fleet/gear-loadouts#marine-loadouts",
+              },
+              {
+                text: "Navy Loadouts",
+                link: "/fleet/gear-loadouts#navy-loadouts",
+              },
+              {
+                text: "Auxiliary Loadouts",
+                link: "/fleet/gear-loadouts#auxiliary-loadouts",
+              },
+            ],
           },
         ],
       },
