@@ -1,0 +1,5 @@
+/* Match the source handbook's justified body text. */
+.vp-doc p,
+.vp-doc li {
+  text-align: justify;
+}
