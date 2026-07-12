@@ -80,10 +80,13 @@ body {
   background-attachment: fixed;
 }
 
-/* Nav bar and sidebar become frosted glass panels over that grid. */
+/* Nav bar and sidebar become frosted glass panels over that grid. Only blur
+   on the outer elements - `.content-body` sits *inside* `.VPNavBar`, so
+   giving it its own `backdrop-filter` too double-blurs the (already blurred)
+   layer beneath it, which compounds into a flat near-black block instead of
+   a translucent panel. */
 .VPNavBar,
-.VPSidebar,
-.VPNavBar .content-body {
+.VPSidebar {
   backdrop-filter: blur(10px);
 }
 
