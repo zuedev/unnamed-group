@@ -158,6 +158,12 @@ A ship designed for repairing and maintaining other vessels in space, equipped w
 
 - **Primary Ship:** [Crucible](https://starcitizen.tools/Crucible)
 
+### Gunship
+
+A heavily armed and armored ship designed for direct combat, capable of engaging enemy forces and providing fire support for other vessels both in space and on the ground.
+
+- **Primary Ship:** [Paladin](https://starcitizen.tools/Paladin)
+
 ## Ship Loadouts
 
 The following loadouts are the standard issue equipment for the ships of the 174th Battle Group, organized by ship type and the loadout role.
