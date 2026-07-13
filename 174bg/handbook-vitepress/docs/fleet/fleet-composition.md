@@ -160,7 +160,7 @@ A ship designed for repairing and maintaining other vessels in space, equipped w
 
 ### Gunship
 
-A heavily armed and armored ship designed for direct combat, capable of engaging enemy forces and providing fire support for other vessels both in space and on the ground.
+A heavily armed and armored ship designed for direct combat, capable of engaging enemy forces and providing fire support for other vessels both in space and on the ground. A gunship is meant to bring as much firepower to the fight in as small of a possible shipframe.
 
 - **Primary Ship:** [Paladin](https://starcitizen.tools/Paladin)
 
