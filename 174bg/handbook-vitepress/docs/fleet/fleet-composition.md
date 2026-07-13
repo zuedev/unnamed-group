@@ -14,7 +14,7 @@ Though we may have access to a variety of ships, the following are the standard 
 
 ### Space Superiority Fighter
 
-> High-speed dogfighter
+> High-speed agile dogfighter
 
 A fast and agile fighter designed for space combat, capable of engaging enemy ships and screening for larger vessels.
 
