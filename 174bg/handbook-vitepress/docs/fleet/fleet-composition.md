@@ -31,7 +31,7 @@ A heavily armed ship designed to take on larger capital ships, equipped with pow
 
 ### Ground Bomber
 
-> Orbital ordnance against ground targets
+> Heavy ordnance dropped on ground targets
 
 A ship designed to deliver powerful ordnance against ground targets.
 
@@ -48,7 +48,7 @@ A ship designed to deliver powerful ordnance against high-value targets while av
 
 ### Dropship
 
-> Armored troop transport with close air support
+> Armored troop and tank combat transport
 
 A ship designed to transport troops and equipment to and from the battlefield whilst providing close air support and protection, capable of deploying forces directly into combat zones without the need for an escort or support.
 
@@ -57,7 +57,7 @@ A ship designed to transport troops and equipment to and from the battlefield wh
 
 ### Stealth Dropship
 
-> Silent insertion for troops and cargo
+> Transport designed for covert operations
 
 A ship designed to transport troops and equipment to and from the battlefield while avoiding detection, equipped with advanced stealth technology and capable of deploying forces directly into combat zones without the need for an escort or support.
 
@@ -65,7 +65,7 @@ A ship designed to transport troops and equipment to and from the battlefield wh
 
 ### Boarding Ship
 
-> Fast-attack craft for boarding operations
+> For getting troops inside enemy ships
 
 A ship designed to transport boarding parties and equipment for boarding operations, able to quickly and efficiently deploy forces onto enemy vessels or structures.
 
@@ -73,7 +73,7 @@ A ship designed to transport boarding parties and equipment for boarding operati
 
 ### Ship of the Line
 
-> Heavily armed and armored fleet backbone
+> Big guns on a big ship with minimal crew
 
 A heavily armed and armored ship designed to serve as the backbone of our fleet, capable of engaging enemy capital ships and providing support for smaller vessels.
 
@@ -81,7 +81,7 @@ A heavily armed and armored ship designed to serve as the backbone of our fleet,
 
 ### Command Ship
 
-> Fleet command-and-control hub
+> Central brain of the fleet
 
 A ship designed to serve as the command center for our fleet, equipped with advanced communication and sensor systems to coordinate fleet operations and provide situational awareness as well as dedicated medical facilities to support our personnel during extended missions.
 
@@ -90,7 +90,7 @@ A ship designed to serve as the command center for our fleet, equipped with adva
 
 ### Carrier
 
-> Mobile staging base for the fighter wing
+> Mobile staging base
 
 A ship designed to serve as a mobile staging point for our fleet, capable of launching and recovering smaller vessels and providing support for extended missions.
 
@@ -98,7 +98,7 @@ A ship designed to serve as a mobile staging point for our fleet, capable of lau
 
 ### Interdictor
 
-> Signal-jamming battlefield disruptor
+> Controlling enemy systems and movements
 
 A ship designed to disrupt enemy communications and sensor systems, capable of jamming or hacking enemy vessels to gain an advantage in combat or reconnaissance.
 
@@ -142,7 +142,7 @@ A ship designed to engage and destroy smaller aerospace threats such as enemy fi
 
 ### Mining Vessel
 
-> Heavy-duty asteroid resource extraction
+> Heavy-duty resource extraction
 
 A ship designed to extract and process resources from asteroids and other celestial bodies, equipped with advanced mining equipment and storage facilities to support sustained mining operations.
 
@@ -166,7 +166,7 @@ A large and heavily equipped ship designed to serve as a mobile base of operatio
 
 ### Freighter
 
-> Bulk long-haul cargo hauler
+> Bulk long-distance cargo hauler
 
 A large cargo ship designed for transporting goods and resources across the galaxy, equipped with extensive storage facilities and advanced navigation systems for long-distance travel.
 
@@ -174,7 +174,7 @@ A large cargo ship designed for transporting goods and resources across the gala
 
 ### Refueler
 
-> In-space refuel and resupply tanker
+> Field refuel tanker
 
 A ship designed to provide fuel and other resources to other vessels in space, equipped with advanced refueling systems and storage facilities to support extended operations.
 
