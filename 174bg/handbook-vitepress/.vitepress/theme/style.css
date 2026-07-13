@@ -1,36 +1,57 @@
-/* Match the source handbook's justified body text. */
+/* Match the source handbook's justified body text, sized/weighted to match
+   robertsspaceindustries.com's own paragraph tokens (see style-guide JSON
+   referenced below). */
 .vp-doc p,
 .vp-doc li {
   text-align: justify;
+  font-size: 14px;
+  line-height: 21px;
+  letter-spacing: 0.14px;
+  font-weight: 600;
 }
 
 /**
  * ============================================================================
  * "HUD" theme - ported from 174bg/manager/public/theme.css so the two
  * 174bg sites (manager.174bg.net and handbook.174bg.net) share a look: a
- * near-black navy backdrop with a faint cyan grid + radial glow, Orbitron
- * headings, Rajdhani body text, and glassy cyan-bordered panels. Manager has
- * no light mode at all, so this is applied unconditionally (see
- * `appearance: "force-dark"` in config.mts) rather than scoped to `.dark`.
+ * near-black backdrop with a faint accent grid + radial glow, Sora
+ * headings/body text, Bai Jamjuree nav/button chrome, and glassy
+ * accent-bordered panels. Manager has no light mode at all, so this is
+ * applied unconditionally (see `appearance: "force-dark"` in config.mts)
+ * rather than scoped to `.dark`.
+ *
+ * 2026-07-13: retinted + refonted to align with robertsspaceindustries.com's
+ * own design tokens (see .gitignored/context.dev/style-guides/
+ * robertspaceindustries.com.json, exported from a CSS Stats scan of the live
+ * site) - a single blue accent (#54adf7) on true black in place of the
+ * earlier arbitrary navy/cyan pairing, Sora/Bai Jamjuree in place of
+ * Orbitron/Rajdhani, flat slate-bordered "card" panels in place of
+ * glass-blur ones, and heading sizes/weights/link treatment matched to
+ * RSI's own type scale.
  * ============================================================================
  */
 
 :root {
-  --hud-bg: #070b14;
-  --hud-bg-grid: rgba(56, 189, 248, 0.06);
-  --hud-panel: rgba(15, 23, 42, 0.72);
-  --hud-panel-solid: #0f172a;
-  --hud-panel-border: rgba(56, 189, 248, 0.22);
-  --hud-panel-border-strong: rgba(56, 189, 248, 0.5);
-  --hud-text: #dbe7f3;
-  --hud-text-dim: #7e93ab;
-  --hud-accent: #38bdf8;
-  --hud-accent-2: #22d3ee;
-  --hud-accent-glow: rgba(56, 189, 248, 0.45);
-  --hud-row-alt: rgba(56, 189, 248, 0.04);
+  /* Palette retinted to robertsspaceindustries.com's own design tokens - a
+     single blue accent on true black instead of the earlier navy/cyan pair.
+     See .gitignored/context.dev/style-guides/robertspaceindustries.com.json
+     (exported via a CSS Stats scan of the live site) for the source values:
+     accent #54adf7, background #000000, text #ffffff, card border #374151. */
+  --hud-bg: #000000;
+  --hud-bg-grid: rgba(84, 173, 247, 0.05);
+  --hud-panel: rgba(17, 17, 20, 0.75);
+  --hud-panel-solid: #0a0a0c;
+  --hud-panel-border: rgba(55, 65, 81, 0.6);
+  --hud-panel-border-strong: rgba(84, 173, 247, 0.55);
+  --hud-text: #ffffff;
+  --hud-text-dim: #9ca3af;
+  --hud-accent: #54adf7;
+  --hud-accent-2: color-mix(in srgb, var(--hud-accent) 65%, white);
+  --hud-row-alt: rgba(84, 173, 247, 0.04);
+  --hud-shadow-sm: rgba(0, 0, 0, 0.4) 0px 0px 8px 0px;
 
   /* Map onto VitePress's own theme variables. */
-  --vp-font-family-base: "Rajdhani", system-ui, sans-serif;
+  --vp-font-family-base: "Sora", system-ui, sans-serif;
 
   --vp-c-bg: var(--hud-bg);
   --vp-c-bg-alt: var(--hud-panel-solid);
@@ -48,7 +69,7 @@
   --vp-c-brand-1: var(--hud-accent);
   --vp-c-brand-2: var(--hud-accent-2);
   --vp-c-brand-3: var(--hud-accent);
-  --vp-c-brand-soft: rgba(56, 189, 248, 0.16);
+  --vp-c-brand-soft: rgba(84, 173, 247, 0.16);
 
   /* VitePress applies these to several nav/sidebar-internal elements (e.g.
      `.content-body`, the sidebar curtain) directly, not just the outer
@@ -61,14 +82,14 @@
   --vp-sidebar-bg-color: var(--hud-panel);
 }
 
-/* Faint cyan grid + top glow behind the whole site, like the Manager page. */
+/* Faint accent-blue grid + top glow behind the whole site, like the Manager page. */
 html,
 body {
   background-color: var(--hud-bg);
   background-image:
     radial-gradient(
       ellipse 80% 60% at 50% -10%,
-      rgba(56, 189, 248, 0.18),
+      rgba(84, 173, 247, 0.18),
       transparent 60%
     ),
     linear-gradient(var(--hud-bg-grid) 1px, transparent 1px),
@@ -92,28 +113,31 @@ body {
 
 .VPNavBar {
   border-bottom: 1px solid var(--hud-panel-border);
+  box-shadow: var(--hud-shadow-sm);
 }
 
 .VPSidebar {
   border-right: 1px solid var(--hud-panel-border);
 }
 
-/* Orbitron for headings and nav/sidebar chrome, in place of the default font. */
-.vp-doc h1,
-.vp-doc h2,
-.vp-doc h3,
+/* Bai Jamjuree for nav/sidebar/table chrome, matching the font
+   robertsspaceindustries.com uses for its own buttons/UI labels. Headings
+   intentionally do NOT get a separate font here - RSI's style guide uses the
+   same family for both headings and paragraphs, so they just inherit
+   --vp-font-family-base (Sora) like the rest of the body copy. */
 .VPNavBarTitle .title,
 .VPNavBarMenuLink,
 .VPSidebarItem.level-0 > .item .text {
-  font-family: "Orbitron", sans-serif;
+  font-family: "Bai Jamjuree", sans-serif;
 }
 
 .VPNavBarTitle .title {
   color: var(--hud-accent);
-  /* Orbitron is noticeably wider than the default font. VitePress gives the
-     title a fixed-width column matching the sidebar, so shrink the text (and
-     drop the extra letter-spacing) to fit - otherwise it overflows past its
-     column and visually overlaps the search box/nav links next to it on wide
+  /* Bai Jamjuree (like the Orbitron it replaced) is noticeably wider than
+     the default font. VitePress gives the title a fixed-width column
+     matching the sidebar, so shrink the text (and drop the extra
+     letter-spacing) to fit - otherwise it overflows past its column and
+     visually overlaps the search box/nav links next to it on wide
      (sidebar-visible) layouts. `text-overflow: ellipsis` is a safety net in
      case it's ever still too wide (e.g. a longer title in the future). */
   font-size: 0.75rem;
@@ -130,40 +154,66 @@ body {
   font-size: 0.8em;
 }
 
-/* Page titles get the same gradient + glow treatment as Manager's <h1>. */
+/* Heading sizes/weights matched to robertsspaceindustries.com's own type
+   scale (h1 64px/72px line-height, h2 24px/29px, h3 20px/24px, h4 18px/22px,
+   all weight 600 - see the style-guide JSON referenced above). The h1
+   gradient-text treatment is kept as a small branding accent (both stops now
+   share RSI's single accent hue instead of the old unrelated navy/cyan
+   pairing); the large colored text-shadow glow was dropped since RSI's own
+   shadow scale has nothing that dramatic - its only real shadow token is a
+   small, black, 8px-blur one (see --hud-shadow-sm above). h2/h3/h4 also drop
+   the uppercase-accent-color treatment in favor of RSI's plain white
+   headings. */
 .vp-doc h1 {
-  font-weight: 900;
-  letter-spacing: 0.03em;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  line-height: 1.2;
+  font-size: 2.25rem;
   background: linear-gradient(120deg, var(--hud-accent), var(--hud-accent-2));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  text-shadow: 0 0 28px var(--hud-accent-glow);
+}
+
+@media (min-width: 768px) {
+  .vp-doc h1 {
+    font-size: 64px;
+    line-height: 72px;
+  }
 }
 
 .vp-doc h2 {
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--hud-accent);
+  font-size: 24px;
+  line-height: 29px;
+  letter-spacing: 0;
+  font-weight: 600;
 }
 
 .vp-doc h3 {
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--hud-accent-2);
+  font-size: 20px;
+  line-height: 24px;
+  letter-spacing: 0;
+  font-weight: 600;
 }
 
-/* Content links: understated until hovered, like Manager's `a`/`a:hover`. */
-.vp-doc :not(.header-anchor):not(.custom-block-title) > a,
+.vp-doc h4 {
+  font-size: 18px;
+  line-height: 22px;
+  letter-spacing: 0;
+  font-weight: 600;
+}
+
+/* robertsspaceindustries.com's own "link" component is just white text with
+   a permanent underline (not a distinct accent color) - VitePress's default
+   theme already gives .vp-doc a a permanent underline, so this only needs to
+   recolor it (white at rest, accent on hover) rather than reimplementing the
+   underline-on-hover-only treatment this used to have. */
 .vp-doc a:not(.header-anchor) {
-  color: var(--hud-accent-2);
-  text-decoration: none;
-  border-bottom: 1px solid transparent;
-  transition: border-color 0.15s ease;
+  color: var(--hud-text);
 }
 
 .vp-doc a:not(.header-anchor):hover {
-  border-bottom-color: var(--hud-accent-2);
+  color: var(--hud-accent);
 }
 
 /* Ranks table styled like Manager's data tables. */
@@ -172,7 +222,7 @@ body {
 }
 
 .vp-doc thead th {
-  font-family: "Orbitron", sans-serif;
+  font-family: "Bai Jamjuree", sans-serif;
   font-size: 0.68rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -185,23 +235,25 @@ body {
 }
 
 .vp-doc tbody tr:hover {
-  background: rgba(56, 189, 248, 0.1);
+  background: rgba(84, 173, 247, 0.1);
 }
 
 /**
- * Role "Prerequisites" lists use a `::: info` container. Style it as a glassy
- * HUD panel (like Manager's `#required-info`/`#anonymous` cards) instead of
- * VitePress's default boxed callout.
+ * Role "Prerequisites" lists use a `::: info` container. robertsspaceindustries.com's
+ * own "card" component is a flat solid-black panel with a plain slate border
+ * and no blur/shadow (unlike the glass-panel treatment used elsewhere in
+ * this theme) - match that here instead of VitePress's default boxed
+ * callout. VitePress's own `.custom-block` already sets an 8px border-radius,
+ * which happens to match RSI's card radius exactly, so it's left alone.
  */
 .custom-block.info {
-  background: var(--hud-panel);
+  background: var(--hud-bg);
   border: 1px solid var(--hud-panel-border);
-  border-radius: 14px;
-  backdrop-filter: blur(10px);
+  color: var(--hud-text);
 }
 
 .custom-block.info .custom-block-title {
-  font-family: "Orbitron", sans-serif;
+  font-family: "Bai Jamjuree", sans-serif;
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.06em;

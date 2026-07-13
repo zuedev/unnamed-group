@@ -22,7 +22,7 @@ export default defineConfig({
       "link",
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@400;500;600;700&family=Sora:wght@400;500;600;700&display=swap",
       },
     ],
   ],
