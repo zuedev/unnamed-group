@@ -1,13 +1,15 @@
-/* Match the source handbook's justified body text, sized/weighted to match
+/* Match the source handbook's justified body text, sized to match
    robertsspaceindustries.com's own paragraph tokens (see style-guide JSON
-   referenced below). */
+   referenced below). RSI's own token says weight 600, but that reads as
+   uncomfortably heavy/bold across a full page of long-form justified text
+   (unlike RSI's own short UI copy) - use normal weight instead. */
 .vp-doc p,
 .vp-doc li {
   text-align: justify;
   font-size: 14px;
   line-height: 21px;
   letter-spacing: 0.14px;
-  font-weight: 600;
+  font-weight: 400;
 }
 
 /**
