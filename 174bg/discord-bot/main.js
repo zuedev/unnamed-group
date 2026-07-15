@@ -15,6 +15,21 @@ import {
 const commands = [
   {
     data: new SlashCommandBuilder()
+      .setName("scope")
+      .setDescription("Returns the current scope of the bot."),
+    execute: async (interaction) => {
+      const scope = {
+        guildIdFromEnv: process.env.DISCORD_GUILD_ID,
+        guildIdFromInteraction: interaction.guild.id,
+        doGuildIdsMatch:
+          process.env.DISCORD_GUILD_ID === interaction.guild.id,
+      };
+
+      await interaction.reply(codewrap("json", JSON.stringify(scope, null, 2)));
+    }
+  },
+  {
+    data: new SlashCommandBuilder()
       .setName("create-requisition-ticket")
       .setDescription(
         "Creates a requisition ticket for the quartermaster to review.",
@@ -262,4 +277,8 @@ function sendMessageToLogsChannel(message) {
   if (!logsChannel) return console.error("Logs channel not found.");
 
   logsChannel.send(message);
+}
+
+function codewrap(language, content) {
+  return "```" + language + "\n" + content + "\n```";
 }
