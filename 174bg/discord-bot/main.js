@@ -11,10 +11,6 @@ import {
   ButtonStyle,
 } from "discord.js";
 
-import {GoogleGenAI} from '@google/genai';
-
-const ai = new GoogleGenAI({apiKey: process.env.GEMINI_API_KEY});
-
 const commands = [
   {
     data: new SlashCommandBuilder()
@@ -129,37 +125,14 @@ const commands = [
       );
 
       // notify all members with the quartermaster role if it exists
-      // fetch guild members so the cache (and role.members) reflects the latest state
-      await interaction.guild.members.fetch();
+      // (member cache is kept up to date via the GuildMembers intent, so no
+      // need to re-fetch all members here)
       const quartermasterMembers = quartermasterRole.members;
       for (const member of quartermasterMembers.values()) {
         await member.send(
           `A new requisition ticket has been created: <#${newChannel.id}>`,
         );
       }
-
-      // use gemini to lookup where we can get the contents
-      const prompt = `
-        Where can I get the following stuff in Star Citizen?
-
-        \`\`\`
-        ${contents}
-        \`\`\`
-
-        Respond in the following format:
-
-        \`\`\`
-        - Item Name: Location
-        ...
-        \`\`\`
-
-        Do not include anything else except the format.
-      `;
-      const response = await ai.models.generateContent({
-        model: "gemini-3.5-flash",
-        contents: prompt,
-      });
-      await newChannel.send(`## AI Suggestion\n\n>>> ${response.text}`);
     },
   },
   {
@@ -220,6 +193,11 @@ client.on(Events.ClientReady, async (readyClient) => {
     });
 
     const guild = await client.guilds.fetch(process.env.DISCORD_GUILD_ID);
+
+    // fetch all members once so the cache stays populated; the GuildMembers
+    // intent keeps it in sync afterward via gateway events, avoiding repeated
+    // opcode 8 (Request Guild Members) calls that can get rate limited
+    await guild.members.fetch();
 
     console.log(`Successfully registered application commands for guild ${process.env.DISCORD_GUILD_ID} (${guild ? guild.name : "Unknown"}).`);
   } catch (error) {
