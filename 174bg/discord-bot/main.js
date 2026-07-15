@@ -6,7 +6,6 @@ import {
   Routes,
   PermissionFlagsBits,
   SlashCommandBuilder,
-  EmbedBuilder,
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
@@ -94,15 +93,7 @@ const commands = [
         ],
       });
 
-      // send an embed message to the new channel with a close button that only the quartermaster role can see
-      const embed = new EmbedBuilder()
-        .setTitle(`Requisition Ticket #${timestamp}`)
-        .setFields([
-          { name: "Contents", value: contents },
-          { name: "Created by", value: `<@${interaction.user.id}>` },
-        ])
-        .setColor(0x00ff00);
-
+      // send a normal message to the new channel with a close button that only the quartermaster role can see
       const row = new ActionRowBuilder().addComponents(
         new ButtonBuilder()
           .setCustomId("close_req_ticket")
@@ -111,7 +102,10 @@ const commands = [
           .setDisabled(false),
       );
 
-      await newChannel.send({ embeds: [embed], components: [row] });
+      await newChannel.send({
+        content: `**Requisition Ticket #${timestamp}**\n**Contents:** ${contents}\n**Created by:** <@${interaction.user.id}>`,
+        components: [row],
+      });
 
       // reply to the user
       await interaction.reply(
