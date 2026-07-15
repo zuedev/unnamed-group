@@ -28,5 +28,12 @@ export default {
       content: `Your requisition ticket has been created: <#${ticket.id}>`,
       ephemeral: true,
     });
+
+    // notify quartermasters
+    await notifyRoleByName(
+      interaction.guild,
+      "quartermaster",
+      `New requisition request from <@${interaction.user.id}>: ${contents}`,
+    );
   },
 };
