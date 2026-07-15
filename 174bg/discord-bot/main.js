@@ -10,6 +10,12 @@ import {
   ButtonBuilder,
   ButtonStyle,
 } from "discord.js";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const commands = [
   {
@@ -203,6 +209,13 @@ client.on(Events.ClientReady, async (readyClient) => {
   } catch (error) {
     console.error(error);
   }
+
+  cacheUexData();
+
+  // every hour
+  setInterval(async () => {
+    await cacheUexData();
+  }, 60 * 60 * 1000); // 1 hour
 });
 
 client.on(Events.InteractionCreate, async (interaction) => {
@@ -287,4 +300,41 @@ function sendMessageToLogsChannel(message) {
 
 function codewrap(language, content) {
   return "```" + language + "\n" + content + "\n```";
+}
+
+async function cacheUexData() {
+  const list = [
+    "https://api.uexcorp.uk/2.0/commodities_raw_prices_all",
+    "https://api.uexcorp.uk/2.0/items_prices_all",
+    "https://api.uexcorp.uk/2.0/fuel_prices_all",
+    "https://api.uexcorp.uk/2.0/commodities_prices_all",
+    "https://api.uexcorp.uk/2.0/vehicles_purchases_prices_all",
+    "https://api.uexcorp.uk/2.0/vehicles_rentals_prices_all"
+  ];
+
+  const cacheDir = path.join(__dirname, "uex-cache");
+  fs.mkdirSync(cacheDir, { recursive: true });
+
+  for (const url of list) {
+    try {
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        throw new Error(`Received status ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (data === null || typeof data !== "object") {
+        throw new Error("Response was not a JSON object/array");
+      }
+
+      // write to file
+      const filePath = path.join(cacheDir, `${url.split("/").pop()}.json`);
+
+      fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+    } catch (error) {
+      console.error(`Error fetching ${url}:`, error);
+    }
+  }
 }
