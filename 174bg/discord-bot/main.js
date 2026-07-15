@@ -108,9 +108,10 @@ const commands = [
       });
 
       // reply to the user
-      await interaction.reply(
-        `Requisition ticket created: <#${newChannel.id}>`,
-      );
+      await interaction.reply({
+        content: `Your requisition ticket has been created: <#${newChannel.id}>`,
+        ephemeral: true,
+      });
 
       // log
       sendMessageToLogsChannel(
