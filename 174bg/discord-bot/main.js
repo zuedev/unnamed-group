@@ -17,14 +17,12 @@ const commands = [
       .setName("scope")
       .setDescription("Returns the current scope of the bot."),
     execute: async (interaction) => {
-      const scope = {
+      await interaction.reply(codewrap("json", JSON.stringify({
         guildIdFromEnv: process.env.DISCORD_GUILD_ID,
         guildIdFromInteraction: interaction.guild.id,
         doGuildIdsMatch:
           process.env.DISCORD_GUILD_ID === interaction.guild.id,
-      };
-
-      await interaction.reply(codewrap("json", JSON.stringify(scope, null, 2)));
+      }, null, 2)));
     }
   },
   {
