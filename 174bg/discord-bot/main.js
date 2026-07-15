@@ -11,6 +11,10 @@ import {
   ButtonStyle,
 } from "discord.js";
 
+import {GoogleGenAI} from '@google/genai';
+
+const ai = new GoogleGenAI({apiKey: process.env.GEMINI_API_KEY});
+
 const commands = [
   {
     data: new SlashCommandBuilder()
@@ -53,12 +57,20 @@ const commands = [
         return await interaction.reply("Tickets category not found.");
 
       // get the quartermaster role id
-      const quartermasterRole = interaction.guild.roles.cache.find(
+      let quartermasterRole = interaction.guild.roles.cache.find(
         (role) => role.name.toLowerCase() === "quartermaster",
       );
 
       if (!quartermasterRole)
-        return await interaction.reply("Quartermaster role not found.");
+      {
+        // no qm role? make it
+        const newRole = await interaction.guild.roles.create({
+          name: "Quartermaster",
+          color: "Blue",
+        });
+
+        quartermasterRole = newRole;
+      }
 
       // create a new text channel under the "tickets" category with the following format:
       // req-<timestamp_short>
@@ -116,7 +128,7 @@ const commands = [
         `Requisition ticket <#${newChannel.id}> created by <@${interaction.user.id}>`,
       );
 
-      // notify all members with the quartermaster role
+      // notify all members with the quartermaster role if it exists
       // fetch guild members so the cache (and role.members) reflects the latest state
       await interaction.guild.members.fetch();
       const quartermasterMembers = quartermasterRole.members;
@@ -125,6 +137,29 @@ const commands = [
           `A new requisition ticket has been created: <#${newChannel.id}>`,
         );
       }
+
+      // use gemini to lookup where we can get the contents
+      const prompt = `
+        Where can I get the following stuff in Star Citizen?
+
+        \`\`\`
+        ${contents}
+        \`\`\`
+
+        Respond in the following format:
+
+        \`\`\`
+        - Item Name: Location
+        ...
+        \`\`\`
+
+        Do not include anything else except the format.
+      `;
+      const response = await ai.models.generateContent({
+        model: "gemini-3.5-flash",
+        contents: prompt,
+      });
+      await newChannel.send(`## AI Suggestion\n\n>>> ${response.text}`);
     },
   },
   {
