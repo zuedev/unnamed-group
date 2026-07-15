@@ -17,7 +17,10 @@ export default {
   execute: async (interaction) => {
     const contents = interaction.options.getString("contents");
 
-    const ticket = await createTicket(interaction, ["quartermaster"]);
+    const ticket = await createTicket(interaction, {
+      roleNamesWithAccess: ["quartermaster"],
+      ticketNamePrefix: "req-",
+    });
 
     await ticket.send({
       content: `**New requisition request from <@${interaction.user.id}>**: ${contents}`,

@@ -1,6 +1,9 @@
 import { ChannelType, PermissionFlagsBits } from "discord.js";
 
-export default async (interaction, roleNamesWithAccess) => {
+export default async (
+  interaction,
+  options = { roleNamesWithAccess: [], ticketNamePrefix: "ticket-" },
+) => {
   const ticketsCategory = interaction.guild.channels.cache.find(
     (channel) =>
       channel.name.toLowerCase() === "tickets" &&
@@ -11,7 +14,7 @@ export default async (interaction, roleNamesWithAccess) => {
     return await interaction.reply("Tickets category not found.");
 
   // get the roles that should have access to this ticket
-  const rolesWithAccess = roleNamesWithAccess.map((roleName) => {
+  const rolesWithAccess = options.roleNamesWithAccess.map((roleName) => {
     return interaction.guild.roles.cache.find(
       (role) => role.name.toLowerCase() === roleName.toLowerCase(),
     );
@@ -23,7 +26,7 @@ export default async (interaction, roleNamesWithAccess) => {
     .replace(/[-:.T]/g, "")
     .slice(2, 16);
 
-  const channelName = `ticket-${timestamp}`;
+  const channelName = `${options.ticketNamePrefix}${timestamp}`;
 
   const newChannel = await interaction.guild.channels.create({
     name: channelName,
