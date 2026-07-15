@@ -4,175 +4,15 @@ import {
   GatewayIntentBits,
   REST,
   Routes,
+  ChannelType,
   PermissionFlagsBits,
   SlashCommandBuilder,
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
 } from "discord.js";
-import fs from "node:fs";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const commands = [
-  {
-    data: new SlashCommandBuilder()
-      .setName("scope")
-      .setDescription("Returns the current scope of the bot."),
-    execute: async (interaction) => {
-      await interaction.reply(codewrap("json", JSON.stringify({
-        guildIdFromEnv: process.env.DISCORD_GUILD_ID,
-        guildIdFromInteraction: interaction.guild.id,
-        doGuildIdsMatch:
-          process.env.DISCORD_GUILD_ID === interaction.guild.id,
-      }, null, 2)));
-    }
-  },
-  {
-    data: new SlashCommandBuilder()
-      .setName("create-requisition-ticket")
-      .setDescription(
-        "Creates a requisition ticket for the quartermaster to review.",
-      )
-      .addStringOption((option) =>
-        option
-          .setName("contents")
-          .setDescription(
-            "What are you requesting? Be as specific as possible.",
-          )
-          .setRequired(true),
-      ),
-    execute: async (interaction) => {
-      // extract options
-      const [contents] = [interaction.options.getString("contents")];
-
-      // get "tickets" category
-      const ticketsCategory = interaction.guild.channels.cache.find(
-        (channel) =>
-          channel.name.toLowerCase() === "tickets" && channel.type === 4,
-      );
-
-      if (!ticketsCategory)
-        return await interaction.reply("Tickets category not found.");
-
-      // get the quartermaster role id
-      let quartermasterRole = interaction.guild.roles.cache.find(
-        (role) => role.name.toLowerCase() === "quartermaster",
-      );
-
-      if (!quartermasterRole)
-      {
-        // no qm role? make it
-        const newRole = await interaction.guild.roles.create({
-          name: "Quartermaster",
-          color: "Blue",
-        });
-
-        quartermasterRole = newRole;
-      }
-
-      // create a new text channel under the "tickets" category with the following format:
-      // req-<timestamp_short>
-      const timestamp = new Date()
-        .toISOString()
-        .replace(/[-:.T]/g, "")
-        .slice(2, 16); // YYMMDDHHMMSS
-      const channelName = `req-${timestamp}`;
-
-      const newChannel = await interaction.guild.channels.create({
-        name: channelName,
-        type: 0, // text channel
-        parent: ticketsCategory.id,
-        // set permissions so that only the user who created the ticket and the quartermaster role can view it
-        permissionOverwrites: [
-          {
-            id: interaction.user.id,
-            allow: [
-              PermissionFlagsBits.ViewChannel,
-              PermissionFlagsBits.SendMessages,
-            ],
-          },
-          {
-            id: quartermasterRole.id,
-            allow: [
-              PermissionFlagsBits.ViewChannel,
-              PermissionFlagsBits.SendMessages,
-            ],
-          },
-        ],
-      });
-
-      // send a normal message to the new channel with a close button that only the quartermaster role can see
-      const row = new ActionRowBuilder().addComponents(
-        new ButtonBuilder()
-          .setCustomId("close_req_ticket")
-          .setLabel("Close Ticket")
-          .setStyle(ButtonStyle.Danger)
-          .setDisabled(false),
-      );
-
-      await newChannel.send({
-        content: `**Requisition Ticket #${timestamp}**\n**Contents:** ${contents}\n**Created by:** <@${interaction.user.id}>`,
-        components: [row],
-      });
-
-      // reply to the user
-      await interaction.reply({
-        content: `Your requisition ticket has been created: <#${newChannel.id}>`,
-        ephemeral: true,
-      });
-
-      // log
-      sendMessageToLogsChannel(
-        `Requisition ticket <#${newChannel.id}> created by <@${interaction.user.id}>`,
-      );
-
-      // notify all members with the quartermaster role if it exists
-      // (member cache is kept up to date via the GuildMembers intent, so no
-      // need to re-fetch all members here)
-      const quartermasterMembers = quartermasterRole.members;
-      for (const member of quartermasterMembers.values()) {
-        await member.send(
-          `A new requisition ticket has been created: <#${newChannel.id}>`,
-        );
-      }
-    },
-  },
-  {
-    data: new SlashCommandBuilder()
-      .setName("delete-all-requisition-tickets")
-      .setDescription("Deletes all requisition tickets.")
-      .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
-    execute: async (interaction) => {
-      // get "tickets" category
-      const ticketsCategory = interaction.guild.channels.cache.find(
-        (channel) =>
-          channel.name.toLowerCase() === "tickets" && channel.type === 4,
-      );
-
-      if (!ticketsCategory)
-        return await interaction.reply("Tickets category not found.");
-
-      // get all channels under the "tickets" category that start with "req-"
-      const requisitionTickets = ticketsCategory.children.cache.filter(
-        (channel) => channel.name.startsWith("req-"),
-      );
-
-      // delete all requisition tickets
-      for (const ticket of requisitionTickets.values()) {
-        await ticket.delete();
-      }
-
-      // log
-      sendMessageToLogsChannel(
-        `<@${interaction.user.id}> used \`/delete-all-requisition-tickets\` and deleted **${requisitionTickets.size}** requisition tickets.`,
-      );
-    },
-  },
-];
+import commands from "./commands/_index.js";
 
 const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers],
@@ -181,41 +21,7 @@ const client = new Client({
 client.on(Events.ClientReady, async (readyClient) => {
   console.log(`Logged in as ${readyClient.user.tag}!`);
 
-  try {
-    const rest = new REST({ version: "10" }).setToken(
-      process.env.DISCORD_BOT_TOKEN,
-    );
-
-    // clear global commands
-    await rest.put(Routes.applicationCommands(process.env.DISCORD_CLIENT_ID), {
-      body: [],
-    });
-
-    console.log("Cleared global application commands.");
-
-    // register guild-scoped commands
-    await rest.put(Routes.applicationGuildCommands(process.env.DISCORD_CLIENT_ID, process.env.DISCORD_GUILD_ID), {
-      body: commands.map((command) => command.data.toJSON()),
-    });
-
-    const guild = await client.guilds.fetch(process.env.DISCORD_GUILD_ID);
-
-    // fetch all members once so the cache stays populated; the GuildMembers
-    // intent keeps it in sync afterward via gateway events, avoiding repeated
-    // opcode 8 (Request Guild Members) calls that can get rate limited
-    await guild.members.fetch();
-
-    console.log(`Successfully registered application commands for guild ${process.env.DISCORD_GUILD_ID} (${guild ? guild.name : "Unknown"}).`);
-  } catch (error) {
-    console.error(error);
-  }
-
-  cacheUexData();
-
-  // every hour
-  setInterval(async () => {
-    await cacheUexData();
-  }, 60 * 60 * 1000); // 1 hour
+  await registerCommands();
 });
 
 client.on(Events.InteractionCreate, async (interaction) => {
@@ -232,109 +38,42 @@ client.on(Events.InteractionCreate, async (interaction) => {
       await command.execute(interaction);
     }
   }
-
-  if (interaction.isButton()) {
-    if (interaction.customId === "close_req_ticket") {
-      // get the quartermaster role id
-      const quartermasterRole = interaction.guild.roles.cache.find(
-        (role) => role.name.toLowerCase() === "quartermaster",
-      );
-
-      if (!quartermasterRole)
-        return await interaction.reply("Quartermaster role not found.");
-
-      // check if the user has the quartermaster role or is an administrator
-      if (
-        !interaction.member.roles.cache.has(quartermasterRole.id) &&
-        !interaction.member.permissions.has(PermissionFlagsBits.Administrator)
-      ) {
-        return await interaction.reply({
-          content: "You do not have permission to close this ticket.",
-          ephemeral: true,
-        });
-      }
-
-      // fetch all messages in the channel
-      const messages = await interaction.channel.messages.fetch();
-
-      // capture channel info before it's deleted (and removed from cache)
-      const channelId = interaction.channel.id;
-      const channelName = interaction.channel.name;
-
-      // delete the channel
-      await interaction.channel.delete();
-
-      // log
-      sendMessageToLogsChannel({
-        content: `<#${channelId}> closed by <@${interaction.user.id}>`,
-        files: [
-          {
-            name: `${channelName}.txt`,
-            attachment: Buffer.from(
-              messages
-                .map(
-                  (message) =>
-                    `${message.author.tag}/${message.author.id}: ${message.content}`,
-                )
-                .reverse()
-                .join("\n"),
-            ),
-          },
-        ],
-      });
-    }
-  }
 });
 
 client.login(process.env.DISCORD_BOT_TOKEN);
 
-function sendMessageToLogsChannel(message) {
-  const logsChannel = client.channels.cache.find(
-    (channel) => channel.guild.id === process.env.DISCORD_GUILD_ID && channel.name === "logs" && channel.type === 0,
-  );
+async function registerCommands() {
+  try {
+    const rest = new REST({ version: "10" }).setToken(
+      process.env.DISCORD_BOT_TOKEN,
+    );
 
-  if (!logsChannel) return console.error("Logs channel not found.");
+    // clear global commands
+    await rest.put(Routes.applicationCommands(process.env.DISCORD_CLIENT_ID), {
+      body: [],
+    });
 
-  logsChannel.send(message);
-}
+    console.log("Cleared global application commands.");
 
-function codewrap(language, content) {
-  return "```" + language + "\n" + content + "\n```";
-}
+    // register guild-scoped commands
+    await rest.put(
+      Routes.applicationGuildCommands(
+        process.env.DISCORD_CLIENT_ID,
+        process.env.DISCORD_GUILD_ID,
+      ),
+      {
+        body: commands.map((command) => command.data.toJSON()),
+      },
+    );
 
-async function cacheUexData() {
-  const list = [
-    "https://api.uexcorp.uk/2.0/commodities_raw_prices_all",
-    "https://api.uexcorp.uk/2.0/items_prices_all",
-    "https://api.uexcorp.uk/2.0/fuel_prices_all",
-    "https://api.uexcorp.uk/2.0/commodities_prices_all",
-    "https://api.uexcorp.uk/2.0/vehicles_purchases_prices_all",
-    "https://api.uexcorp.uk/2.0/vehicles_rentals_prices_all"
-  ];
+    const guild = await client.guilds.fetch(process.env.DISCORD_GUILD_ID);
 
-  const cacheDir = path.join(__dirname, "uex-cache");
-  fs.mkdirSync(cacheDir, { recursive: true });
+    await guild.members.fetch();
 
-  for (const url of list) {
-    try {
-      const response = await fetch(url);
-
-      if (!response.ok) {
-        throw new Error(`Received status ${response.status}`);
-      }
-
-      const data = await response.json();
-
-      if (data === null || typeof data !== "object") {
-        throw new Error("Response was not a JSON object/array");
-      }
-
-      // write to file
-      const filePath = path.join(cacheDir, `${url.split("/").pop()}.json`);
-
-      fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
-    } catch (error) {
-      console.error(`Error fetching ${url}:`, error);
-    }
+    console.log(
+      `Successfully registered application commands for guild ${process.env.DISCORD_GUILD_ID} (${guild ? guild.name : "Unknown"}).`,
+    );
+  } catch (error) {
+    console.error(error);
   }
 }
