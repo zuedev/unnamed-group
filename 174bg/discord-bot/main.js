@@ -299,7 +299,7 @@ client.login(process.env.DISCORD_BOT_TOKEN);
 
 function sendMessageToLogsChannel(message) {
   const logsChannel = client.channels.cache.find(
-    (channel) => channel.name === "logs" && channel.type === 0,
+    (channel) => channel.guild.id === process.env.DISCORD_GUILD_ID && channel.name === "logs" && channel.type === 0,
   );
 
   if (!logsChannel) return console.error("Logs channel not found.");
