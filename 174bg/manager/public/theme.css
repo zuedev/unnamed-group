@@ -95,6 +95,7 @@ body > h1,
 #anonymous,
 #required-info,
 #preferences,
+#oncall,
 #ledger,
 #welcome {
   background: var(--panel);
@@ -162,6 +163,7 @@ button:disabled {
 
 /* Tables ----------------------------------------------------------- */
 #preferences table,
+#oncall table,
 #ledger table {
   border-collapse: collapse;
   width: 100%;
@@ -169,6 +171,7 @@ button:disabled {
 }
 
 #preferences thead th,
+#oncall thead th,
 #ledger thead th {
   text-align: left;
   padding: 0.5rem 0.75rem;
@@ -181,17 +184,20 @@ button:disabled {
 }
 
 #preferences tbody tr:nth-child(even),
+#oncall tbody tr:nth-child(even),
 #ledger tbody tr:nth-child(even) {
   background: var(--row-alt);
 }
 
 #preferences tbody td,
+#oncall tbody td,
 #ledger tbody td {
   padding: 0.45rem 0.75rem;
   border-bottom: 1px solid rgba(56, 189, 248, 0.1);
 }
 
 #preferences tbody tr:hover:not([data-separator]),
+#oncall tbody tr:hover,
 #ledger tbody tr:hover {
   background: rgba(56, 189, 248, 0.1);
 }
@@ -224,6 +230,33 @@ input[type="checkbox"] {
   height: 1.05rem;
   accent-color: var(--accent);
   cursor: pointer;
+}
+
+#oncall input[type="time"] {
+  font-family: "Rajdhani", sans-serif;
+  font-size: 0.9rem;
+  color: var(--text);
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid var(--panel-border);
+  border-radius: 6px;
+  padding: 0.3rem 0.5rem;
+  color-scheme: dark;
+}
+
+#oncall input[type="time"]:disabled {
+  opacity: 0.35;
+}
+
+#oncall select {
+  font-family: "Rajdhani", sans-serif;
+  font-size: 0.9rem;
+  color: var(--text);
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid var(--panel-border);
+  border-radius: 6px;
+  padding: 0.3rem 0.5rem;
+  color-scheme: dark;
+  max-width: 16rem;
 }
 
 /* Status & warnings ------------------------------------------------ */
@@ -266,6 +299,7 @@ input[type="checkbox"] {
 
 /* Tables can scroll horizontally if they ever overflow ------------- */
 #preferences,
+#oncall,
 #ledger {
   overflow-x: auto;
 }
@@ -281,6 +315,7 @@ input[type="checkbox"] {
   #anonymous,
   #required-info,
   #preferences,
+  #oncall,
   #ledger,
   #welcome {
     padding: 1rem 1.1rem;

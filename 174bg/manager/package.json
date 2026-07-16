@@ -3,6 +3,7 @@
     "wrangler": "^4.95.0"
   },
   "scripts": {
-    "deploy": "npx wrangler deploy --minify"
+    "deploy": "npx wrangler deploy --minify",
+    "dev": "npx wrangler dev"
   }
 }
