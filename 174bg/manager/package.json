@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "wrangler": "^4.95.0"
+    "wrangler": "^4.111.0"
   },
   "scripts": {
     "deploy": "npx wrangler deploy --minify"
