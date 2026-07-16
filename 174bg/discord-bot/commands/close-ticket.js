@@ -2,7 +2,7 @@ import { SlashCommandBuilder, PermissionFlagsBits } from "discord.js";
 
 export default {
   data: new SlashCommandBuilder()
-    .setName("close")
+    .setName("close-ticket")
     .setDescription(
       "Closes the current ticket by logging the contents and deleting the channel.",
     )

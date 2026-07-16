@@ -1,6 +1,6 @@
 import requisition from "./requisition.js";
-import close from "./close.js";
+import closeTicket from "./close-ticket.js";
 
-export { requisition, close };
+export { requisition, closeTicket };
 
-export default [requisition, close];
+export default [requisition, closeTicket];
