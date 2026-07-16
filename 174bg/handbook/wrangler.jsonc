@@ -2,10 +2,9 @@
   "$schema": "https://esm.sh/wrangler@4.90.1/config-schema.json",
   "compatibility_date": "2026-03-29",
   "account_id": "424d9dabd39849818d9e22366a20e4d6",
-  "name": "174bg-handbook",
+  "name": "174bg-handbook-vitepress",
   "assets": {
-    "directory": "./public/",
-    "not_found_handling": "single-page-application",
+    "directory": "./.vitepress/dist",
   },
   "minify": true,
   "observability": {
@@ -17,4 +16,15 @@
       "custom_domain": true,
     },
   ],
+  "env": {
+    "preview": {
+      "name": "174bg-handbook-vitepress-preview",
+      "routes": [
+        {
+          "pattern": "preview.handbook.174bg.net",
+          "custom_domain": true,
+        },
+      ],
+    },
+  },
 }
