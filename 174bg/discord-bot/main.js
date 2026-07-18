@@ -1,3 +1,4 @@
+import fs from "fs";
 import {
   Client,
   Events,
@@ -11,10 +12,8 @@ import {
   ButtonBuilder,
   ButtonStyle,
 } from "discord.js";
-
+import getUrl from "./utilities/getUrl.js";
 import commands from "./commands/_index.js";
-
-import fs from "fs";
 
 const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers],
@@ -82,12 +81,6 @@ async function registerCommands() {
   }
 }
 
-async function getUrl(url) {
-  const response = await fetch(url);
-  if (!response.ok) return null;
-  return await response.json();
-}
-
 async function buildCache() {
   if (!fs.existsSync("./.cache")) fs.mkdirSync("./.cache");
 
@@ -96,12 +89,21 @@ async function buildCache() {
   uex.categories = (await getUrl("https://api.uexcorp.uk/2.0/categories"))?.data;
 
   for (const category of uex.categories) {
+    uex.items = uex.items || [];
     if (category.type === "item") {
-      if (!uex.items) uex.items = {};
-      if (!uex.items[category.section]) uex.items[category.section] = {};
-      uex.items[category.section][category.name] = (await getUrl(`https://api.uexcorp.uk/2.0/items?id_category=${category.id}`))?.data;
+      uex.items = uex.items.concat((await getUrl(`https://api.uexcorp.uk/2.0/items?id_category=${category.id}`))?.data || []);
     }
   }
+
+  uex.space_stations = (await getUrl("https://api.uexcorp.uk/2.0/space_stations"))?.data;
+  uex.cities = (await getUrl("https://api.uexcorp.uk/2.0/cities"))?.data;
+  uex.outposts = (await getUrl("https://api.uexcorp.uk/2.0/outposts"))?.data;
+  uex.points_of_interest = (await getUrl("https://api.uexcorp.uk/2.0/poi"))?.data;
+  uex.terminals = (await getUrl("https://api.uexcorp.uk/2.0/terminals"))?.data;
+  uex.vehicles = (await getUrl("https://api.uexcorp.uk/2.0/vehicles"))?.data;
+  uex.vehicles_pledge_prices = (await getUrl("https://api.uexcorp.uk/2.0/vehicles_prices"))?.data;
+  uex.vehicles_buy_prices = (await getUrl("https://api.uexcorp.uk/2.0/vehicles_purchases_prices"))?.data;
+  uex.vehicles_rent_prices = (await getUrl("https://api.uexcorp.uk/2.0/vehicles_rentals_prices"))?.data;
 
   // is there a difference between the current cache and the new cache?
   if (fs.existsSync("./.cache/uex.json")) {
@@ -109,6 +111,10 @@ async function buildCache() {
 
     if (JSON.stringify(currentCache) === JSON.stringify(uex)) {
       console.log("No changes detected in UEX cache.");
+      console.log("If you want to force a cache update, delete the .cache/uex.json file and restart the bot.");
+      for (const [key, value] of Object.entries(uex)) {
+        console.log(`Found ${value.length} ${key.replace(/_/g, " ")}.`);
+      }
       return;
     }
 
@@ -123,8 +129,12 @@ async function buildCache() {
     console.log("No existing UEX cache found. Creating new cache.");
   }
 
-  fs.writeFileSync(
+  await fs.writeFileSync(
     "./.cache/uex.json",
     JSON.stringify(uex, null, 2),
   );
+
+  for (const [key, value] of Object.entries(uex)) {
+    console.log(`Cached ${value.length} ${key.replace(/_/g, " ")}.`);
+  }
 }
