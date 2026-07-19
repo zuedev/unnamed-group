@@ -31,6 +31,11 @@ export default {
             .setName("inventory_locations")
             .setDescription("Populates the inventory_locations collection with data from the bot's UEX cache.")
         )
+        .addSubcommand((subcommand) =>
+          subcommand
+            .setName("uex_vehicles")
+            .setDescription("Populates the uex_vehicles collection with data from the bot's UEX cache.")
+        )
     ),
   execute: async (interaction) => {
     // only zuedev can run any of these commands
@@ -55,6 +60,9 @@ export default {
           break;
         case "inventory_locations":
           populateInventoryLocations(interaction);
+          break;
+        case "uex_vehicles":
+          populateUexVehicles(interaction);
           break;
       }
     }
@@ -327,6 +335,66 @@ async function populateInventoryLocations(interaction) {
 
   interaction.editReply({
     content: `Successfully populated inventory_locations collection with ${locations.length} locations. (${ops} processed, ${updates} updated, ${creates} created, ${failed} failed)`,
+    ephemeral: true,
+  });
+}
+
+async function populateUexVehicles(interaction) {
+  const pb = new PocketBase(process.env.POCKETBASE_URL);
+  pb.authStore.save(process.env.POCKETBASE_AUTH_TOKEN, null);
+
+  const vehicles = uex.vehicles ?? [];
+
+  interaction.reply({
+    content: `Populating uex_vehicles collection with ${vehicles.length} vehicles...`,
+    ephemeral: true,
+  });
+
+  let ops = 0;
+  let failed = 0;
+  let updates = 0;
+  let creates = 0;
+
+  for (const vehicle of vehicles) {
+    try {
+      const existingVehicle = await pb.collection("uex_vehicles").getFullList({
+        filter: `id="${vehicle.id}"`,
+      });
+
+      if (existingVehicle.length > 0) {
+        const pbUpdated = new Date(existingVehicle[0].updated).getTime();
+        const uexUpdated = (vehicle.updated ?? 0) * 1000;
+
+        if (pbUpdated < uexUpdated) {
+          await pb.collection("uex_vehicles").update(existingVehicle[0].id, {
+            name: vehicle.name,
+          });
+          updates++;
+        }
+      } else {
+        await pb.collection("uex_vehicles").create({
+          id: vehicle.id,
+          name: vehicle.name,
+        });
+        creates++;
+      }
+
+      ops++;
+
+      if (ops % 1000 === 0) {
+        interaction.editReply({
+          content: `Populating uex_vehicles collection with ${vehicles.length} vehicles... (${ops} processed, ${updates} updated, ${creates} created, ${failed} failed)`,
+          ephemeral: true,
+        });
+      }
+    } catch (error) {
+      console.error(`Failed to create vehicle ${vehicle?.name}:`, error);
+      failed++;
+    }
+  }
+
+  interaction.editReply({
+    content: `Successfully populated uex_vehicles collection with ${vehicles.length} vehicles. (${ops} processed, ${updates} updated, ${creates} created, ${failed} failed)`,
     ephemeral: true,
   });
 }
