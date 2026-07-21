@@ -1,5 +1,5 @@
 import { SlashCommandBuilder, PermissionFlagsBits } from "discord.js";
-import PocketBase from "pocketbase";
+import { login } from "../controllers/pocketbase.js";
 import uex from "../.cache/uex.json" with { type: "json" };
 
 export default {
@@ -70,8 +70,7 @@ export default {
 };
 
 async function populateUexItems(interaction) {
-  const pb = new PocketBase(process.env.POCKETBASE_URL);
-  pb.authStore.save(process.env.POCKETBASE_AUTH_TOKEN, null);
+  const pb = await login();
 
   const items = uex.items ?? [];
 
@@ -131,8 +130,7 @@ async function populateUexItems(interaction) {
 }
 
 async function populateUexSpaceStations(interaction) {
-  const pb = new PocketBase(process.env.POCKETBASE_URL);
-  pb.authStore.save(process.env.POCKETBASE_AUTH_TOKEN, null);
+  const pb = await login();
 
   const stations = uex.space_stations ?? [];
 
@@ -192,8 +190,7 @@ async function populateUexSpaceStations(interaction) {
 }
 
 async function populateUexPointsOfInterest(interaction) {
-  const pb = new PocketBase(process.env.POCKETBASE_URL);
-  pb.authStore.save(process.env.POCKETBASE_AUTH_TOKEN, null);
+  const pb = await login();
 
   const pointsOfInterest = uex.points_of_interest ?? [];
 
@@ -248,8 +245,7 @@ async function populateUexPointsOfInterest(interaction) {
 }
 
 async function populateInventoryLocations(interaction) {
-  const pb = new PocketBase(process.env.POCKETBASE_URL);
-  pb.authStore.save(process.env.POCKETBASE_AUTH_TOKEN, null);
+  const pb = await login();
 
   const stations = uex.space_stations ?? [];
   const pointsOfInterest = uex.points_of_interest ?? [];
@@ -340,8 +336,7 @@ async function populateInventoryLocations(interaction) {
 }
 
 async function populateUexVehicles(interaction) {
-  const pb = new PocketBase(process.env.POCKETBASE_URL);
-  pb.authStore.save(process.env.POCKETBASE_AUTH_TOKEN, null);
+  const pb = await login();
 
   const vehicles = uex.vehicles ?? [];
 

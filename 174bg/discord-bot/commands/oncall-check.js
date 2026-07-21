@@ -1,5 +1,5 @@
 import { SlashCommandBuilder, PermissionFlagsBits } from "discord.js";
-import PocketBase from "pocketbase";
+import { login } from "../controllers/pocketbase.js";
 
 export default {
   data: new SlashCommandBuilder()
@@ -12,8 +12,7 @@ export default {
     const dateUTCMinutes = date.getUTCMinutes();
     const dateUTCDay = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][date.getUTCDay()];
 
-    const pb = new PocketBase(process.env.POCKETBASE_URL);
-    pb.authStore.save(process.env.POCKETBASE_AUTH_TOKEN, null);
+    const pb = await login();
 
     const members = await pb.collection("members").getFullList();
 
@@ -31,6 +30,8 @@ export default {
             const end = member.onCallSchedule[dateUTCDay].end;
             const endHours = end.split(":")[0];
             const endMinutes = end.split(":")[1];
+
+            console.log(`Checking on-call schedule for member ${member.name}: ${start} - ${end} (UTC)`);
 
             if ((dateUTCHours > startHours || (dateUTCHours === startHours && dateUTCMinutes >= startMinutes)) && (dateUTCHours < endHours || (dateUTCHours === endHours && dateUTCMinutes <= endMinutes))) {
               membersOnCall.push(member);
