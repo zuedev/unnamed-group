@@ -10,7 +10,7 @@ export default {
   execute: async (interaction) => {
     const channel = interaction.channel;
 
-    if (!channel || !channel.name.startsWith("ticket-")) {
+    if (!channel || !channel.parent || channel.parent.name.toLowerCase() !== "tickets") {
       return await interaction.reply({
         content: "This command can only be used in a ticket channel.",
         ephemeral: true,
