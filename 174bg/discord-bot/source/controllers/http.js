@@ -22,4 +22,4 @@ export async function get(url) {
     return await response.text();
 };
 
-return { get };
+export default { get };

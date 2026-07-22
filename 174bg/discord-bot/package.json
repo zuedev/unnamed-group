@@ -1,8 +1,8 @@
 {
   "scripts": {
-    "start": "node main.js",
-    "dev": "node --env-file=.env main.js",
-    "dev:watch": "node --env-file=.env --watch main.js"
+    "start": "node source/main.js",
+    "dev": "node --env-file=.env source/main.js",
+    "dev:watch": "node --env-file=.env --watch source/main.js"
   },
   "dependencies": {
     "@discordjs/voice": "^0.19.2",

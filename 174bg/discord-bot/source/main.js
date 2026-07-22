@@ -11,6 +11,7 @@ import {
   ButtonBuilder,
   ButtonStyle,
 } from "discord.js";
+
 import commands from "./commands/_index.js";
 
 const client = new Client({
@@ -24,7 +25,6 @@ client.on(Events.ClientReady, async (readyClient) => {
 });
 
 client.on(Events.InteractionCreate, async (interaction) => {
-  // only respond to interactions in the specified guild
   if (interaction.guild.id !== process.env.DISCORD_GUILD_ID) return;
 
   if (interaction.isChatInputCommand()) {
@@ -42,37 +42,23 @@ client.on(Events.InteractionCreate, async (interaction) => {
 client.login(process.env.DISCORD_BOT_TOKEN);
 
 async function registerCommands() {
-  try {
-    const rest = new REST({ version: "10" }).setToken(
-      process.env.DISCORD_BOT_TOKEN,
-    );
+  const rest = new REST({ version: "10" }).setToken(
+    process.env.DISCORD_BOT_TOKEN,
+  );
 
-    // clear global commands
-    await rest.put(Routes.applicationCommands(process.env.DISCORD_CLIENT_ID), {
-      body: [],
-    });
+  // clear global commands
+  await rest.put(Routes.applicationCommands(process.env.DISCORD_CLIENT_ID), {
+    body: [],
+  });
 
-    console.log("Cleared global application commands.");
-
-    // register guild-scoped commands
-    await rest.put(
-      Routes.applicationGuildCommands(
-        process.env.DISCORD_CLIENT_ID,
-        process.env.DISCORD_GUILD_ID,
-      ),
-      {
-        body: commands.map((command) => command.data.toJSON()),
-      },
-    );
-
-    const guild = await client.guilds.fetch(process.env.DISCORD_GUILD_ID);
-
-    await guild.members.fetch();
-
-    console.log(
-      `Successfully registered application commands for guild ${process.env.DISCORD_GUILD_ID} (${guild ? guild.name : "Unknown"}).`,
-    );
-  } catch (error) {
-    console.error(error);
-  }
+  // register guild-scoped commands
+  await rest.put(
+    Routes.applicationGuildCommands(
+      process.env.DISCORD_CLIENT_ID,
+      process.env.DISCORD_GUILD_ID,
+    ),
+    {
+      body: commands.map((command) => command.data.toJSON()),
+    },
+  );
 }
