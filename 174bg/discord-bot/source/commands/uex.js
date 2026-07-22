@@ -56,7 +56,7 @@ export default {
 async function uex_lookup_items(interaction) {
     const query = interaction.options.getString("query");
 
-    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+    await interaction.deferReply();
 
     const allItems = await items();
 
