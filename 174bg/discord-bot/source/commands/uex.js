@@ -75,7 +75,21 @@ async function uex_lookup_items(interaction) {
         .map((item) => `- ${item.name} (ID: ${item.id})`)
         .join("\n");
 
-    await interaction.editReply({
-        content: `Found ${matchingItems.length} item(s) matching "${query}":\n${itemList}`,
-    });
+    let replyContent = `Found ${matchingItems.length} item(s) matching "${query}":\n${itemList}`;
+
+    if (replyContent.length > 2000) {
+        await interaction.editReply({
+            content: `Found ${matchingItems.length} item(s) matching "${query}", but the list is too long to display. Attached is a file containing the results.`,
+            files: [
+                {
+                    attachment: Buffer.from(itemList, "utf-8"), name: `uex_items_${query}.txt`,
+                },
+            ],
+        });
+        return;
+    } else {
+        await interaction.editReply({
+            content: replyContent,
+        });
+    }
 }
