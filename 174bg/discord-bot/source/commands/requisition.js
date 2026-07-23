@@ -1,6 +1,6 @@
 import { SlashCommandBuilder } from "discord.js";
 import createTicket from "../utilities/createTicket.js";
-import notifyRoleByName from "../utilities/notifyRoleByName.js";
+import messageMembersByRoleName from "../utilities/messageMembersByRoleName.js";
 
 export default {
   data: new SlashCommandBuilder()
@@ -33,7 +33,7 @@ export default {
     });
 
     // notify quartermasters
-    await notifyRoleByName(
+    await messageMembersByRoleName(
       interaction.guild,
       "quartermaster",
       `New requisition request from <@${interaction.user.id}>: ${contents}`,

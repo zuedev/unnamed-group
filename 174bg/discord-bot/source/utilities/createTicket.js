@@ -1,38 +1,39 @@
 import { ChannelType, PermissionFlagsBits } from "discord.js";
 
-export default async (
+/**
+ * Creates a new ticket channel under the "tickets" category with the specified options.
+ * 
+ * @param {Interaction} interaction The interaction object from Discord.js.
+ * @param {Object} options The options for creating the ticket.
+ * @param {Array<string>} options.roleNamesWithAccess The names of the roles that should have access to the ticket.
+ * @param {string} options.ticketNamePrefix The prefix for the ticket channel name.
+ * 
+ * @returns {Promise<Channel>} The newly created ticket channel.
+ */
+export default async function createTicket(
   interaction,
   options = { roleNamesWithAccess: [], ticketNamePrefix: "ticket-" },
-) => {
+) {
   const ticketsCategory = interaction.guild.channels.cache.find(
     (channel) =>
       channel.name.toLowerCase() === "tickets" &&
       channel.type === ChannelType.GuildCategory,
   );
 
-  if (!ticketsCategory)
-    return await interaction.reply("Tickets category not found.");
+  if (!ticketsCategory) throw new Error("Tickets category not found in the guild.");
 
-  // get the roles that should have access to this ticket
   const rolesWithAccess = options.roleNamesWithAccess.map((roleName) => {
     return interaction.guild.roles.cache.find(
       (role) => role.name.toLowerCase() === roleName.toLowerCase(),
     );
   });
 
-  // create a new text channel under the "tickets" category with the following format: ticket-<timestamp_short>
-  const timestamp = new Date()
-    .toISOString()
-    .replace(/[-:.T]/g, "")
-    .slice(2, 16);
-
-  const channelName = `${options.ticketNamePrefix}${timestamp}`;
+  const timestamp = Date.now().toString(36); // base36
 
   const newChannel = await interaction.guild.channels.create({
-    name: channelName,
+    name: `${options.ticketNamePrefix}-${timestamp}`,
     type: ChannelType.GuildText,
     parent: ticketsCategory.id,
-    // set permissions so that only the user who created the ticket and the roles with access can view it
     permissionOverwrites: [
       {
         id: interaction.user.id,
