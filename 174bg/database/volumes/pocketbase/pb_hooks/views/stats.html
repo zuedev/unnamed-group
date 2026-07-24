@@ -3,8 +3,7 @@
 {{end}}
 
 {{define "body"}}
-    <p id="timeDifference">Time Difference: {{.timeDifference}}</p>
-    <p id="withinThreshold">Within Threshold: {{.withinThreshold}}</p>
+    <p id="app"></p>
 
     <script>
         window.addEventListener("load", () => {
@@ -12,14 +11,22 @@
         });
 
         async function fetchStats() {
-            let heartbeat = await fetch("/api/heartbeat");
-            heartbeat = await heartbeat.json();
+            let stats = await fetch("/api/stats");
+            stats = await stats.json();
+            document.getElementById("app").innerHTML = jsonToHtml(stats);
+        }
 
-            const timeDifference = heartbeat.timeDifference;
-            const withinThreshold = heartbeat.withinThreshold;
+        function jsonToHtml(json) {
+            if (json === null || typeof json !== "object") {
+                return String(json);
+            }
 
-            document.getElementById("timeDifference").textContent = `Time Difference: ${timeDifference}`;
-            document.getElementById("withinThreshold").textContent = `Within Threshold: ${withinThreshold}`;
+            let html = "<ul>";
+            for (const [key, value] of Object.entries(json)) {
+                html += `<li>${key}: ${typeof value === "object" && value !== null ? jsonToHtml(value) : String(value)}</li>`;
+            }
+            html += "</ul>";
+            return html;
         }
     </script>
 {{end}}
