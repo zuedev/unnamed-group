@@ -1,4 +1,4 @@
-routerAdd("GET", "/heartbeat", (e) => {
+routerAdd("GET", "/api/heartbeat", (e) => {
     try {
         const result = new DynamicModel({
             "value": nullString(),

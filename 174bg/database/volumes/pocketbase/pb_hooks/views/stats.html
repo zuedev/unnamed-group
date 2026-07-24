@@ -1,0 +1,25 @@
+{{define "title"}}
+    stats
+{{end}}
+
+{{define "body"}}
+    <p id="timeDifference">Time Difference: {{.timeDifference}}</p>
+    <p id="withinThreshold">Within Threshold: {{.withinThreshold}}</p>
+
+    <script>
+        window.addEventListener("load", () => {
+            setInterval(fetchStats, 100);
+        });
+
+        async function fetchStats() {
+            let heartbeat = await fetch("/api/heartbeat");
+            heartbeat = await heartbeat.json();
+
+            const timeDifference = heartbeat.timeDifference;
+            const withinThreshold = heartbeat.withinThreshold;
+
+            document.getElementById("timeDifference").textContent = `Time Difference: ${timeDifference}`;
+            document.getElementById("withinThreshold").textContent = `Within Threshold: ${withinThreshold}`;
+        }
+    </script>
+{{end}}
