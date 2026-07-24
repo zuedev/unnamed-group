@@ -1,9 +1,11 @@
-{{define "title"}}
-    stats
-{{end}}
-
 {{define "body"}}
-    <p id="app"></p>
+    <style>
+        div#app {
+            font-family: monospace;
+        }
+    </style>
+
+    <div id="app"></div>
 
     <script>
         window.addEventListener("load", () => {
