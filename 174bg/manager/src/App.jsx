@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
+import { Navigate, Route, Routes } from "react-router-dom";
 import { pb } from "./lib/pocketbase";
-import Welcome from "./components/Welcome.jsx";
-import RequiredInfo from "./components/RequiredInfo.jsx";
+import Sidebar from "./components/Sidebar.jsx";
+import Overview from "./pages/Overview.jsx";
 import RolePreferences from "./components/RolePreferences.jsx";
 import OnCallSchedule from "./components/OnCallSchedule.jsx";
 import Ledger from "./components/Ledger.jsx";
@@ -143,40 +144,75 @@ export default function App() {
 
   return (
     <>
-      <h1>174th Battle Group: Manager</h1>
-
       {!loggedIn && (
-        <section id="anonymous">
-          <p>You are not logged in. Please log in to access this site:</p>
-          <button id="login" onClick={handleLogin} disabled={loginDisabled}>
-            Login with Discord
-          </button>
-        </section>
-      )}
-
-      {oauthStatus.text && (
-        <p id="oauth-status" style={oauthStatusStyle}>
-          {oauthStatus.text}
-        </p>
+        <div className="center-view">
+          <h1>174th Battle Group: Manager</h1>
+          <section id="anonymous">
+            <p>You are not logged in. Please log in to access this site:</p>
+            <button id="login" onClick={handleLogin} disabled={loginDisabled}>
+              Login with Discord
+            </button>
+          </section>
+          {oauthStatus.text && (
+            <p id="oauth-status" style={oauthStatusStyle}>
+              {oauthStatus.text}
+            </p>
+          )}
+        </div>
       )}
 
       {loggedIn && (
-        <section
-          id="authed"
-          style={{ display: "flex", flexDirection: "column", gap: "1em" }}
-        >
-          <Welcome record={record} />
-          <RequiredInfo record={record} />
-          <RolePreferences record={record} onUpdate={handleRecordUpdate} />
-          <OnCallSchedule record={record} onUpdate={handleRecordUpdate} />
-          <Ledger />
-          <div>
-            <button id="logout" onClick={handleLogout}>
-              Logout
-            </button>
-          </div>
-        </section>
+        <DashboardLayout
+          record={record}
+          onLogout={handleLogout}
+          onUpdate={handleRecordUpdate}
+        />
       )}
     </>
+  );
+}
+
+function DashboardLayout({ record, onLogout, onUpdate }) {
+  const [navOpen, setNavOpen] = useState(false);
+
+  return (
+    <div className="app-shell">
+      <Sidebar
+        record={record}
+        open={navOpen}
+        onClose={() => setNavOpen(false)}
+        onLogout={onLogout}
+      />
+      <div className="app-content">
+        <header className="topbar">
+          <button
+            type="button"
+            className="nav-toggle"
+            onClick={() => setNavOpen((v) => !v)}
+            aria-label="Toggle navigation"
+          >
+            ☰
+          </button>
+          <span className="topbar-title">174th Battle Group: Manager</span>
+        </header>
+        <main className="page">
+          <Routes>
+            <Route path="/" element={<Overview record={record} />} />
+            <Route
+              path="/preferences"
+              element={
+                <RolePreferences record={record} onUpdate={onUpdate} />
+              }
+            />
+            <Route
+              path="/oncall"
+              element={<OnCallSchedule record={record} onUpdate={onUpdate} />}
+            />
+            <Route path="/ledger" element={<Ledger />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </main>
+      </div>
+    </div>
   );
 }
