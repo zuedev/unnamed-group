@@ -1,9 +1,19 @@
 {
-  "dependencies": {
-    "wrangler": "^4.95.0"
-  },
+  "type": "module",
   "scripts": {
-    "deploy": "npx wrangler deploy --minify",
-    "dev": "npx wrangler dev"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "deploy": "npm run build && npx wrangler deploy --minify"
+  },
+  "dependencies": {
+    "pocketbase": "^0.27.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "vite": "^6.2.0",
+    "wrangler": "^4.95.0"
   }
 }

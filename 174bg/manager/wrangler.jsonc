@@ -4,7 +4,7 @@
   "account_id": "424d9dabd39849818d9e22366a20e4d6",
   "name": "174bg-manager",
   "assets": {
-    "directory": "./public/",
+    "directory": "./dist/",
     "not_found_handling": "single-page-application",
   },
   "minify": true,
