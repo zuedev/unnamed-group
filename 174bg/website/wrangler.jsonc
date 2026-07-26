@@ -3,8 +3,8 @@
   "compatibility_flags": ["nodejs_compat"],
   "compatibility_date": "2026-03-29",
   "account_id": "424d9dabd39849818d9e22366a20e4d6",
-  "name": "174bg-www",
-  "main": "./server/index.js",
+  "name": "www-174bg-net",
+  "main": "./worker.js",
   "assets": {
     "directory": "./assets/",
     "not_found_handling": "single-page-application",
