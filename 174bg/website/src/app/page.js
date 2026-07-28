@@ -2,7 +2,7 @@ export default function Home() {
   return (
     <div className="flex flex-col gap-[1rem] p-[1rem] max-w-[666px] mx-auto">
       <div id="header" className="flex flex-row gap-[1rem] items-center">
-        <img id="logo" src="logo.png" className="h-[100px]" />
+        <img id="logo" src="/images/logo/logo.png" className="h-[100px]" />
         <div className="ml-[1rem] flex flex-col justify-center h-[100px]">
           <h1 className="m-0 font-bold text-2xl">174th Battle Group</h1>
           <h2 className="text-[red] m-0 text-xl">

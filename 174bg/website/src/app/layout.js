@@ -4,7 +4,7 @@ export const metadata = {
   title: "174th Battle Group - Star Citizen Military Organization",
   description: `The "Red Right Hand" of the UEE`,
   icons: {
-    icon: "/logo.png",
+    icon: "/images/logo/logo_icon.png",
   },
 };
 
