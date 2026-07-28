@@ -24,6 +24,9 @@ Here is a table of potential candidates with the amount they can carry:
 | ---------------------------------------------------------------------------- | --------------------- | ----------------- |
 | [Reliant Tana](https://starcitizen.tools/Reliant_Tana)                       | 20xS2 (20)            | 8xS1, 16xS2 (24)  |
 | [Cutlass Black](https://starcitizen.tools/Cutlass_Black)                     | 8xS2, 8xS3 (16)       | 48xS1 (48)        |
+| [Cutlass Blue](https://starcitizen.tools/Cutlass_Blue)                       | 8xS2, 8xS3 (16)       | 48xS1 (48)        |
+| [Cutlass Steel](https://starcitizen.tools/Cutlass_Steel)                     | 8xS2, 8xS3 (16)       | 48xS1 (48)        |
+| [Shiv](https://starcitizen.tools/Shiv)                                       | 8xS2, 8xS3 (16)       | 48xS1 (48)        |
 | [Talon Shrike](https://starcitizen.tools/Talon_Shrike)                       | 24xS3 (24)            | x                 |
 | [Gladiator](https://starcitizen.tools/Gladiator)                             | 8xS2, 4xS3, 4xS5 (16) | 32xS1, 4xS5 (36)  |
 | [Freelancer MIS](https://starcitizen.tools/Freelancer_MIS)                   | 28xS3 (28)            | 32xS1, 20xS3 (52) |
