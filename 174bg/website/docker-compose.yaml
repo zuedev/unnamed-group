@@ -1,0 +1,6 @@
+# this is the compose file we deploy to the server
+services:
+  app:
+    build: https://github.com/EpicGames/lore.git#master:174bg/website
+    ports:
+      - "3892:3000"
