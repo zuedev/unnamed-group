@@ -38,3 +38,9 @@ Key takeaways:
   - The Andromeda has a few more bigger missiles and has two turrets to help defend it, whereas the Freelancer only has one
 - The Talon Shrike and Sabre Firebird are worth considering as they are extremely fast and maneuverable but lack the long volleys of missiles that the Andromeda and Freelancer can provide
   - The Cutlass Black is a good compromise as it can hold 48 missiles (4 less than the Andromeda and Freelancer) but is slower and less maneuverable than the Talon Shrike and Sabre Firebird
+
+Draft#1:
+
+- Main ship: Cutlass Black
+- Survivability: Constellation Andromeda
+- Fast & Hard: Firebird
