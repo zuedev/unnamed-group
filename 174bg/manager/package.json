@@ -13,8 +13,8 @@
     "react-router-dom": "^7.1.1"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.3.4",
-    "vite": "^6.2.0",
-    "wrangler": "^4.95.0"
+    "@vitejs/plugin-react": "^6.0.5",
+    "vite": "^8.2.1",
+    "wrangler": "^4.119.0"
   }
 }
