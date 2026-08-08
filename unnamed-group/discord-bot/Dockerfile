@@ -1,12 +1,4 @@
-FROM node:22
-
+FROM denoland/deno:alpine-2.9.4
 WORKDIR /app
-
-COPY package.json .
-COPY package-lock.json .
-
-RUN npm install
-
-COPY . .
-
-CMD ["npm", "start"]
+COPY main.js .
+CMD ["deno", "--allow-all", "main.js"]

@@ -7,7 +7,7 @@ import {
   PermissionFlagsBits,
   ChannelType,
   Routes,
-} from "discord.js";
+} from "npm:discord.js@14.27.0";
 
 const discord = new Client({
   intents: Object.values(GatewayIntentBits),
