@@ -1,5 +1,5 @@
 {
     "tasks": {
-        "start": "deno --allow-all --env-file=.env source/main.js",
+        "start": "deno --allow-all --env-file=.env source/main.js"
     }
 }
