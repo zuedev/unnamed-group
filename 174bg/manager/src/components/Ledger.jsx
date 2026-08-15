@@ -12,9 +12,12 @@ export default function Ledger() {
 
   useEffect(() => {
     let cancelled = false;
-    pb
-      .collection("ledger")
-      .getFullList({ expand: "sender,recipient", sort: "-created", requestKey: null })
+    pb.collection("ledger")
+      .getFullList({
+        expand: "sender,recipient",
+        sort: "-created",
+        requestKey: null,
+      })
       .then((recs) => {
         if (!cancelled) setRecords(recs);
       })

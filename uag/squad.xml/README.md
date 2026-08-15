@@ -1,2 +1,1 @@
 # squad.xml
-

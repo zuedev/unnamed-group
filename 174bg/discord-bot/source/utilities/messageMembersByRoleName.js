@@ -1,13 +1,17 @@
 /**
  * Messages all members of a specific role in a Discord guild by the role's name.
- * 
+ *
  * @param {Guild} guild The Discord guild.
  * @param {string} roleName The name of the role.
  * @param {string} message The message to send.
- * 
+ *
  * @returns {Promise<{successes: Array, failures: Array}>} The results of the messaging attempts.
  */
-export default async function messageMembersByRoleName(guild, roleName, message) {
+export default async function messageMembersByRoleName(
+  guild,
+  roleName,
+  message,
+) {
   const role = guild.roles.cache.find(
     (role) => role.name.toLowerCase() === roleName.toLowerCase(),
   );

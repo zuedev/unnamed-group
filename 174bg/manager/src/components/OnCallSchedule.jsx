@@ -98,13 +98,30 @@ export default function OnCallSchedule({ record, onUpdate }) {
           </>
         )}
       </div>
-      <p style={{ margin: "0.25rem 0 0.75rem", fontSize: "0.85rem", color: "var(--text-dim)" }}>
-        Let the group know which days and hours you're usually free to join operations.
+      <p
+        style={{
+          margin: "0.25rem 0 0.75rem",
+          fontSize: "0.85rem",
+          color: "var(--text-dim)",
+        }}
+      >
+        Let the group know which days and hours you're usually free to join
+        operations.
       </p>
-      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.75rem" }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "0.5rem",
+          marginBottom: "0.75rem",
+        }}
+      >
         <b>Timezone:</b>
         {editing ? (
-          <select value={timeZone} onChange={(e) => setTimeZone(e.target.value)}>
+          <select
+            value={timeZone}
+            onChange={(e) => setTimeZone(e.target.value)}
+          >
             {tzOptions.map((tz) => (
               <option key={tz} value={tz}>
                 {tz} ({formatUtcOffset(tz)})
@@ -178,7 +195,13 @@ export default function OnCallSchedule({ record, onUpdate }) {
           })}
         </tbody>
       </table>
-      <p style={{ margin: "0.5rem 0 0", fontSize: "0.85rem", color: status.error ? "red" : "" }}>
+      <p
+        style={{
+          margin: "0.5rem 0 0",
+          fontSize: "0.85rem",
+          color: status.error ? "red" : "",
+        }}
+      >
         {status.text}
       </p>
     </div>

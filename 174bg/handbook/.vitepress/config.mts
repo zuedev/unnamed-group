@@ -48,9 +48,7 @@ export default defineConfig({
       {
         text: "Introduction",
         link: "/",
-        items: [
-          { text: "Using This Handbook", link: "/#using-this-handbook" },
-        ],
+        items: [{ text: "Using This Handbook", link: "/#using-this-handbook" }],
       },
       {
         text: "Organization",

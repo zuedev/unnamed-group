@@ -26,9 +26,7 @@ export default function RolePreferences({ record, onUpdate }) {
 
   function toggleRole(value) {
     setSelected((prev) =>
-      prev.includes(value)
-        ? prev.filter((v) => v !== value)
-        : [...prev, value],
+      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value],
     );
   }
 
@@ -122,7 +120,11 @@ export default function RolePreferences({ record, onUpdate }) {
                 <tr>
                   <td>
                     {role.link ? (
-                      <a href={role.link} target="_blank" rel="noopener noreferrer">
+                      <a
+                        href={role.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
                         {role.text}
                       </a>
                     ) : (
@@ -163,7 +165,13 @@ export default function RolePreferences({ record, onUpdate }) {
           })}
         </tbody>
       </table>
-      <p style={{ margin: 0, fontSize: "0.85rem", color: status.error ? "red" : "" }}>
+      <p
+        style={{
+          margin: 0,
+          fontSize: "0.85rem",
+          color: status.error ? "red" : "",
+        }}
+      >
         {status.text}
       </p>
     </div>

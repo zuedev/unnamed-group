@@ -10,35 +10,40 @@ import { createHash } from "node:crypto";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-const CACHE_ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), "..", "..", ".cache");
+const CACHE_ROOT = path.join(
+  path.dirname(fileURLToPath(import.meta.url)),
+  "..",
+  "..",
+  ".cache",
+);
 
 function keyToFileName(key) {
-    return `${createHash("sha256").update(key).digest("hex")}.json`;
+  return `${createHash("sha256").update(key).digest("hex")}.json`;
 }
 
 async function readEntry(namespace, key) {
-    const filePath = path.join(CACHE_ROOT, namespace, keyToFileName(key));
+  const filePath = path.join(CACHE_ROOT, namespace, keyToFileName(key));
 
-    try {
-        const { expiresAt, data } = JSON.parse(await readFile(filePath, "utf-8"));
+  try {
+    const { expiresAt, data } = JSON.parse(await readFile(filePath, "utf-8"));
 
-        if (Date.now() >= expiresAt) return undefined;
+    if (Date.now() >= expiresAt) return undefined;
 
-        return data;
-    } catch {
-        // missing, unreadable, or corrupt cache entry - treat as a cache miss
-        return undefined;
-    }
+    return data;
+  } catch {
+    // missing, unreadable, or corrupt cache entry - treat as a cache miss
+    return undefined;
+  }
 }
 
 async function writeEntry(namespace, key, data, ttlMs) {
-    const dir = path.join(CACHE_ROOT, namespace);
+  const dir = path.join(CACHE_ROOT, namespace);
 
-    await mkdir(dir, { recursive: true });
-    await writeFile(
-        path.join(dir, keyToFileName(key)),
-        JSON.stringify({ expiresAt: Date.now() + ttlMs, data }),
-    );
+  await mkdir(dir, { recursive: true });
+  await writeFile(
+    path.join(dir, keyToFileName(key)),
+    JSON.stringify({ expiresAt: Date.now() + ttlMs, data }),
+  );
 }
 
 /**
@@ -50,17 +55,17 @@ async function writeEntry(namespace, key, data, ttlMs) {
  * @param {() => Promise<any>} fetcher - Called to produce a fresh value on a cache miss.
  */
 export async function cached(namespace, key, ttlMs, fetcher) {
-    const existing = await readEntry(namespace, key);
-    if (existing !== undefined) return existing;
+  const existing = await readEntry(namespace, key);
+  if (existing !== undefined) return existing;
 
-    const data = await fetcher();
+  const data = await fetcher();
 
-    // don't cache failed/empty lookups so they get retried on the next call
-    if (data !== null && data !== undefined) {
-        await writeEntry(namespace, key, data, ttlMs);
-    }
+  // don't cache failed/empty lookups so they get retried on the next call
+  if (data !== null && data !== undefined) {
+    await writeEntry(namespace, key, data, ttlMs);
+  }
 
-    return data;
+  return data;
 }
 
 export default { cached };

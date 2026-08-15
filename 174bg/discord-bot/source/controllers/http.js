@@ -8,18 +8,18 @@
  * @returns {Promise<Object|string|null>} A Promise that resolves to the parsed JSON object, text, or null if the request fails.
  */
 export async function get(url) {
-    const response = await fetch(url);
+  const response = await fetch(url);
 
-    if (!response.ok) return null;
+  if (!response.ok) return null;
 
-    // is it json?
-    const contentType = response.headers.get("content-type");
-    if (contentType && contentType.includes("application/json")) {
-        return await response.json();
-    }
+  // is it json?
+  const contentType = response.headers.get("content-type");
+  if (contentType && contentType.includes("application/json")) {
+    return await response.json();
+  }
 
-    // fallback to text
-    return await response.text();
-};
+  // fallback to text
+  return await response.text();
+}
 
 export default { get };

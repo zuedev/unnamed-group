@@ -10,7 +10,15 @@ export default {
     const date = new Date();
     const dateUTCHours = date.getUTCHours();
     const dateUTCMinutes = date.getUTCMinutes();
-    const dateUTCDay = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][date.getUTCDay()];
+    const dateUTCDay = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ][date.getUTCDay()];
 
     const pb = await login();
 
@@ -21,7 +29,8 @@ export default {
     for (const member of members) {
       try {
         if (member.onCallSchedule) {
-          const available = member.onCallSchedule[dateUTCDay]?.available || false;
+          const available =
+            member.onCallSchedule[dateUTCDay]?.available || false;
 
           if (available) {
             const start = member.onCallSchedule[dateUTCDay].start;
@@ -31,15 +40,26 @@ export default {
             const endHours = end.split(":")[0];
             const endMinutes = end.split(":")[1];
 
-            console.log(`Checking on-call schedule for member ${member.name}: ${start} - ${end} (UTC)`);
+            console.log(
+              `Checking on-call schedule for member ${member.name}: ${start} - ${end} (UTC)`,
+            );
 
-            if ((dateUTCHours > startHours || (dateUTCHours === startHours && dateUTCMinutes >= startMinutes)) && (dateUTCHours < endHours || (dateUTCHours === endHours && dateUTCMinutes <= endMinutes))) {
+            if (
+              (dateUTCHours > startHours ||
+                (dateUTCHours === startHours &&
+                  dateUTCMinutes >= startMinutes)) &&
+              (dateUTCHours < endHours ||
+                (dateUTCHours === endHours && dateUTCMinutes <= endMinutes))
+            ) {
               membersOnCall.push(member);
             }
           }
         }
       } catch (error) {
-        console.error(`Error checking on-call schedule for member ${member.name}:`, error);
+        console.error(
+          `Error checking on-call schedule for member ${member.name}:`,
+          error,
+        );
       }
     }
 

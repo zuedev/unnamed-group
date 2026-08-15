@@ -1,34 +1,34 @@
 {{define "body"}}
-    <style>
-        div#app {
-            font-family: monospace;
-        }
-    </style>
+<style>
+  div#app {
+    font-family: monospace;
+  }
+</style>
 
-    <div id="app"></div>
+<div id="app"></div>
 
-    <script>
-        window.addEventListener("load", () => {
-            setInterval(fetchStats, 100);
-        });
+<script>
+  window.addEventListener("load", () => {
+    setInterval(fetchStats, 100);
+  });
 
-        async function fetchStats() {
-            let stats = await fetch("/api/stats");
-            stats = await stats.json();
-            document.getElementById("app").innerHTML = jsonToHtml(stats);
-        }
+  async function fetchStats() {
+    let stats = await fetch("/api/stats");
+    stats = await stats.json();
+    document.getElementById("app").innerHTML = jsonToHtml(stats);
+  }
 
-        function jsonToHtml(json) {
-            if (json === null || typeof json !== "object") {
-                return String(json);
-            }
+  function jsonToHtml(json) {
+    if (json === null || typeof json !== "object") {
+      return String(json);
+    }
 
-            let html = "<ul>";
-            for (const [key, value] of Object.entries(json)) {
-                html += `<li>${key}: ${typeof value === "object" && value !== null ? jsonToHtml(value) : String(value)}</li>`;
-            }
-            html += "</ul>";
-            return html;
-        }
-    </script>
+    let html = "<ul>";
+    for (const [key, value] of Object.entries(json)) {
+      html += `<li>${key}: ${typeof value === "object" && value !== null ? jsonToHtml(value) : String(value)}</li>`;
+    }
+    html += "</ul>";
+    return html;
+  }
+</script>
 {{end}}

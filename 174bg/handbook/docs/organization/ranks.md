@@ -2,14 +2,14 @@
 
 The 174th Battle Group uses a rank system to denote hierarchy and roles within its divisions. Below is a breakdown of the ranks for each division:
 
-|  | Description | Naval | Marine | Auxiliary |
-| --- | --- | --- | --- | --- |
-| [Rank 0](#rank-0) | Entry-level | Cadet | Private | Trainee |
-| [Rank 1](#rank-1) | Proven experience | Ensign | Corporal | Technician |
-| [Rank 2](#rank-2) | Specialised role | Lieutenant | Sergeant | Specialist |
-| [Rank 3](#rank-3) | Tactical leadership | Captain | Major | Supervisor |
-| [Rank 4](#rank-4) | Operational leadership | Commodore | Commander | Chief |
-| [Rank 5](#rank-5) | Strategic command | Admiral | General | Marshal |
+|                   | Description            | Naval      | Marine    | Auxiliary  |
+| ----------------- | ---------------------- | ---------- | --------- | ---------- |
+| [Rank 0](#rank-0) | Entry-level            | Cadet      | Private   | Trainee    |
+| [Rank 1](#rank-1) | Proven experience      | Ensign     | Corporal  | Technician |
+| [Rank 2](#rank-2) | Specialised role       | Lieutenant | Sergeant  | Specialist |
+| [Rank 3](#rank-3) | Tactical leadership    | Captain    | Major     | Supervisor |
+| [Rank 4](#rank-4) | Operational leadership | Commodore  | Commander | Chief      |
+| [Rank 5](#rank-5) | Strategic command      | Admiral    | General   | Marshal    |
 
 ## Rank 0: Entry Level {#rank-0}
 

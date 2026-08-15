@@ -56,7 +56,10 @@ export default function App() {
                 provider.codeVerifier,
                 redirectUrl,
               );
-            setOauthStatus({ text: "✅ Login successful!", variant: "success" });
+            setOauthStatus({
+              text: "✅ Login successful!",
+              variant: "success",
+            });
             window.history.replaceState({}, "", window.location.pathname);
             if (!cancelled) refreshFromStore();
           } catch (err) {
@@ -93,7 +96,9 @@ export default function App() {
     setLoginDisabled(true);
     try {
       const methods = await pb.collection("members").listAuthMethods();
-      const provider = methods.oauth2.providers.find((p) => p.name === "discord");
+      const provider = methods.oauth2.providers.find(
+        (p) => p.name === "discord",
+      );
       if (!provider) throw new Error("Discord provider not found");
       const redirectUrl = window.location.origin + window.location.pathname;
       localStorage.setItem("pb_oauth_provider", JSON.stringify(provider));
@@ -200,9 +205,7 @@ function DashboardLayout({ record, onLogout, onUpdate }) {
             <Route path="/" element={<Overview record={record} />} />
             <Route
               path="/preferences"
-              element={
-                <RolePreferences record={record} onUpdate={onUpdate} />
-              }
+              element={<RolePreferences record={record} onUpdate={onUpdate} />}
             />
             <Route
               path="/oncall"
