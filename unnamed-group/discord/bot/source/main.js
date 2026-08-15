@@ -40,16 +40,9 @@ discord.on(Events.ClientReady, async () => {
 
   // initialize modules
   for (const module of Object.values(modules)) {
-    console.log(`Initializing module: ${module.name}`);
-
     const disabledModuleNames = process.env.DISABLED_MODULES?.split(",") || [];
 
-    if (disabledModuleNames.includes(module.name)) {
-      console.log(
-        `Module ${module.name} is disabled. Skipping initialization.`,
-      );
-      continue;
-    }
+    if (disabledModuleNames.includes(module.name)) continue;
 
     module(discord);
   }
