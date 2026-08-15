@@ -61,15 +61,41 @@ discord.on(Events.MessageCreate, async (message) => {
 
     switch (command) {
       case "get-channel-permissions-bits":
-        const permissions = message.channel.permissionsFor(
-          message.guild.roles.everyone,
-        );
-        if (!permissions) {
-          message.reply("Could not retrieve permissions for this channel.");
-          return;
-        }
-        const permissionsBits = permissions.bitfield;
-        message.reply(`Permissions bits for this channel: ${permissionsBits}`);
+        (async () => {
+          const permissions = message.channel.permissionsFor(
+            message.guild.roles.everyone,
+          );
+          if (!permissions) {
+            await message.reply("Could not get permissions for this channel.");
+            return;
+          }
+          await message.reply(
+            `Permissions for this channel: ${permissions.bitfield}`,
+          );
+        })();
+        break;
+      case "set-channel-permissions-bits":
+        (async () => {
+          const permissionsToSetFromMessage = message.content
+            .replace(`<@!${discord.user.id}> set-channel-permissions-bits`, "")
+            .trim();
+          const permissionsToSet = parseInt(permissionsToSetFromMessage);
+          if (isNaN(permissionsToSet)) {
+            await message.reply(
+              "Please provide a valid number for the permissions to set.",
+            );
+            return;
+          }
+          await message.channel.permissionOverwrites.edit(
+            message.guild.roles.everyone,
+            {
+              allow: permissionsToSet,
+            },
+          );
+          await message.reply(
+            `Set permissions for this channel to: ${permissionsToSet}`,
+          );
+        })();
         break;
       default:
         break;
