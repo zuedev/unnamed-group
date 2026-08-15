@@ -56,50 +56,48 @@ discord.on(Events.MessageCreate, async (message) => {
   // ignore messages not in the specified guild
   if (message.guild.id !== process.env.DISCORD_GUILD_ID) return;
 
-  if (message.content.startsWith(`<@!${discord.user.id}>`)) {
-    let command = message.content.replace(`<@!${discord.user.id}>`, "").trim();
+  if (message.content.startsWith(`<@${discord.user.id}>`)) {
+    let fragments = message.content.trim().split(" ");
+    let prefix = fragments[0];
+    let command = fragments[1];
+    let args = fragments.slice(2);
 
-    switch (command) {
-      case "get-channel-permissions-bits":
-        (async () => {
-          const permissions = message.channel.permissionsFor(
-            message.guild.roles.everyone,
-          );
-          if (!permissions) {
-            await message.reply("Could not get permissions for this channel.");
-            return;
-          }
-          await message.reply(
-            `Permissions for this channel: ${permissions.bitfield}`,
-          );
-        })();
-        break;
-      case "set-channel-permissions-bits":
-        (async () => {
-          const permissionsToSetFromMessage = message.content
-            .replace(`<@!${discord.user.id}> set-channel-permissions-bits`, "")
-            .trim();
-          const permissionsToSet = parseInt(permissionsToSetFromMessage);
-          if (isNaN(permissionsToSet)) {
-            await message.reply(
-              "Please provide a valid number for the permissions to set.",
-            );
-            return;
-          }
-          await message.channel.permissionOverwrites.edit(
-            message.guild.roles.everyone,
-            {
-              allow: permissionsToSet,
+    const messageCommands = {
+      ping: async () => {
+        await message.reply("Pong!");
+      },
+      debug: async () => {
+        let debugJson = {
+          _: {
+            fragments,
+            prefix,
+            command,
+            args,
+          },
+          discord: {
+            message: {
+              id: message.id,
+              content: message.content,
             },
-          );
-          await message.reply(
-            `Set permissions for this channel to: ${permissionsToSet}`,
-          );
-        })();
-        break;
-      default:
-        break;
-    }
+          },
+        };
+
+        await message.reply({
+          content: "Debug info:",
+          files: [
+            {
+              name: "debug.json",
+              attachment: Buffer.from(
+                JSON.stringify(debugJson, null, 2),
+                "utf-8",
+              ),
+            },
+          ],
+        });
+      },
+    };
+
+    if (messageCommands[command]) await messageCommands[command]();
   }
 });
 
