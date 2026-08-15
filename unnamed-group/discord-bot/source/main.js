@@ -13,7 +13,7 @@ import modules from "./modules/_index.js";
 
 const discord = new Client({
   intents: Object.values(GatewayIntentBits),
-  partials: [Partials.Message],
+  partials: Object.values(Partials),
   presence: {
     activities: [
       {
