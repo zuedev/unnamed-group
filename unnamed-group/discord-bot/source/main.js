@@ -49,6 +49,34 @@ discord.on(Events.ClientReady, async () => {
   );
 });
 
+discord.on(Events.MessageCreate, async (message) => {
+  // ignore messages from bots
+  if (message.author.bot) return;
+
+  // ignore messages not in the specified guild
+  if (message.guild.id !== process.env.DISCORD_GUILD_ID) return;
+
+  if (message.content.startsWith(`<@!${discord.user.id}>`)) {
+    let command = message.content.replace(`<@!${discord.user.id}>`, "").trim();
+
+    switch (command) {
+      case "get-channel-permissions-bits":
+        const permissions = message.channel.permissionsFor(
+          message.guild.roles.everyone,
+        );
+        if (!permissions) {
+          message.reply("Could not retrieve permissions for this channel.");
+          return;
+        }
+        const permissionsBits = permissions.bitfield;
+        message.reply(`Permissions bits for this channel: ${permissionsBits}`);
+        break;
+      default:
+        break;
+    }
+  }
+});
+
 discord.login(process.env.DISCORD_BOT_TOKEN);
 
 async function registerCommands(discord) {
