@@ -5,25 +5,20 @@ import {
 } from "npm:discord.js@14.27.0";
 
 export default (discord) => {
-  discord.on(Events.ClientReady, async () => {
-    setInterval(() => {
-      // find empty user-created voice channels and delete them
-      discord.guilds.cache.forEach((guild) => {
-        guild.channels.cache.forEach((channel) => {
-          if (
-            channel.type === ChannelType.GuildVoice &&
-            channel.name.endsWith("'s Voice Channel") &&
-            channel.members.size === 0
-          ) {
-            console.log(
-              `Deleting empty voice channel: ${channel.name} in guild: ${guild.name}`,
-            );
-            channel.delete().catch(console.error);
-          }
-        });
-      });
-    }, 10 * 1000);
-  });
+  setInterval(() => {
+    discord.guilds.cache.forEach(
+      (guild) =>
+        guild.id === process.env.DISCORD_GUILD_ID &&
+        guild.channels.cache
+          .filter(
+            (channel) =>
+              channel.type === ChannelType.GuildVoice &&
+              channel.name.endsWith("'s Voice Channel") &&
+              channel.members.size === 0,
+          )
+          .forEach((channel) => channel.delete()),
+    );
+  }, 10 * 1000);
 
   discord.on(Events.VoiceStateUpdate, async (oldState, newState) => {
     // ignore events from other guilds not specified in the .env file
