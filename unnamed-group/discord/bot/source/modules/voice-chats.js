@@ -4,7 +4,7 @@ import {
   PermissionFlagsBits,
 } from "npm:discord.js@14.27.0";
 
-export default (discord) => {
+export function voiceChats(discord) {
   setInterval(() => {
     discord.guilds.cache.forEach(
       (guild) =>
@@ -95,4 +95,4 @@ export default (discord) => {
       );
     }
   });
-};
+}

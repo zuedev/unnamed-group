@@ -5,13 +5,13 @@ import {
 } from "npm:discord.js@14.27.0";
 import { Buffer } from "node:buffer";
 
-export default (discord) => {
+export function logs(discord) {
   discord.on(Events.MessageCreate, onMessageCreate);
   discord.on(Events.MessageDelete, onMessageDelete);
   discord.on(Events.MessageReactionAdd, onMessageReactionAdd);
   discord.on(Events.MessageReactionRemove, onMessageReactionRemove);
   discord.on(Events.MessageReactionRemoveAll, onMessageReactionRemoveAll);
-};
+}
 
 async function onMessageCreate(message) {
   try {

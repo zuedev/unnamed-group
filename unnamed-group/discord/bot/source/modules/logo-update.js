@@ -1,4 +1,4 @@
-export default (discord) => {
+export function logoUpdate(discord) {
   setInterval(
     async () => {
       const logoUrls = [
@@ -15,4 +15,4 @@ export default (discord) => {
     },
     1000 * 60 * 10, // every 10 minutes
   );
-};
+}
