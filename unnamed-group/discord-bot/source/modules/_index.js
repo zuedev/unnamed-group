@@ -1,7 +1,7 @@
 import voiceChats from "./voice-chats.js";
-import bigBrother from "./big-brother.js";
+import logs from "./logs.js";
 
 export default {
   voiceChats,
-  bigBrother,
+  logs,
 };
