@@ -1,4 +1,5 @@
 import bots from "./bots/_index.js";
+import webpanel from "./webpanel.jsx";
 
 const disabledBots = process.env.DISABLED_BOTS?.split(",") || [];
 
@@ -7,3 +8,5 @@ for (const bot of Object.values(bots)) {
 
   bot();
 }
+
+webpanel();
