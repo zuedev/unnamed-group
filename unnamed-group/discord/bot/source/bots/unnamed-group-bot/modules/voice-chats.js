@@ -35,8 +35,7 @@ export function voiceChats(discord) {
           );
         })
       ) {
-        const guild = newState.guild;
-        const newChannel = await guild.channels.create({
+        await newState.guild.channels.create({
           name: `${newState.member.user.username}'s Voice Channel`,
           type: ChannelType.GuildVoice,
           parent: newState.channel.parentId,
