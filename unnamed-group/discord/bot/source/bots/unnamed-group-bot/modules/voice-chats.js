@@ -43,7 +43,7 @@ export function voiceChats(discord) {
           permissionOverwrites: [
             {
               id: guild.roles.everyone.id,
-              allow: [PermissionFlagsBits.Connect, PermissionFlagsBits.Speak],
+              allow: newState.channel.parent.permissionOverwrites,
             },
           ],
         });
