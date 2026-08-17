@@ -1,12 +1,8 @@
-import bots from "./bots/_index.js";
-import webpanel from "./webpanel.jsx";
+import("./bots/_index.js").then((m) => {
+  const disabledBots = process.env.DISABLED_BOTS?.split(",") || [];
 
-const disabledBots = process.env.DISABLED_BOTS?.split(",") || [];
+  for (const bot of Object.values(m.default))
+    if (!disabledBots.includes(bot.name)) bot();
+});
 
-for (const bot of Object.values(bots)) {
-  if (disabledBots.includes(bot.name)) continue;
-
-  bot();
-}
-
-webpanel();
+import("./webpanel.jsx").then((m) => m.default());
