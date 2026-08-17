@@ -5,4 +5,4 @@ import("./bots/_index.js").then((m) => {
     if (!disabledBots.includes(bot.name)) bot();
 });
 
-import("./webpanel.jsx").then((m) => m.default());
+import("./webpanel.js").then((m) => m.default());
