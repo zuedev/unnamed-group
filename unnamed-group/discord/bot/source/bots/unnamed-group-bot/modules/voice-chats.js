@@ -39,13 +39,7 @@ export function voiceChats(discord) {
         const newChannel = await guild.channels.create({
           name: `${newState.member.user.username}'s Voice Channel`,
           type: ChannelType.GuildVoice,
-          parent: newState.channel.parentId, // use the same parent as the "create voice channel" channel
-          permissionOverwrites: [
-            {
-              id: guild.roles.everyone.id,
-              allow: newState.channel.parent.permissionOverwrites,
-            },
-          ],
+          parent: newState.channel.parentId,
         });
       }
 
