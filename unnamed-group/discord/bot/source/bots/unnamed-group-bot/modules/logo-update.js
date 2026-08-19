@@ -5,6 +5,8 @@ export function logoUpdate(discord) {
         "https://github.com/zuedev/unnamed-group/blob/master/unnamed-group/discord/assets/images/logo/official.png?raw=true",
         "https://github.com/zuedev/unnamed-group/blob/master/unnamed-group/discord/assets/images/logo/member-logos/153172054856826880.png?raw=true",
         "https://github.com/zuedev/unnamed-group/blob/master/unnamed-group/discord/assets/images/logo/member-logos/723361818940276736.png?raw=true",
+        "https://github.com/zuedev/unnamed-group/blob/master/unnamed-group/discord/assets/images/logo/member-logos/247625024779845632.png?raw=true",
+        "https://github.com/zuedev/unnamed-group/blob/master/unnamed-group/discord/assets/images/logo/member-logos/313128528558161920.png?raw=true",
       ];
 
       const randomLogoUrl =
