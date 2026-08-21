@@ -6,12 +6,17 @@ import {
 } from "npm:discord.js@14.27.0";
 import { Buffer } from "node:buffer";
 
-const LOGGED_EVENTS = new Set([
-  GatewayDispatchEvents.MessageCreate,
-  GatewayDispatchEvents.MessageDelete,
-  GatewayDispatchEvents.MessageReactionAdd,
-  GatewayDispatchEvents.MessageReactionRemove,
-  GatewayDispatchEvents.MessageReactionRemoveAll,
+// these events carry the guild id as d.id rather than d.guild_id
+const GUILD_OBJECT_EVENTS = new Set([
+  GatewayDispatchEvents.GuildCreate,
+  GatewayDispatchEvents.GuildUpdate,
+  GatewayDispatchEvents.GuildDelete,
+]);
+
+// too chatty to log; would drown the channel and back up the rate-limited send queue
+const IGNORED_EVENTS = new Set([
+  GatewayDispatchEvents.PresenceUpdate,
+  GatewayDispatchEvents.TypingStart,
 ]);
 
 export function logs(discord) {
@@ -20,9 +25,14 @@ export function logs(discord) {
 
 async function onRaw(discord, packet) {
   try {
-    if (!LOGGED_EVENTS.has(packet.t)) return;
-    if (packet.d?.guild_id !== process.env.DISCORD_GUILD_ID) return;
+    if (IGNORED_EVENTS.has(packet.t)) return;
 
+    const guildId =
+      packet.d?.guild_id ??
+      (GUILD_OBJECT_EVENTS.has(packet.t) ? packet.d?.id : undefined);
+    if (guildId !== process.env.DISCORD_GUILD_ID) return;
+
+    // our own log posts emit MESSAGE_CREATE; skipping bot messages breaks the loop
     if (
       packet.t === GatewayDispatchEvents.MessageCreate &&
       packet.d.author?.bot
@@ -56,7 +66,7 @@ async function onRaw(discord, packet) {
       }
     }
 
-    const guild = discord.guilds.cache.get(packet.d.guild_id);
+    const guild = discord.guilds.cache.get(guildId);
     if (!guild) return;
 
     await log(
