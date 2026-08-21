@@ -13,10 +13,21 @@ const GUILD_OBJECT_EVENTS = new Set([
   GatewayDispatchEvents.GuildDelete,
 ]);
 
-// too chatty to log; would drown the channel and back up the rate-limited send queue
 const IGNORED_EVENTS = new Set([
+  // too chatty to log
   GatewayDispatchEvents.PresenceUpdate,
   GatewayDispatchEvents.TypingStart,
+  GatewayDispatchEvents.VoiceChannelEffectSend,
+  // not relevant
+  GatewayDispatchEvents.GuildCreate,
+  GatewayDispatchEvents.GuildDelete,
+  // gateway plumbing: fetch responses and reconnect syncs, not user actions
+  GatewayDispatchEvents.GuildMembersChunk,
+  GatewayDispatchEvents.SoundboardSounds,
+  GatewayDispatchEvents.ThreadListSync,
+  // payloads carry live tokens that must not be reposted
+  GatewayDispatchEvents.InteractionCreate,
+  GatewayDispatchEvents.VoiceServerUpdate,
 ]);
 
 export function logs(discord) {
