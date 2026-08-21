@@ -66,13 +66,11 @@ async function onRaw(discord, packet) {
       }
     }
 
-    const guild = discord.guilds.cache.get(guildId);
-    if (!guild) return;
-
-    await log(
-      guild,
-      buildLogMessage(`Events.Raw: ${packet.t}`, documents, summarySource),
-    );
+    enqueueLog(discord, guildId, {
+      header: `Events.Raw: ${packet.t}`,
+      documents,
+      summarySource,
+    });
   } catch (error) {
     try {
       const guild = discord.guilds.cache.get(process.env.DISCORD_GUILD_ID);
@@ -94,22 +92,94 @@ async function onRaw(discord, packet) {
 }
 
 const MAX_MESSAGE_CONTENT_LENGTH = 2000;
+const MAX_BUFFERED_ENTRIES = 500;
 
-// inline JSON so Discord search indexes it; attachments are only a fallback
-function buildLogMessage(header, documents, summarySource) {
-  const inline = [
+// discord.js's REST queue handles rate-limit compliance but is unbounded and sends one message per event; this buffer coalesces entries so bursts collapse into fewer, fuller messages and memory stays capped
+const logQueues = new Map();
+
+function enqueueLog(discord, guildId, entry) {
+  let queue = logQueues.get(guildId);
+  if (!queue) {
+    queue = { entries: [], dropped: 0, draining: false };
+    logQueues.set(guildId, queue);
+  }
+
+  queue.entries.push(entry);
+  if (queue.entries.length > MAX_BUFFERED_ENTRIES) {
+    queue.entries.shift();
+    queue.dropped++;
+  }
+
+  if (!queue.draining) drainLogQueue(discord, guildId, queue);
+}
+
+async function drainLogQueue(discord, guildId, queue) {
+  queue.draining = true;
+  try {
+    while (queue.entries.length) {
+      const guild = discord.guilds.cache.get(guildId);
+      if (!guild) {
+        queue.entries.length = 0;
+        return;
+      }
+
+      if (queue.dropped) {
+        const dropped = queue.dropped;
+        queue.dropped = 0;
+        await log(guild, {
+          content: `⚠️ dropped ${dropped} event(s): log buffer overflow`,
+        });
+      }
+
+      await log(guild, packEntries(queue.entries));
+    }
+  } catch (error) {
+    console.error(`[ERROR] logs drain: ${error.message}`);
+  } finally {
+    queue.draining = false;
+  }
+}
+
+// greedily fit queued entries into one message; entries that can't go inline ship solo as files
+function packEntries(entries) {
+  const first = entries.shift();
+  const firstInline = renderInline(first);
+
+  if (firstInline === null || firstInline.length > MAX_MESSAGE_CONTENT_LENGTH)
+    return buildAttachmentMessage(first);
+
+  const parts = [firstInline];
+  let length = firstInline.length;
+
+  while (entries.length) {
+    const nextInline = renderInline(entries[0]);
+    if (
+      nextInline === null ||
+      length + 1 + nextInline.length > MAX_MESSAGE_CONTENT_LENGTH
+    )
+      break;
+
+    parts.push(nextInline);
+    length += 1 + nextInline.length;
+    entries.shift();
+  }
+
+  return { content: parts.join("\n") };
+}
+
+// inline JSON so Discord search indexes it; null when a payload contains ``` and would escape the fence
+function renderInline({ header, documents }) {
+  if (documents.some(({ json }) => json.includes("```"))) return null;
+
+  return [
     header,
     ...documents.map(
       ({ name, json }) => `**${name}**\n\`\`\`json\n${json}\n\`\`\``,
     ),
   ].join("\n");
+}
 
-  // payloads containing ``` would escape the code fence, so ship those as files
-  const fenceSafe = documents.every(({ json }) => !json.includes("```"));
-
-  if (fenceSafe && inline.length <= MAX_MESSAGE_CONTENT_LENGTH)
-    return { content: inline };
-
+function buildAttachmentMessage({ header, documents, summarySource }) {
   let content = [header, summarize(summarySource)].filter(Boolean).join("\n");
   if (content.length > MAX_MESSAGE_CONTENT_LENGTH)
     content = `${content.slice(0, MAX_MESSAGE_CONTENT_LENGTH - 1)}…`;
