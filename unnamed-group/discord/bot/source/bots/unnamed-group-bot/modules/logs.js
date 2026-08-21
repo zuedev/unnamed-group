@@ -14,6 +14,7 @@ const IGNORED_EVENTS = new Set([
   // not relevant
   GatewayDispatchEvents.GuildCreate,
   GatewayDispatchEvents.GuildDelete,
+  GatewayDispatchEvents.GuildAuditLogEntryCreate,
   // gateway plumbing: fetch responses and reconnect syncs, not user actions
   GatewayDispatchEvents.GuildMembersChunk,
   GatewayDispatchEvents.SoundboardSounds,
