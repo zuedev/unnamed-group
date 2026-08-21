@@ -6,12 +6,8 @@ import {
 } from "npm:discord.js@14.27.0";
 import { Buffer } from "node:buffer";
 
-// these events carry the guild id as d.id rather than d.guild_id
-const GUILD_OBJECT_EVENTS = new Set([
-  GatewayDispatchEvents.GuildCreate,
-  GatewayDispatchEvents.GuildUpdate,
-  GatewayDispatchEvents.GuildDelete,
-]);
+// only events from this guild are logged
+const GUILD_ID = process.env.DISCORD_GUILD_ID;
 
 const IGNORED_EVENTS = new Set([
   // too chatty to log
@@ -44,7 +40,7 @@ export function logs(discord) {
 
     if (!logChannel) {
       // memoize creation so concurrent events can't create duplicate channels
-      if (!pendingLogChannels.has(guild.id))
+      if (!pendingLogChannels.has(guild.id)) {
         pendingLogChannels.set(
           guild.id,
           guild.channels
@@ -53,7 +49,7 @@ export function logs(discord) {
               type: ChannelType.GuildText,
               permissionOverwrites: [
                 {
-                  id: guild.roles.everyone,
+                  id: guild.roles.everyone.id,
                   deny: [PermissionFlagsBits.ViewChannel],
                 },
                 {
@@ -64,6 +60,7 @@ export function logs(discord) {
             })
             .finally(() => pendingLogChannels.delete(guild.id)),
         );
+      }
 
       logChannel = await pendingLogChannels.get(guild.id);
     }
@@ -72,16 +69,20 @@ export function logs(discord) {
     await logChannel.send({ ...message, allowedMentions: { parse: [] } });
   }
 
-  discord.on(Events.Raw, (packet) => onRaw(packet));
-
-  async function onRaw(packet) {
+  discord.on(Events.Raw, async (packet) => {
     try {
       if (IGNORED_EVENTS.has(packet.t)) return;
 
+      // GUILD_UPDATE carries the guild id as d.id rather than d.guild_id
       const guildId =
         packet.d?.guild_id ??
-        (GUILD_OBJECT_EVENTS.has(packet.t) ? packet.d?.id : undefined);
-      if (guildId !== process.env.DISCORD_GUILD_ID) return;
+        (packet.t === GatewayDispatchEvents.GuildUpdate
+          ? packet.d?.id
+          : undefined);
+      if (guildId !== GUILD_ID) return;
+
+      const guild = discord.guilds.cache.get(guildId);
+      if (!guild) return;
 
       // our own log posts emit MESSAGE_CREATE; skipping bot messages breaks the loop
       if (
@@ -117,84 +118,74 @@ export function logs(discord) {
         }
       }
 
-      const guild = discord.guilds.cache.get(guildId);
-      if (!guild) return;
+      // inline JSON so Discord search indexes it; attachments are only a fallback
+      const inline = [
+        packet.t,
+        ...documents.map(
+          ({ name, json }) => `**${name}**\n\`\`\`json\n${json}\n\`\`\``,
+        ),
+      ].join("\n");
 
-      await log(
-        guild,
-        buildLogMessage(`Events.Raw: ${packet.t}`, documents, summarySource),
-      );
+      // payloads containing ``` would escape the code fence, so ship those as files
+      const fenceSafe = documents.every(({ json }) => !json.includes("```"));
+
+      if (fenceSafe && inline.length <= MAX_MESSAGE_CONTENT_LENGTH)
+        return await log(guild, { content: inline });
+
+      // key facts kept searchable when the full payload has to go into attachments
+      const user =
+        summarySource.author ??
+        summarySource.member?.user ??
+        (summarySource.user_id ? { id: summarySource.user_id } : undefined);
+
+      const fields = {
+        id: summarySource.id ?? summarySource.message_id,
+        channel_id: summarySource.channel_id,
+        author:
+          user && (user.username ? `${user.username} (${user.id})` : user.id),
+        emoji:
+          summarySource.emoji &&
+          (summarySource.emoji.id
+            ? `${summarySource.emoji.name} (${summarySource.emoji.id})`
+            : summarySource.emoji.name),
+        content: summarySource.content,
+      };
+
+      const summary = Object.entries(fields)
+        .filter(([, value]) => value != null && value !== "")
+        .map(([key, value]) => `${key}: ${value}`)
+        .join("\n");
+
+      let content = [packet.t, summary].filter(Boolean).join("\n");
+      // code-point slice so truncation can't split a surrogate pair
+      if (content.length > MAX_MESSAGE_CONTENT_LENGTH)
+        content = `${[...content]
+          .slice(0, MAX_MESSAGE_CONTENT_LENGTH - 1)
+          .join("")}…`;
+
+      await log(guild, {
+        content,
+        files: documents.map(({ name, json }) => ({
+          name: `${name}.json`,
+          attachment: Buffer.from(json, "utf-8"),
+        })),
+      });
     } catch (error) {
       try {
-        const guild = discord.guilds.cache.get(process.env.DISCORD_GUILD_ID);
+        const guild = discord.guilds.cache.get(GUILD_ID);
         if (!guild) return;
 
+        // JSON.stringify on an Error yields {}; stack carries the real detail
+        const details = error.stack ?? String(error);
         await log(guild, {
-          content: `Error in logs module: ${error.message}`,
-          files: [
-            {
-              name: "error.json",
-              attachment: Buffer.from(JSON.stringify(error, null, 2), "utf-8"),
-            },
-          ],
+          content: `Error in logs module: ${details}`.slice(
+            0,
+            MAX_MESSAGE_CONTENT_LENGTH,
+          ),
         });
-      } catch (error) {
-        console.error("Error logging error in logs module:", error);
+      } catch (logError) {
+        console.error("Error logging error in logs module:", logError);
       }
     }
-  }
-
-  // inline JSON so Discord search indexes it; attachments are only a fallback
-  function buildLogMessage(header, documents, summarySource) {
-    const inline = [
-      header,
-      ...documents.map(
-        ({ name, json }) => `**${name}**\n\`\`\`json\n${json}\n\`\`\``,
-      ),
-    ].join("\n");
-
-    // payloads containing ``` would escape the code fence, so ship those as files
-    const fenceSafe = documents.every(({ json }) => !json.includes("```"));
-
-    if (fenceSafe && inline.length <= MAX_MESSAGE_CONTENT_LENGTH)
-      return { content: inline };
-
-    let content = [header, summarize(summarySource)].filter(Boolean).join("\n");
-    if (content.length > MAX_MESSAGE_CONTENT_LENGTH)
-      content = `${content.slice(0, MAX_MESSAGE_CONTENT_LENGTH - 1)}…`;
-
-    return {
-      content,
-      files: documents.map(({ name, json }) => ({
-        name: `${name}.json`,
-        attachment: Buffer.from(json, "utf-8"),
-      })),
-    };
-  }
-
-  // key facts kept searchable when the full payload has to go into attachments
-  function summarize(data) {
-    const user =
-      data.author ??
-      data.member?.user ??
-      (data.user_id ? { id: data.user_id } : undefined);
-
-    const fields = {
-      id: data.id ?? data.message_id,
-      channel_id: data.channel_id,
-      author:
-        user && (user.username ? `${user.username} (${user.id})` : user.id),
-      emoji:
-        data.emoji &&
-        (data.emoji.id
-          ? `${data.emoji.name} (${data.emoji.id})`
-          : data.emoji.name),
-      content: data.content,
-    };
-
-    return Object.entries(fields)
-      .filter(([, value]) => value != null && value !== "")
-      .map(([key, value]) => `${key}: ${value}`)
-      .join("\n");
-  }
+  });
 }
