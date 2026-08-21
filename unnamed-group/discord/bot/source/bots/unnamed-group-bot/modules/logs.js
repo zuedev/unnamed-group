@@ -6,9 +6,6 @@ import {
 } from "npm:discord.js@14.27.0";
 import { Buffer } from "node:buffer";
 
-// only events from this guild are logged
-const GUILD_ID = process.env.DISCORD_GUILD_ID;
-
 const IGNORED_EVENTS = new Set([
   // too chatty to log
   GatewayDispatchEvents.PresenceUpdate,
@@ -73,13 +70,13 @@ export function logs(discord) {
     try {
       if (IGNORED_EVENTS.has(packet.t)) return;
 
-      // GUILD_UPDATE carries the guild id as d.id rather than d.guild_id
+      // GUILD_UPDATE carries the guild id as d.id rather than d.process.env.DISCORD_GUILD_ID
       const guildId =
-        packet.d?.guild_id ??
+        packet.d?.process.env.DISCORD_GUILD_ID ??
         (packet.t === GatewayDispatchEvents.GuildUpdate
           ? packet.d?.id
           : undefined);
-      if (guildId !== GUILD_ID) return;
+      if (guildId !== process.env.DISCORD_GUILD_ID) return;
 
       const guild = discord.guilds.cache.get(guildId);
       if (!guild) return;
@@ -172,7 +169,7 @@ export function logs(discord) {
       });
     } catch (error) {
       try {
-        const guild = discord.guilds.cache.get(GUILD_ID);
+        const guild = discord.guilds.cache.get(process.env.DISCORD_GUILD_ID);
         if (!guild) return;
 
         // JSON.stringify on an Error yields {}; stack carries the real detail
