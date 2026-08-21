@@ -33,10 +33,49 @@ const IGNORED_EVENTS = new Set([
 const MAX_MESSAGE_CONTENT_LENGTH = 2000;
 
 export function logs(discord) {
-  discord.on(Events.Raw, (packet) => onRaw(discord, packet));
+  // scoped per bot instance instead of module-level, so state can't leak across clients
+  const pendingLogChannels = new Map();
+
+  async function log(guild, message) {
+    let logChannel = guild.channels.cache.find(
+      (channel) =>
+        channel.name === "logs" && channel.type === ChannelType.GuildText,
+    );
+
+    if (!logChannel) {
+      // memoize creation so concurrent events can't create duplicate channels
+      if (!pendingLogChannels.has(guild.id))
+        pendingLogChannels.set(
+          guild.id,
+          guild.channels
+            .create({
+              name: "logs",
+              type: ChannelType.GuildText,
+              permissionOverwrites: [
+                {
+                  id: guild.roles.everyone,
+                  deny: [PermissionFlagsBits.ViewChannel],
+                },
+                {
+                  id: guild.client.user.id,
+                  allow: [PermissionFlagsBits.ViewChannel],
+                },
+              ],
+            })
+            .finally(() => pendingLogChannels.delete(guild.id)),
+        );
+
+      logChannel = await pendingLogChannels.get(guild.id);
+    }
+
+    // reposted user content must never ping
+    await logChannel.send({ ...message, allowedMentions: { parse: [] } });
+  }
+
+  discord.on(Events.Raw, (packet) => onRaw(discord, packet, log));
 }
 
-async function onRaw(discord, packet) {
+async function onRaw(discord, packet, log) {
   try {
     if (IGNORED_EVENTS.has(packet.t)) return;
 
@@ -157,42 +196,4 @@ function summarize(data) {
     .filter(([, value]) => value != null && value !== "")
     .map(([key, value]) => `${key}: ${value}`)
     .join("\n");
-}
-
-const pendingLogChannels = new Map();
-
-async function log(guild, message) {
-  let logChannel = guild.channels.cache.find(
-    (channel) =>
-      channel.name === "logs" && channel.type === ChannelType.GuildText,
-  );
-
-  if (!logChannel) {
-    // memoize creation so concurrent events can't create duplicate channels
-    if (!pendingLogChannels.has(guild.id))
-      pendingLogChannels.set(
-        guild.id,
-        guild.channels
-          .create({
-            name: "logs",
-            type: ChannelType.GuildText,
-            permissionOverwrites: [
-              {
-                id: guild.roles.everyone,
-                deny: [PermissionFlagsBits.ViewChannel],
-              },
-              {
-                id: guild.client.user.id,
-                allow: [PermissionFlagsBits.ViewChannel],
-              },
-            ],
-          })
-          .finally(() => pendingLogChannels.delete(guild.id)),
-      );
-
-    logChannel = await pendingLogChannels.get(guild.id);
-  }
-
-  // reposted user content must never ping
-  await logChannel.send({ ...message, allowedMentions: { parse: [] } });
 }
