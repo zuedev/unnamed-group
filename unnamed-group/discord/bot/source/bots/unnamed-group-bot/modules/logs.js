@@ -71,9 +71,9 @@ export function logs(discord) {
     try {
       if (IGNORED_EVENTS.has(packet.t)) return;
 
-      // GUILD_UPDATE carries the guild id as d.id rather than d.process.env.DISCORD_GUILD_ID
+      // GUILD_UPDATE carries the guild id as d.id rather than d.guild_id
       const guildId =
-        packet.d?.process.env.DISCORD_GUILD_ID ??
+        packet.d?.guild_id ??
         (packet.t === GatewayDispatchEvents.GuildUpdate
           ? packet.d?.id
           : undefined);
