@@ -1,10 +1,7 @@
 {
   "version": "5",
   "specifiers": {
-    "npm:discord.js@14.27.0": "14.27.0",
-    "npm:preact-render-to-string@^6.5.13": "6.7.0_preact@10.29.8",
-    "npm:preact@*": "10.29.8_preact-render-to-string@6.7.0",
-    "npm:preact@^10.24.3": "10.29.8_preact-render-to-string@6.7.0"
+    "npm:discord.js@14.27.0": "14.27.0"
   },
   "npm": {
     "@discordjs/builders@1.14.1": {
@@ -126,21 +123,6 @@
     "magic-bytes.js@1.13.1": {
       "integrity": "sha512-x5sn4UX2k5gCWlcfmoFwG4TPie8+dctESyqOBdhB5p6MsgWXdBKGmt9nXPObj/JI50TTL928lc5Yt1WntMn1bw=="
     },
-    "preact-render-to-string@6.7.0_preact@10.29.8": {
-      "integrity": "sha512-Z4WR8fmLMRpdYqJ9i7vrlXSsSrxVJydwrkEXHapexfARbWfGb7vGcnvNQnIzN0cXciMVOlz/XLoiMCi9gUsy9Q==",
-      "dependencies": [
-        "preact"
-      ]
-    },
-    "preact@10.29.8_preact-render-to-string@6.7.0": {
-      "integrity": "sha512-ej2aVZ+vZ8WO7tvlQWRM9N63A0KzF9q4mWJfDUHgYaIofWY9hu74QdnQrjoPMmZi2/nZ5gN0bJCQF49xQqx09Q==",
-      "dependencies": [
-        "preact-render-to-string"
-      ],
-      "optionalPeers": [
-        "preact-render-to-string"
-      ]
-    },
     "ts-mixer@6.0.4": {
       "integrity": "sha512-ufKpbmrugz5Aou4wcr5Wc1UUFWOLhq+Fm6qa6P0w0K5Qw2yhaUoiWszhCVuNQyNwrlGiscHOmqYoAox1PtvgjA=="
     },
@@ -156,12 +138,5 @@
     "ws@8.21.1": {
       "integrity": "sha512-+0NTnW77fFN/DjQi6k/Sq/Yvk4Sgajw7urW8V+asjXnRgDs9gyGkdb7EzgfhA4goXsRIZKE28fzIXBHEzhuiWw=="
     }
-  },
-  "workspace": {
-    "dependencies": [
-      "npm:preact-render-to-string@^6.5.13",
-      "npm:preact@*",
-      "npm:preact@^10.24.3"
-    ]
   }
 }

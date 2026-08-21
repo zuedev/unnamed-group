@@ -1,139 +1,82 @@
 import {
   Events,
+  GatewayDispatchEvents,
   ChannelType,
   PermissionFlagsBits,
 } from "npm:discord.js@14.27.0";
 import { Buffer } from "node:buffer";
 
+const LOGGED_EVENTS = new Set([
+  GatewayDispatchEvents.MessageCreate,
+  GatewayDispatchEvents.MessageDelete,
+  GatewayDispatchEvents.MessageReactionAdd,
+  GatewayDispatchEvents.MessageReactionRemove,
+  GatewayDispatchEvents.MessageReactionRemoveAll,
+]);
+
 export function logs(discord) {
-  discord.on(Events.MessageCreate, onMessageCreate);
-  discord.on(Events.MessageDelete, onMessageDelete);
-  discord.on(Events.MessageReactionAdd, onMessageReactionAdd);
-  discord.on(Events.MessageReactionRemove, onMessageReactionRemove);
-  discord.on(Events.MessageReactionRemoveAll, onMessageReactionRemoveAll);
+  discord.on(Events.Raw, (packet) => onRaw(discord, packet));
 }
 
-async function onMessageCreate(message) {
+async function onRaw(discord, packet) {
   try {
+    if (!LOGGED_EVENTS.has(packet.t)) return;
+    if (packet.d?.guild_id !== process.env.DISCORD_GUILD_ID) return;
+
     if (
-      !message.author.bot &&
-      message.guild.id === process.env.DISCORD_GUILD_ID
-    ) {
-      await log(message.guild, {
-        content: "Events.MessageCreate",
+      packet.t === GatewayDispatchEvents.MessageCreate &&
+      packet.d.author?.bot
+    )
+      return;
+
+    const files = [
+      {
+        name: `${packet.t}.json`,
+        attachment: Buffer.from(JSON.stringify(packet.d, null, 2), "utf-8"),
+      },
+    ];
+
+    // raw fires before discord.js processes the packet, so on MESSAGE_DELETE the message (with content) is still cached; the raw payload only carries IDs
+    if (packet.t === GatewayDispatchEvents.MessageDelete) {
+      const cachedMessage = discord.channels.cache
+        .get(packet.d.channel_id)
+        ?.messages?.cache.get(packet.d.id);
+
+      if (cachedMessage)
+        files.push({
+          name: "cachedMessage.json",
+          attachment: Buffer.from(
+            JSON.stringify(cachedMessage, null, 2),
+            "utf-8",
+          ),
+        });
+    }
+
+    const guild = discord.guilds.cache.get(packet.d.guild_id);
+    if (!guild) return;
+
+    await log(guild, { content: `Events.Raw: ${packet.t}`, files });
+  } catch (error) {
+    try {
+      const guild = discord.guilds.cache.get(process.env.DISCORD_GUILD_ID);
+      if (!guild) return;
+
+      await log(guild, {
+        content: `Error in logs module: ${error.message}`,
         files: [
           {
-            name: `message.json`,
-            attachment: Buffer.from(JSON.stringify(message, null, 2), "utf-8"),
+            name: "error.json",
+            attachment: Buffer.from(JSON.stringify(error, null, 2), "utf-8"),
           },
         ],
       });
+    } catch (error) {
+      console.error("Error logging error in logs module:", error);
     }
-  } catch (error) {
-    console.error(`[ERROR] Events.MessageCreate: ${error.message}`);
   }
 }
 
-async function onMessageDelete(message) {
-  try {
-    if (message.guild.id === process.env.DISCORD_GUILD_ID) {
-      await log(message.guild, {
-        content: "Events.MessageDelete",
-        files: [
-          {
-            name: "message.json",
-            attachment: Buffer.from(JSON.stringify(message, null, 2), "utf-8"),
-          },
-        ],
-      });
-    }
-  } catch (error) {
-    console.error(`[ERROR] Events.MessageDelete: ${error.message}`);
-  }
-}
-
-async function onMessageReactionAdd(messageReaction, user, details) {
-  try {
-    if (messageReaction.message.guild.id === process.env.DISCORD_GUILD_ID) {
-      await log(messageReaction.message.guild, {
-        content: "Events.MessageReactionAdd",
-        files: [
-          {
-            name: `messageReaction.json`,
-            attachment: Buffer.from(
-              JSON.stringify(messageReaction, null, 2),
-              "utf-8",
-            ),
-          },
-          {
-            name: `user.json`,
-            attachment: Buffer.from(JSON.stringify(user, null, 2), "utf-8"),
-          },
-          {
-            name: `details.json`,
-            attachment: Buffer.from(JSON.stringify(details, null, 2), "utf-8"),
-          },
-        ],
-      });
-    }
-  } catch (error) {
-    console.error(`[ERROR] Events.MessageReactionAdd: ${error.message}`);
-  }
-}
-
-async function onMessageReactionRemove(messageReaction, user, details) {
-  try {
-    if (messageReaction.message.guild.id === process.env.DISCORD_GUILD_ID) {
-      await log(messageReaction.message.guild, {
-        content: "Events.MessageReactionRemove",
-        files: [
-          {
-            name: `messageReaction.json`,
-            attachment: Buffer.from(
-              JSON.stringify(messageReaction, null, 2),
-              "utf-8",
-            ),
-          },
-          {
-            name: `user.json`,
-            attachment: Buffer.from(JSON.stringify(user, null, 2), "utf-8"),
-          },
-          {
-            name: `details.json`,
-            attachment: Buffer.from(JSON.stringify(details, null, 2), "utf-8"),
-          },
-        ],
-      });
-    }
-  } catch (error) {
-    console.error(`[ERROR] Events.MessageReactionRemove: ${error.message}`);
-  }
-}
-
-async function onMessageReactionRemoveAll(message, reactions) {
-  try {
-    if (message.guild.id === process.env.DISCORD_GUILD_ID) {
-      await log(message.guild, {
-        content: "Events.MessageReactionRemoveAll",
-        files: [
-          {
-            name: `message.json`,
-            attachment: Buffer.from(JSON.stringify(message, null, 2), "utf-8"),
-          },
-          {
-            name: `reactions.json`,
-            attachment: Buffer.from(
-              JSON.stringify(reactions, null, 2),
-              "utf-8",
-            ),
-          },
-        ],
-      });
-    }
-  } catch (error) {
-    console.error(`[ERROR] Events.MessageReactionRemoveAll: ${error.message}`);
-  }
-}
+const pendingLogChannels = new Map();
 
 async function log(guild, message) {
   let logChannel = guild.channels.cache.find(
@@ -141,21 +84,31 @@ async function log(guild, message) {
       channel.name === "logs" && channel.type === ChannelType.GuildText,
   );
 
-  if (!logChannel)
-    logChannel = await guild.channels.create({
-      name: "logs",
-      type: ChannelType.GuildText,
-      permissionOverwrites: [
-        {
-          id: guild.roles.everyone,
-          deny: [PermissionFlagsBits.ViewChannel],
-        },
-        {
-          id: guild.client.user.id,
-          allow: [PermissionFlagsBits.ViewChannel],
-        },
-      ],
-    });
+  if (!logChannel) {
+    // memoize creation so concurrent events can't create duplicate channels
+    if (!pendingLogChannels.has(guild.id))
+      pendingLogChannels.set(
+        guild.id,
+        guild.channels
+          .create({
+            name: "logs",
+            type: ChannelType.GuildText,
+            permissionOverwrites: [
+              {
+                id: guild.roles.everyone,
+                deny: [PermissionFlagsBits.ViewChannel],
+              },
+              {
+                id: guild.client.user.id,
+                allow: [PermissionFlagsBits.ViewChannel],
+              },
+            ],
+          })
+          .finally(() => pendingLogChannels.delete(guild.id)),
+      );
+
+    logChannel = await pendingLogChannels.get(guild.id);
+  }
 
   await logChannel.send(message);
 }
