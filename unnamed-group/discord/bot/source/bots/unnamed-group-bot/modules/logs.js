@@ -30,6 +30,8 @@ const IGNORED_EVENTS = new Set([
   GatewayDispatchEvents.VoiceServerUpdate,
 ]);
 
+const MAX_MESSAGE_CONTENT_LENGTH = 2000;
+
 export function logs(discord) {
   discord.on(Events.Raw, (packet) => onRaw(discord, packet));
 }
@@ -103,8 +105,6 @@ async function onRaw(discord, packet) {
     }
   }
 }
-
-const MAX_MESSAGE_CONTENT_LENGTH = 2000;
 
 // inline JSON so Discord search indexes it; attachments are only a fallback
 function buildLogMessage(header, documents, summarySource) {
