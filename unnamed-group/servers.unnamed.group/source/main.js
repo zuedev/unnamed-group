@@ -60,46 +60,48 @@ const servers = [
   },
 ];
 
-Deno.serve({ port: 80, hostname: "0.0.0.0" }, async (request) => {
-  const { pathname, searchParams } = new URL(request.url);
+Deno.serve(
+  { port: Number(Deno.env.get("HTTP_PORT") || 80), hostname: "0.0.0.0" },
+  async (request) => {
+    const { pathname, searchParams } = new URL(request.url);
 
-  switch (pathname) {
-    case "/api/servers":
-      if (searchParams.has("search")) {
-        const searchQuery = searchParams.get("search").toLowerCase();
-        const filteredServers = servers.filter((server) =>
-          server.serverName.toLowerCase().includes(searchQuery),
-        );
-        return new Response(JSON.stringify(filteredServers), {
-          headers: { "Content-Type": "application/json" },
-        });
-      } else {
-        return new Response(JSON.stringify(servers), {
-          headers: { "Content-Type": "application/json" },
-        });
-      }
-    case "/api/servers/gamedig":
-      const serverName = searchParams.get("serverName");
-      const server = servers.find((s) => s.serverName === serverName);
-      if (server) {
-        try {
-          const state = await GameDig.query(server.gamedig.input);
-          return new Response(JSON.stringify(state), {
+    switch (pathname) {
+      case "/api/servers":
+        if (searchParams.has("search")) {
+          const searchQuery = searchParams.get("search").toLowerCase();
+          const filteredServers = servers.filter((server) =>
+            server.serverName.toLowerCase().includes(searchQuery),
+          );
+          return new Response(JSON.stringify(filteredServers), {
             headers: { "Content-Type": "application/json" },
           });
-        } catch (error) {
-          return new Response(JSON.stringify({ error: error.message }), {
+        } else {
+          return new Response(JSON.stringify(servers), {
             headers: { "Content-Type": "application/json" },
           });
         }
-      } else {
-        return new Response(JSON.stringify({ error: "Server not found" }), {
-          headers: { "Content-Type": "application/json" },
-        });
-      }
-    case "/docs":
-      return new Response(
-        `
+      case "/api/servers/gamedig":
+        const serverName = searchParams.get("serverName");
+        const server = servers.find((s) => s.serverName === serverName);
+        if (server) {
+          try {
+            const state = await GameDig.query(server.gamedig.input);
+            return new Response(JSON.stringify(state), {
+              headers: { "Content-Type": "application/json" },
+            });
+          } catch (error) {
+            return new Response(JSON.stringify({ error: error.message }), {
+              headers: { "Content-Type": "application/json" },
+            });
+          }
+        } else {
+          return new Response(JSON.stringify({ error: "Server not found" }), {
+            headers: { "Content-Type": "application/json" },
+          });
+        }
+      case "/docs":
+        return new Response(
+          `
         <html>
           <head>
             <title>Server API</title>
@@ -115,11 +117,11 @@ Deno.serve({ port: 80, hostname: "0.0.0.0" }, async (request) => {
           </body>
         </html>
         `,
-        { headers: { "Content-Type": "text/html" } },
-      );
-    default:
-      return new Response(
-        `
+          { headers: { "Content-Type": "text/html" } },
+        );
+      default:
+        return new Response(
+          `
         <html>
           <head>
             <title>Unnamed Group Servers</title>
@@ -182,7 +184,8 @@ Deno.serve({ port: 80, hostname: "0.0.0.0" }, async (request) => {
           </body>
         </html>
         `,
-        { headers: { "Content-Type": "text/html" } },
-      );
-  }
-});
+          { headers: { "Content-Type": "text/html" } },
+        );
+    }
+  },
+);
