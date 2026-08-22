@@ -193,7 +193,7 @@ Deno.serve(
                     return `
                       <tr>
                         <td>${server.gameName}</td>
-                        <td>${server.serverName}</td>
+                        <td id="name-${server.serverName}">${server.serverName}</td>
                         <td id="status-${server.serverName}">Loading...</td>
                         <td id="players-${server.serverName}">Loading...</td>
                         <td>${server.gamedig.input.host}${server.portOverride ? ":" + server.portOverride : server.gamedig.input.port ? ":" + server.gamedig.input.port : ""}</td>
@@ -219,6 +219,9 @@ Deno.serve(
                   const playerCount = data.players?.length ?? data.numplayers ?? 0;
                   const maxPlayers = data.maxplayers ?? 'N/A';
                   document.getElementById(\`players-\${serverName}\`).textContent = \`\${playerCount} / \${maxPlayers}\`;
+                  if (data.name) {
+                    document.getElementById(\`name-\${serverName}\`).textContent = data.name;
+                  }
                 }
               }
 
