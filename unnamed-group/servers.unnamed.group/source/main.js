@@ -180,7 +180,6 @@ Deno.serve(
                   <th>Server Name</th>
                   <th>Status</th>
                   <th>Players</th>
-                  <th>Max Players</th>
                   <th>Host:Port</th>
                 </tr>
               </thead>
@@ -193,7 +192,6 @@ Deno.serve(
                         <td>${server.serverName}</td>
                         <td id="status-${server.serverName}">Loading...</td>
                         <td id="players-${server.serverName}">Loading...</td>
-                        <td id="maxPlayers-${server.serverName}">Loading...</td>
                         <td>${server.gamedig.input.host}${server.portOverride ? ":" + server.portOverride : server.gamedig.input.port ? ":" + server.gamedig.input.port : ""}</td>
                       </tr>
                     `;
@@ -210,13 +208,13 @@ Deno.serve(
                   statusCell.textContent = 'Offline';
                   statusCell.style.backgroundColor = '#f00';
                   document.getElementById(\`players-\${serverName}\`).textContent = 'N/A';
-                  document.getElementById(\`maxPlayers-\${serverName}\`).textContent = 'N/A';
                 } else {
                   // absence of an error means the query succeeded, i.e. the server is online
                   statusCell.textContent = 'Online';
                   statusCell.style.backgroundColor = '#0f0';
-                  document.getElementById(\`players-\${serverName}\`).textContent = data.players?.length ?? data.numplayers ?? 0;
-                  document.getElementById(\`maxPlayers-\${serverName}\`).textContent = data.maxplayers ?? 'N/A';
+                  const playerCount = data.players?.length ?? data.numplayers ?? 0;
+                  const maxPlayers = data.maxplayers ?? 'N/A';
+                  document.getElementById(\`players-\${serverName}\`).textContent = \`\${playerCount}/\${maxPlayers}\`;
                 }
               }
 
