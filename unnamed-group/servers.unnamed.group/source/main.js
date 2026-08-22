@@ -139,6 +139,37 @@ Deno.serve(
         <html>
           <head>
             <title>Unnamed Group Servers</title>
+            <style>
+              @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+              body {
+                font-family: 'Inter';
+              }
+
+              table {
+                width: 100%;
+                border-collapse: collapse;
+              }
+
+              th, td {
+                padding: 8px;
+                text-align: left;
+              }
+
+              th {
+                background-color: black;
+                color: white;
+                border: 1px solid black;
+              }
+
+              tr:nth-child(even) {
+                background-color: lightgray;
+              }
+
+              tr:hover {
+                background-color: darkgray;
+              }
+            </style>
           </head>
           <body>
             <h1>Unnamed Group Servers</h1>
