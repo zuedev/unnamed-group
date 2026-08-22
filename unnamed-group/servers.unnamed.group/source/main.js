@@ -156,6 +156,10 @@ Deno.serve(
                 text-align: left;
               }
 
+              td[id^="players-"] {
+                text-align: center;
+              }
+
               th {
                 background-color: black;
                 color: white;
@@ -214,7 +218,7 @@ Deno.serve(
                   statusCell.style.backgroundColor = '#0f0';
                   const playerCount = data.players?.length ?? data.numplayers ?? 0;
                   const maxPlayers = data.maxplayers ?? 'N/A';
-                  document.getElementById(\`players-\${serverName}\`).textContent = \`\${playerCount}/\${maxPlayers}\`;
+                  document.getElementById(\`players-\${serverName}\`).textContent = \`\${playerCount} / \${maxPlayers}\`;
                 }
               }
 
