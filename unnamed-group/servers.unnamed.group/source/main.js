@@ -72,6 +72,17 @@ const servers = [
       },
     },
   },
+  {
+    gameName: "Arma Reforger",
+    serverName: "Unnamed Group Test Server",
+    gamedig: {
+      input: {
+        type: "armareforger",
+        host: "178.63.67.58",
+        port: 17777,
+      },
+    },
+  },
 ];
 
 Deno.serve(
