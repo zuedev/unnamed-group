@@ -58,6 +58,20 @@ const servers = [
       },
     },
   },
+  {
+    gameName: "Palworld",
+    serverName: "Palworld",
+    portOverride: 8211,
+    gamedig: {
+      input: {
+        type: "palworld",
+        host: "178.63.67.58",
+        port: 8212,
+        username: "admin",
+        password: "lemonroot",
+      },
+    },
+  },
 ];
 
 Deno.serve(
@@ -149,7 +163,7 @@ Deno.serve(
                         <td id="status-${server.serverName}">Loading...</td>
                         <td id="players-${server.serverName}">Loading...</td>
                         <td id="maxPlayers-${server.serverName}">Loading...</td>
-                        <td>${server.gamedig.input.host}:${server.gamedig.input.port}</td>
+                        <td>${server.gamedig.input.host}${server.portOverride ? ":" + server.portOverride : server.gamedig.input.port ? ":" + server.gamedig.input.port : ""}</td>
                       </tr>
                     `;
                   })
