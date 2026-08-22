@@ -83,7 +83,7 @@ const servers = [
       },
     },
   },
-];
+].sort((a, b) => a.gameName.localeCompare(b.gameName));
 
 Deno.serve(
   { port: Number(Deno.env.get("HTTP_PORT") || 80), hostname: "0.0.0.0" },
