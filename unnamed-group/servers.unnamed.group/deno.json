@@ -1,5 +1,12 @@
 {
   "tasks": {
     "start": "deno --allow-all source/main.js"
+  },
+  "lint": {
+    "rules": {
+      "exclude": [
+        "no-import-prefix"
+      ]
+    }
   }
 }
