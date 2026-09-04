@@ -655,10 +655,5 @@
         "xmlbuilder"
       ]
     }
-  },
-  "workspace": {
-    "dependencies": [
-      "npm:gamedig@5.3.2"
-    ]
   }
 }

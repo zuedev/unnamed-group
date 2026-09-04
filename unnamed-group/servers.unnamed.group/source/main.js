@@ -9,7 +9,7 @@ const servers = [
     gamedig: {
       input: {
         type: "protocol-valve",
-        host: "178.63.67.58",
+        host: "178.63.67.30",
         port: 7012,
       },
     },
@@ -20,7 +20,7 @@ const servers = [
     gamedig: {
       input: {
         type: "protocol-valve",
-        host: "178.63.67.58",
+        host: "178.63.67.30",
         port: 7022,
       },
     },
@@ -31,7 +31,7 @@ const servers = [
     gamedig: {
       input: {
         type: "protocol-valve",
-        host: "178.63.67.58",
+        host: "178.63.67.30",
         port: 7032,
       },
     },
@@ -42,7 +42,7 @@ const servers = [
     gamedig: {
       input: {
         type: "protocol-valve",
-        host: "178.63.67.58",
+        host: "178.63.67.30",
         port: 7042,
       },
     },
@@ -53,7 +53,7 @@ const servers = [
     gamedig: {
       input: {
         type: "protocol-valve",
-        host: "178.63.67.58",
+        host: "178.63.67.30",
         port: 7052,
       },
     },
@@ -65,7 +65,7 @@ const servers = [
     gamedig: {
       input: {
         type: "palworld",
-        host: "178.63.67.58",
+        host: "178.63.67.30",
         port: 8212,
         username: "admin",
         password: "lemonroot",
@@ -78,7 +78,7 @@ const servers = [
     gamedig: {
       input: {
         type: "armareforger",
-        host: "178.63.67.58",
+        host: "178.63.67.30",
         port: 17777,
       },
     },
@@ -90,7 +90,7 @@ const servers = [
 );
 
 Deno.serve(
-  { port: Number(Deno.env.get("HTTP_PORT") || 80), hostname: "0.0.0.0" },
+  { port: Number(Deno.env.get("HTTP_PORT") || 8080), hostname: "0.0.0.0" },
   async (request) => {
     const { pathname, searchParams } = new URL(request.url);
 
